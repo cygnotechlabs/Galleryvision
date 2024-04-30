@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import logo from "../../assets/logo/gv-logo.png";
 import { ReactNode } from "react";
 
@@ -24,22 +25,31 @@ interface SidebaritemProps {
   text: string;
   active?: boolean;
   onClick?: () => void;
+  to: string;
 }
 
-export function Sidebaritem({ icon, text, active, onClick }: SidebaritemProps) {
+export function Sidebaritem({
+  icon,
+  text,
+  active,
+  onClick,
+  to,
+}: SidebaritemProps) {
   return (
-    <li
-      className={`relative
+    <Link to={to}>
+      <li
+        className={`relative
        flex items-center font-semibold
        pr-[24px] pl-[16px] py-[16px] my-4  rounded-3xl cursor-pointer
        transition-colors ${
          active ? "bg-red-700 text-white " : "text-gray-700 bg-white"
        }`}
-      onClick={onClick}
-    >
-      {icon}
-      <span className="w-[92px] h-[22px] ml-3">{text}</span>
-      {/* Optionally render based on active or alert props */}
-    </li>
+        onClick={onClick}
+      >
+        {icon}
+        <span className="w-[92px] h-[22px] ml-3">{text}</span>
+        {/* Optionally render based on active or alert props */}
+      </li>
+    </Link>
   );
 }
