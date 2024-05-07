@@ -6,8 +6,12 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = () => {
+  const rightPadding = 360; 
   return (
-    <header className="flex h-[77px] w-[1373.15px] items-center justify-between px-4 py-2 bg-white border-b">
+      <header
+        style={{ width: `calc(100vw - ${rightPadding}px)` }}
+        className="flex h-[77px] w-screen items-center justify-between px-4 py-2 bg-white border-b"
+      >
       <div className="relative">
         <svg
           className="h-5 w-5 text-gray-400 absolute inset-y-0 left-0 ml-2 mt-3 pointer-events-none"

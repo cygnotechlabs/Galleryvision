@@ -24,7 +24,7 @@ const Layout = ({ children }: Props) => {
     setActiveItem((prevActiveItem) => (prevActiveItem === text ? null : text));
   };
   return (
-    <main className="flex">
+    <main className="flex font-custom">
       <Sidebar>
         <Sidebaritem
           to="/home"

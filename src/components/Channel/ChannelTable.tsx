@@ -1,82 +1,10 @@
-import { useState } from "react";
-import Modal from "../../layouts/Modal";
-import LicensorView from "./LicensorView";
-import { Edit, Eye, Filter, Invoice } from "../icons/icon";
+import { Edit, Eye, Filter } from "../icons/icon";
 
-type Props = {};
-interface Licensor {
-  id: string;
-  name: string;
-  email: string;
-  country: string;
-}
+type Props = {
+  channels: any[]; // Add channels property to the Props type
+};
 
-const licensors: Licensor[] = [
-  {
-    id: "LIC001",
-    name: "T-SERIES",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC001",
-    name: "Eagle tale",
-    email: "tseries@email.com",
-    country: "United states",
-  },
-  {
-    id: "LIC001",
-    name: "Star Sports",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC001",
-    name: "Arun Smoki",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC001",
-    name: "Mazhavil Manorama",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC002",
-    name: "Universal Music Group",
-    email: "universal@email.com",
-    country: "United States",
-  },
-  {
-    id: "LIC003",
-    name: "Sony Music Entertainment",
-    email: "sony@email.com",
-    country: "Japan",
-  },
-  {
-    id: "LIC004",
-    name: "Warner Music Group",
-    email: "warner@email.com",
-    country: "United States",
-  },
-  {
-    id: "LIC005",
-    name: "EMI Group",
-    email: "emi@email.com",
-    country: "United Kingdom",
-  },
-  {
-    id: "LIC006",
-    name: "Bollywood Studios",
-    email: "bollywood@email.com",
-    country: "India",
-  },
-  // Add more licensors here
-];
-
-function LicensorTable({}: Props) {
-  const [open, setOpen] = useState(false);
+function ChannelTable({ channels }: Props) {
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
@@ -109,46 +37,44 @@ function LicensorTable({}: Props) {
         </div>
       </div>
       <div className="overflow-x-auto px-9 rounded-lg">
-        <table className="w-full h-[368px] table-auto ">
+        <table className="w-full">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-1 text-left text-sm">Licensor ID</th>
+            <tr className="bg-gray-200">
+              <th className="px-4 py-1 text-left text-sm">Logo</th>
+              <th className="px-4 py-1 text-left text-sm">Channel name</th>
               <th className="px-4 py-1 text-left text-sm">Licensor name</th>
               <th className="px-4 py-1 text-left text-sm">Email</th>
-              <th className="px-4 py-1 text-left text-sm">Country</th>
+              <th className="px-4 py-1 text-left text-sm">Commission</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {licensors.map((licensor, index) => (
+            {channels.map((channel, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.id}
+                  {channel.logo}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.name}
+                  {channel.channelName}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.email}
+                  {channel.channelId}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.country}
+                  {channel.email}
+                </td>
+                <td className="px-4 py-1  border-gray-200 text-sm">
+                  {channel.commission}
                 </td>
                 <td className="px-4 py-1  border-gray-200">
                   <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setOpen(true)}
-                      className="flex gap-2 bg-red-100 hover:bg-red-200 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
-                    >
+                    <button className="flex gap-2 bg-red-100 hover:bg-pink-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-red-500 rounded-lg">
                       <Eye />
                       View
                     </button>
-                    <button className="flex gap-2 bg-gray-100-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
+                    <button className="flex bg-gray-300 gap-2 hover:bg-gray-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-black rounded-lg">
                       <Edit />
                       Edit
-                    </button>
-                    <button className="flex gap-2 bg-gray-100-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
-                      <Invoice />
                     </button>
                   </div>
                 </td>
@@ -157,6 +83,7 @@ function LicensorTable({}: Props) {
           </tbody>
         </table>
       </div>
+
       <div className="pt-4 flex justify-center">
         <nav className="flex items-center gap-96" aria-label="Pagination">
           <div>Showing 1 of 5 of 20 entries</div>
@@ -212,11 +139,8 @@ function LicensorTable({}: Props) {
           </ul>
         </nav>
       </div>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <LicensorView />
-      </Modal>
     </div>
   );
 }
 
-export default LicensorTable;
+export default ChannelTable;

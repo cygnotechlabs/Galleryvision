@@ -1,81 +1,19 @@
 import { useState } from "react";
 import Modal from "../../layouts/Modal";
-import LicensorView from "./LicensorView";
-import { Edit, Eye, Filter, Invoice } from "../icons/icon";
+import { Edit, Filter } from "../icons/icon";
+import AssignChannel from "./AssignChannel";
 
 type Props = {};
-interface Licensor {
-  id: string;
-  name: string;
-  email: string;
-  country: string;
-}
 
-const licensors: Licensor[] = [
-  {
-    id: "LIC001",
-    name: "T-SERIES",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC001",
-    name: "Eagle tale",
-    email: "tseries@email.com",
-    country: "United states",
-  },
-  {
-    id: "LIC001",
-    name: "Star Sports",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC001",
-    name: "Arun Smoki",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC001",
-    name: "Mazhavil Manorama",
-    email: "tseries@email.com",
-    country: "India",
-  },
-  {
-    id: "LIC002",
-    name: "Universal Music Group",
-    email: "universal@email.com",
-    country: "United States",
-  },
-  {
-    id: "LIC003",
-    name: "Sony Music Entertainment",
-    email: "sony@email.com",
-    country: "Japan",
-  },
-  {
-    id: "LIC004",
-    name: "Warner Music Group",
-    email: "warner@email.com",
-    country: "United States",
-  },
-  {
-    id: "LIC005",
-    name: "EMI Group",
-    email: "emi@email.com",
-    country: "United Kingdom",
-  },
-  {
-    id: "LIC006",
-    name: "Bollywood Studios",
-    email: "bollywood@email.com",
-    country: "India",
-  },
-  // Add more licensors here
+const unassignedChannels = [
+  { id: "CH001", revenue: "$5000" },
+  { id: "CH002", revenue: "$3000" },
+  { id: "CH003", revenue: "$4500" },
+  { id: "CH004", revenue: "$7000" },
+  { id: "CH005", revenue: "$2000" },
+  // ... add more demo data as needed
 ];
-
-function LicensorTable({}: Props) {
+function UnassignedChannel({}: Props) {
   const [open, setOpen] = useState(false);
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
@@ -109,46 +47,31 @@ function LicensorTable({}: Props) {
         </div>
       </div>
       <div className="overflow-x-auto px-9 rounded-lg">
-        <table className="w-full h-[368px] table-auto ">
+        <table className="w-full">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-1 text-left text-sm">Licensor ID</th>
-              <th className="px-4 py-1 text-left text-sm">Licensor name</th>
-              <th className="px-4 py-1 text-left text-sm">Email</th>
-              <th className="px-4 py-1 text-left text-sm">Country</th>
+            <tr className="bg-gray-200">
+              <th className="px-4 py-1 text-left text-sm">Channel ID</th>
+              <th className="px-4 py-1 text-left text-sm">Partner Revenue</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {licensors.map((licensor, index) => (
+            {unassignedChannels.map((channel, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.id}
+                  {channel.id}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.name}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.email}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {licensor.country}
+                  {channel.revenue}
                 </td>
                 <td className="px-4 py-1  border-gray-200">
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => setOpen(true)}
-                      className="flex gap-2 bg-red-100 hover:bg-red-200 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
+                      className="flex bg-black gap-2 hover:bg-gray-600 text-white font-medium py-2 px-2  border text-sm items-center border-black rounded-lg"
                     >
-                      <Eye />
-                      View
-                    </button>
-                    <button className="flex gap-2 bg-gray-100-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
                       <Edit />
-                      Edit
-                    </button>
-                    <button className="flex gap-2 bg-gray-100-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
-                      <Invoice />
+                      Assign licensor
                     </button>
                   </div>
                 </td>
@@ -213,10 +136,10 @@ function LicensorTable({}: Props) {
         </nav>
       </div>
       <Modal open={open} onClose={() => setOpen(false)}>
-        <LicensorView />
+        <AssignChannel onClose={() => setOpen(false)} />
       </Modal>
     </div>
   );
 }
 
-export default LicensorTable;
+export default UnassignedChannel;
