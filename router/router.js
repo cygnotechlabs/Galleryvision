@@ -21,8 +21,8 @@ router.put('/update-channel/:id',channelController.updateChannel)
 // licensor routes
 router.post('/add-licensor',licensorController.addLicensor)
 
-router.post('/get-licensor',licensorController.getLicensor)
+router.get('/get-licensor',licensorController.getLicensor)
 
-router.post('/remove-licensor',licensorController.removelicensor)
+router.delete('/remove-licensor/:id',licensorController.removelicensor)
 
 module.exports = router

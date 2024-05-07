@@ -17,7 +17,15 @@ exports.addLicensor = async (req, res) => {
         ifsc_iban,
         preferredCurrency,
       } = req.body;
-  
+      
+      const existingLicensor = await licensor.findOne({ licenserName });
+
+    if (existingLicensor) {
+      return res.status(409).json({
+        error: 'Licensor with the provided name already exists',
+      });
+    }
+
       const newLicensor = new licensor({
         companyName,
         companyEmail,

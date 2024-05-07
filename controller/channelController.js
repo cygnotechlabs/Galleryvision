@@ -7,7 +7,15 @@ exports.addChannel = async (req, res) => {
   try {
     const { channelId, channelName, commission, email, currency, logo } = req.body;
 
+    const existingChannel = await channels.findOne({
+      $or: [{ channelId }, { channelName }, { email }],
+    });
 
+    if (existingChannel) {
+      return res.status(409).json({
+        error: 'Channel with the provided ID, name, or email already exists',
+      });
+    }
     const newChannel = new channels({
       channelId,
       channelName,

@@ -6,7 +6,7 @@ const licensorSchema = new Schema({
     companyName: { type: String, required: true },
     companyEmail: { type: String, required: true },
     companylogo: { type: String, required: true},
-    licenserName: { type: String, required: true },
+    licenserName: { type: String, required: true , unique: true},
     licenserEmail: { type: String, required: true },
     licenserAddress : { type: String, required: true },
     licenserPhno : { type: String, required: true },
