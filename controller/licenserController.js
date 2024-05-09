@@ -1,7 +1,7 @@
-const licensor = require('../database/model/licensor')
+const licensors = require('../database/model/licensor');
 const { ObjectId } = require("mongodb");
 
-
+// add licensor
 exports.addLicensor = async (req, res) => {
     try {
       const {
@@ -18,7 +18,7 @@ exports.addLicensor = async (req, res) => {
         preferredCurrency,
       } = req.body;
       
-      const existingLicensor = await licensor.findOne({ licenserName });
+      const existingLicensor = await licensors.findOne({ licenserName });
 
     if (existingLicensor) {
       return res.status(409).json({
@@ -26,7 +26,7 @@ exports.addLicensor = async (req, res) => {
       });
     }
 
-      const newLicensor = new licensor({
+      const newLicensor = new licensors({
         companyName,
         companyEmail,
         companylogo,
@@ -49,10 +49,10 @@ exports.addLicensor = async (req, res) => {
     }
   };
 
-
+// get licensors
 exports.getLicensor = async (req, res) => {
     try {
-        const allLicensor = await licensor.find();
+        const allLicensor = await licensors.find();
         // console.log(allChannels);
         
         if (allLicensor.length > 0) {
@@ -66,19 +66,63 @@ exports.getLicensor = async (req, res) => {
     }
 };
 
+// get particular licensor
+exports.getOneLicenser = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const objectId = new ObjectId(id);
+      const licensorDetails = await licensors.findOne({ _id: objectId });
+  
+      if (!licensorDetails) {
+        return res.status(404).json({ error: 'Licensor not found' });
+      }
+  
+      return res.status(200).json(licensorDetails);
+    } catch (error) {
+      if (error.name === 'CastError') {
+        return res.status(400).json({ error: 'Invalid licensor ID' });
+      }
+  
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 
+//remove licensor
 exports.removelicensor = async (req,res)=>{
     const { id } = req.params
     console.log("id to delete : ", id);
     try {
       const objectid = new ObjectId(id);
       console.log("Object-id : ", objectid);
-      const removeLicensor = await licensor.deleteOne({ _id: objectid });
+      const removeLicensor = await licensors.deleteOne({ _id: objectid });
       if (removeLicensor) {
-        const allLicensor = await licensor.find();
+        const allLicensor = await licensors.find();
         res.status(200).json(allLicensor);
       }
     } catch (error) {
       res.status(401).json(error);
     }
 }
+
+// update licensor
+exports.updateLicensor = async (req, res) => {
+    try {
+      const licensorId = req.params.id;
+      const updatedData = req.body;
+  
+      const objectid = new ObjectId(licensorId);
+  
+      const filter = { _id: objectid };
+      const updateResult = await licensors.updateOne(filter, { $set: updatedData });
+  
+      if (updateResult.modifiedCount === 1) {
+        return res.json({ success: true, message: 'licensor details updated successfully' });
+      } else {
+        return res.status(404).json({ error: 'licensor not found' });
+      }
+    } catch (error) {
+      console.error('Error updating licensor:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
