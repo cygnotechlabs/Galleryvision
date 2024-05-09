@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Arrow, BackArrow, Next } from "../icons/icon";
 
@@ -100,7 +100,7 @@ const PersnalDetails: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center mt-4 justify-end">
+        <div className="flex items-center justify-end">
           <Link
             to="/licensordetails"
             className="bg-gray-400 font-bold flex gap-2 text-white py-3 px-4 mr-[32px] rounded-md mt-4 self-end"

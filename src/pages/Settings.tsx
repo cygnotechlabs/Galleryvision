@@ -31,7 +31,7 @@ const Settings = () => {
             Tax
           </div>
         </div>
-        <div className="w-svw">
+        <div>
           {activeComponent === "currency" && <Currency />}
           {activeComponent === "tax" && <Tax />}
         </div>

@@ -54,20 +54,20 @@ const BankDetails: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
-                    id="bankTransfer"
+                    id="domestic"
                     name="paymentType"
-                    value="bankTransfer"
+                    value="domestic"
                   />
-                  <label htmlFor="bankTransfer">Bank Transfer</label>
+                  <label htmlFor="domestic">Domestic</label>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
-                    id="pioneerTransfer"
+                    id="international"
                     name="paymentType"
-                    value="pioneerTransfer"
+                    value="international"
                   />
-                  <label htmlFor="pioneerTransfer">Pioneer Transfer</label>
+                  <label htmlFor="international">International</label>
                 </div>
               </div>
             </div>
@@ -114,7 +114,7 @@ const BankDetails: React.FC = () => {
             <BackArrow />
           </Link>
           <button className="bg-black font-bold flex gap-2 text-white py-3 px-4 mr-[32px] rounded-md mt-4 self-end">
-            Finish
+            Submit
             <Arrow />
           </button>
         </div>

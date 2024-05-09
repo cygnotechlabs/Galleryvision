@@ -1,21 +1,20 @@
 import { useState } from "react";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter } from "../icons/icon";
-import EditChannel from "./EditChannel";
-import { useNavigate } from "react-router-dom";
+import { Edit, Filter } from "../icons/icon";
+import AssignMusic from "./AssignMusic";
 
-type Props = {
-  channels: any[]; // Add channels property to the Props type
-};
+type Props = {};
 
-function ChannelTable({ channels }: Props) {
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const navigate = useNavigate(); // useNavigate hook
-
-  const handleClick = () => {
-    navigate("/channel-view"); // Navigate to "/channel-view" route
-  };
+const unassignedMusics = [
+  { id: "CH001", revenue: "$5000" },
+  { id: "CH002", revenue: "$3000" },
+  { id: "CH003", revenue: "$4500" },
+  { id: "CH004", revenue: "$7000" },
+  { id: "CH005", revenue: "$2000" },
+  // ... add more demo data as needed
+];
+function UnassignedMusic({}: Props) {
+  const [open, setOpen] = useState(false);
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
@@ -51,47 +50,28 @@ function ChannelTable({ channels }: Props) {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-200">
-              <th className="px-4 py-1 text-left text-sm">Logo</th>
-              <th className="px-4 py-1 text-left text-sm">Channel name</th>
-              <th className="px-4 py-1 text-left text-sm">Licensor name</th>
-              <th className="px-4 py-1 text-left text-sm">Email</th>
-              <th className="px-4 py-1 text-left text-sm">Commission</th>
+              <th className="px-4 py-1 text-left text-sm">Music ID</th>
+              <th className="px-4 py-1 text-left text-sm">Partner Revenue</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {channels.map((channel, index) => (
+            {unassignedMusics.map((music, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.logo}
+                  {music.id}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.channelName}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.lisencor}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.email}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.commission}
+                  {music.revenue}
                 </td>
                 <td className="px-4 py-1  border-gray-200">
                   <div className="flex items-center space-x-2">
                     <button
-                      className="flex gap-2 bg-red-100 hover:bg-pink-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-red-500 rounded-lg"
-                      onClick={handleClick} // Add the onClick event handler
-                    >
-                      <Eye /> {/* Render the Eye icon */}
-                      View
-                    </button>
-                    <button
-                      onClick={() => setOpenEdit(true)}
-                      className="flex bg-gray-300 gap-2 hover:bg-gray-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-black rounded-lg"
+                      onClick={() => setOpen(true)}
+                      className="flex bg-black gap-2 hover:bg-gray-600 text-white font-medium py-2 px-2  border text-sm items-center border-black rounded-lg"
                     >
                       <Edit />
-                      Edit
+                      Assign licensor
                     </button>
                   </div>
                 </td>
@@ -100,7 +80,6 @@ function ChannelTable({ channels }: Props) {
           </tbody>
         </table>
       </div>
-
       <div className="pt-4 flex justify-center">
         <nav className="flex items-center gap-96" aria-label="Pagination">
           <div>Showing 1 of 5 of 20 entries</div>
@@ -156,11 +135,11 @@ function ChannelTable({ channels }: Props) {
           </ul>
         </nav>
       </div>
-      <Modal onClose={() => setOpenEdit(false)} open={openEdit}>
-        <EditChannel onClose={() => setOpenEdit(false)} />
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <AssignMusic onClose={() => setOpen(false)} />
       </Modal>
     </div>
   );
 }
 
-export default ChannelTable;
+export default UnassignedMusic;

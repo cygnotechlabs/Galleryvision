@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Arrow, Next } from "../icons/icon";
 
-const CreateLicensor: React.FC = () => {
+const LicensorDetails: React.FC = () => {
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   const handleBrowseClick = () => {
@@ -111,7 +111,7 @@ const CreateLicensor: React.FC = () => {
         </div>
         <Link
           to="/personaldetails"
-          className="bg-black font-bold flex gap-2 text-white py-2 px-4 mr-[32px] rounded-md mt-4 self-end"
+          className="bg-black font-bold flex gap-2 text-white py-3 px-4 mr-[32px] rounded-md self-end"
         >
           Next
           <Arrow />
@@ -121,4 +121,4 @@ const CreateLicensor: React.FC = () => {
   );
 };
 
-export default CreateLicensor;
+export default LicensorDetails;
