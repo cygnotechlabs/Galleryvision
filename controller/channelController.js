@@ -5,72 +5,122 @@ const { MongoClient } = require('mongodb');
 
 // collection to collection
 
+// exports.processData = async (req, res) => {
+//   try {
+//     // Your data processing logic here
+//     const client = await MongoClient.connect("mongodb+srv://galleryvision:E80Cha76i9vA5jRY@galleryvision.43un76r.mongodb.net/GalleryVision?retryWrites=true&w=majority&appName=GalleryVision");
+//     console.log('Connected to MongoDB');
+//     const dbName = 'GalleryVision';
+//     const db = client.db(dbName);
+
+//     // Query sampledata collection for documents where channelid is not empty
+//     const docs = await db.collection('sample_datas').find({ "Asset Channel ID": { $ne: '' } }).toArray();
+//     // console.log(docs[0]["Asset Channel ID"]);
+//     // Process each document
+//     for (const doc of docs) {
+//       // console.log(doc["Asset Channel ID"]);
+//       console.log(doc["YouTube Revenue Split"]);
+//       const channelId = doc["Asset Channel ID"]
+//       const youtubeRevenue =doc["YouTube Revenue Split"]
+//       const partnerRevenue =doc["Partner Revenue"]
+//       const assetId =doc["Asset ID"]
+//       const channelName = ""
+//       const commission=""
+//       const email = ""
+//       const currency = ""
+//       const logo=""
+//       const licensorName = ""
+//       // Extract channelid and revenue
+//       // const { channelid, revenue } = doc;
+
+//       // // Create new document for channels collection
+//       const newChannelDoc = {
+//         channelId,
+//         youtubeRevenue,
+//         partnerRevenue,
+//         assetId,
+//         channelName,
+//       commission,
+//       email,
+//       currency,
+//       logo,
+//       licensorName
+//       };
+
+//       // Insert new document into channels collection
+//       await db.collection('channels').insertOne(newChannelDoc);
+//       // console.log('Document inserted into channels collection');
+//     }
+
+//     console.log('Data processed successfully');
+//     client.close();
+    
+//     // Send response to client
+//     res.send('Data processed successfully');
+//   } catch (error) {
+//     console.error('Error processing data:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
+// collection to collection
+
+// test
 exports.processData = async (req, res) => {
   try {
     // Your data processing logic here
     const client = await MongoClient.connect("mongodb+srv://galleryvision:E80Cha76i9vA5jRY@galleryvision.43un76r.mongodb.net/GalleryVision?retryWrites=true&w=majority&appName=GalleryVision");
     console.log('Connected to MongoDB');
-    const dbName = 'GalleryVision';
-    const db = client.db(dbName);
+    const db = client.db('GalleryVision');
 
-    // Query sampledata collection for documents where channelid is not empty
-    const docs = await db.collection('sample_datas').find({ "Asset Channel ID": { $ne: '' } }).toArray();
-    // console.log(docs[0]["Asset Channel ID"]);
-    // Process each document
-    for (const doc of docs) {
-      // console.log(doc["Asset Channel ID"]);
-      console.log(doc["YouTube Revenue Split"]);
-      const channelId = doc["Asset Channel ID"]
-      const youtubeRevenue =doc["YouTube Revenue Split"]
-      const partnerRevenue =doc["Partner Revenue"]
-      const assetId =doc["Asset ID"]
-      const channelName = ""
-      const commission=""
-      const email = ""
-      const currency = ""
-      const logo=""
-      const licensorName = ""
-      // Extract channelid and revenue
-      // const { channelid, revenue } = doc;
+    // Aggregate documents by Asset Channel ID and push Asset IDs into an array
+    const pipeline = [
+      { $match: { "Asset Channel ID": { $ne: '' } } },
+      {
+        $group: {
+          channelId: { $first: "$Asset Channel ID" },
 
-      // // Create new document for channels collection
-      const newChannelDoc = {
-        channelId,
-        youtubeRevenue,
-        partnerRevenue,
-        assetId,
-        channelName,
-      commission,
-      email,
-      currency,
-      logo,
-      licensorName
-      };
+          _id: "$Asset Channel ID", // Group by Asset Channel ID
+          assetIds: { $push: "$Asset ID" }, // Create an array of Asset IDs
+          // Include other fields you want to retain in the grouped document
+          youtubeRevenue: { $first: "$YouTube Revenue Split" },
+          partnerRevenue: { $first: "$Partner Revenue" },
+          // ... other fields
+          channelName: { $first: "" },
+          commission: { $first: "" },
+          email: { $first: "" },
+          currency: { $first: "" },
+          logo: { $first: "" },
+          licensorName: { $first: "" }
+        }
+      },
+      { $out: "channels" } // Output the results to the 'channels' collection
+    ];
 
-      // Insert new document into channels collection
-      await db.collection('channels').insertOne(newChannelDoc);
-      // console.log('Document inserted into channels collection');
-    }
 
-    console.log('Data processed successfully');
+
+
+
+    await db.collection('sample_datas').aggregate(pipeline).toArray();
+
+    console.log('Data processed and consolidated successfully');
     client.close();
     
     // Send response to client
-    res.send('Data processed successfully');
+    res.send('Data processed and consolidated successfully');
   } catch (error) {
     console.error('Error processing data:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// collection to collection
-
+// test
 
 
 // add channel
 exports.addChannel = async (req, res) => {
   try {
-    const { channelId, channelName, commission, email, currency, logo , licensorName } = req.body;
+    const { channelId, channelName, commission, email, logo , licensorName } = req.body;
 
     const existingChannel = await channels.findOne({
       $or: [{ channelId }, { channelName }, { email }],
@@ -78,7 +128,7 @@ exports.addChannel = async (req, res) => {
 
     if (existingChannel) {
       return res.status(409).json({
-        error: 'Channel with the provided ID, name, or email already exists',
+        message: 'Channel with the provided ID, name, or email already exists',
       });
     }
     const newChannel = new channels({
@@ -86,7 +136,6 @@ exports.addChannel = async (req, res) => {
       channelName,
       commission,
       email,
-      currency,
       logo,
       licensorName
     });
@@ -96,7 +145,7 @@ exports.addChannel = async (req, res) => {
     res.status(201).json({ message: 'Channel created successfully' });
   } catch (error) {
     console.error('Error creating channel:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 // get linked channels

@@ -5,12 +5,12 @@ const Schema = mongoose.Schema;
 const licensorSchema = new Schema({
     companyName: { type: String, required: true },
     companyEmail: { type: String, required: true },
-    companylogo: { type: String, required: true},
+    companylogo: { type: String},
     licenserName: { type: String, required: true , unique: true},
     licenserEmail: { type: String, required: true },
     licenserAddress : { type: String, required: true },
     licenserPhno : { type: String, required: true },
-    paymentMethod : { type: String, required: true },
+    paymentMethod : { type: String},
     bankAccNum : { type: String, required: true },
     ifsc_iban : { type: String, required: true },
     preferredCurrency: { type: String, required: true }

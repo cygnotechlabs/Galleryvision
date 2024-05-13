@@ -3,7 +3,7 @@ const express = require('express')
 const router = new express.Router()
 
 const channelController = require('../controller/channelController')
-
+const musicController = require('../controller/musicController')
 const licensorController = require('../controller/licenserController')
 
 
@@ -38,3 +38,7 @@ router.delete('/remove-licensor/:id',licensorController.removelicensor)
 router.put('/update-licensor/:id',licensorController.updateLicensor)
 
 module.exports = router
+
+// Music Route
+
+router.get('/get-rawmusic',musicController.getRawMusic)

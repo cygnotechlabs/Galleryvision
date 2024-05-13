@@ -5,7 +5,7 @@ const channelSchema = mongoose.Schema({
   channelName: { type: String},
   commission: { type: String},
   email: { type: String },
-  currency: { type: String},
+  licensorName: { type: String},
   logo: { type: String}
 });
 

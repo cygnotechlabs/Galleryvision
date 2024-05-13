@@ -3,6 +3,7 @@ const { ObjectId } = require("mongodb");
 
 // add licensor
 exports.addLicensor = async (req, res) => {
+  console.log(req.body);
     try {
       const {
         companyName,
