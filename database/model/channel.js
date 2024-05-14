@@ -4,9 +4,12 @@ const channelSchema = mongoose.Schema({
   channelId: { type: String },
   channelName: { type: String},
   commission: { type: String},
-  email: { type: String },
-  licensorName: { type: String},
-  logo: { type: String}
+  channelEmail: { type: String },
+  licensorId: { type: String},
+  channelLogo: { type: String}
+  // assets:{
+  //   type:[]
+  // }
 });
 
 const channels = mongoose.model('channels', channelSchema)

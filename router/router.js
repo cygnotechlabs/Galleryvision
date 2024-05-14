@@ -9,15 +9,19 @@ const licensorController = require('../controller/licenserController')
 
 // collection to collection
 
-router.get('/process',channelController.processData)
+// router.get('/process',channelController.processData)
 
 // collection to collection
 
 // channel routes
 router.post('/add-channel',channelController.addChannel)
 
+router.post('/assign-channel/:id',channelController.assignChannel)
+
 router.get('/get-linked-channel',channelController.getLinkedChannels)
+
 router.get('/get-unlinked-channel',channelController.getUnlinkedChannels)
+
 router.get('/get-channel',channelController.getChannels)
 
 router.get('/view-channel/:id',channelController.getOneChannel)
@@ -42,3 +46,12 @@ module.exports = router
 // Music Route
 
 router.get('/get-rawmusic',musicController.getRawMusic)
+
+router.get('/view-rawmusic/:id',musicController.getOneRawMusic)
+
+
+// Channel Route
+
+// router.get('/get-rawchannel',channelController.getRawChannel)
+
+router.get('/view-rawchannel/:id',channelController.getOneRawChannel)

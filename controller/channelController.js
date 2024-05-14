@@ -1,120 +1,10 @@
 const channels = require('../database/model/channel')
+const rawchannels = require('../database/model/rawchannel');
 const { ObjectId } = require("mongodb");
 const { MongoClient } = require('mongodb');
 // const db = process.env.DATABASE
 
-// collection to collection
 
-// exports.processData = async (req, res) => {
-//   try {
-//     // Your data processing logic here
-//     const client = await MongoClient.connect("mongodb+srv://galleryvision:E80Cha76i9vA5jRY@galleryvision.43un76r.mongodb.net/GalleryVision?retryWrites=true&w=majority&appName=GalleryVision");
-//     console.log('Connected to MongoDB');
-//     const dbName = 'GalleryVision';
-//     const db = client.db(dbName);
-
-//     // Query sampledata collection for documents where channelid is not empty
-//     const docs = await db.collection('sample_datas').find({ "Asset Channel ID": { $ne: '' } }).toArray();
-//     // console.log(docs[0]["Asset Channel ID"]);
-//     // Process each document
-//     for (const doc of docs) {
-//       // console.log(doc["Asset Channel ID"]);
-//       console.log(doc["YouTube Revenue Split"]);
-//       const channelId = doc["Asset Channel ID"]
-//       const youtubeRevenue =doc["YouTube Revenue Split"]
-//       const partnerRevenue =doc["Partner Revenue"]
-//       const assetId =doc["Asset ID"]
-//       const channelName = ""
-//       const commission=""
-//       const email = ""
-//       const currency = ""
-//       const logo=""
-//       const licensorName = ""
-//       // Extract channelid and revenue
-//       // const { channelid, revenue } = doc;
-
-//       // // Create new document for channels collection
-//       const newChannelDoc = {
-//         channelId,
-//         youtubeRevenue,
-//         partnerRevenue,
-//         assetId,
-//         channelName,
-//       commission,
-//       email,
-//       currency,
-//       logo,
-//       licensorName
-//       };
-
-//       // Insert new document into channels collection
-//       await db.collection('channels').insertOne(newChannelDoc);
-//       // console.log('Document inserted into channels collection');
-//     }
-
-//     console.log('Data processed successfully');
-//     client.close();
-    
-//     // Send response to client
-//     res.send('Data processed successfully');
-//   } catch (error) {
-//     console.error('Error processing data:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
-
-// collection to collection
-
-// test
-exports.processData = async (req, res) => {
-  try {
-    // Your data processing logic here
-    const client = await MongoClient.connect("mongodb+srv://galleryvision:E80Cha76i9vA5jRY@galleryvision.43un76r.mongodb.net/GalleryVision?retryWrites=true&w=majority&appName=GalleryVision");
-    console.log('Connected to MongoDB');
-    const db = client.db('GalleryVision');
-
-    // Aggregate documents by Asset Channel ID and push Asset IDs into an array
-    const pipeline = [
-      { $match: { "Asset Channel ID": { $ne: '' } } },
-      {
-        $group: {
-          channelId: { $first: "$Asset Channel ID" },
-
-          _id: "$Asset Channel ID", // Group by Asset Channel ID
-          assetIds: { $push: "$Asset ID" }, // Create an array of Asset IDs
-          // Include other fields you want to retain in the grouped document
-          youtubeRevenue: { $first: "$YouTube Revenue Split" },
-          partnerRevenue: { $first: "$Partner Revenue" },
-          // ... other fields
-          channelName: { $first: "" },
-          commission: { $first: "" },
-          email: { $first: "" },
-          currency: { $first: "" },
-          logo: { $first: "" },
-          licensorName: { $first: "" }
-        }
-      },
-      { $out: "channels" } // Output the results to the 'channels' collection
-    ];
-
-
-
-
-
-    await db.collection('sample_datas').aggregate(pipeline).toArray();
-
-    console.log('Data processed and consolidated successfully');
-    client.close();
-    
-    // Send response to client
-    res.send('Data processed and consolidated successfully');
-  } catch (error) {
-    console.error('Error processing data:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// test
 
 
 // add channel
@@ -148,6 +38,40 @@ exports.addChannel = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+exports.assignChannel = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { id } = req.params;
+      const objectId = new ObjectId(id);
+     
+    const { channelId, channelName, commission , channelEmail , licensorId , channelLogo  } = req.body;
+    const rawChannel = await rawchannels.findOne({ _id: objectId });
+
+    if (!rawChannel) {
+      return res.status(404).json({ message: 'Raw channel not found' });
+    }
+
+    rawChannel.channelName = channelName;
+    rawChannel.commission = commission;
+    rawChannel.channelEmail = channelEmail;
+    rawChannel.licensorId = licensorId;
+    rawChannel.channelLogo = channelLogo;
+
+    const assignedChannel = new channels(rawChannel);
+
+    await assignedChannel.save();
+
+    await rawchannels.deleteOne({ channelId });
+
+    res.status(201).json({ message: 'Channel assigned and raw channel deleted successfully' });
+  } catch (error) {
+    console.error('Error assigning channel:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
 // get linked channels
 exports.getLinkedChannels = async (req, res) => {
   try {
@@ -163,10 +87,12 @@ exports.getLinkedChannels = async (req, res) => {
       res.status(500).json("Internal server error");
   }
 };
+
+
 // get unlinked channels
 exports.getUnlinkedChannels = async (req, res) => {
   try {
-      const unlinkedChannels = await channels.find({ channelName: "" });
+      const unlinkedChannels = await rawchannels.find();
 
       if (unlinkedChannels.length > 0) {
           res.status(200).json(unlinkedChannels);
@@ -196,12 +122,12 @@ exports.getChannels = async (req, res) => {
     }
 };
 
-// get particular channel
+// get particular unassigned channel
 exports.getOneChannel = async (req, res) => {
     try {
       const { id } = req.params;
       const objectId = new ObjectId(id);
-      const channelDetails = await channels.findOne({ _id: objectId });
+      const channelDetails = await rawchannels.findOne({ _id: objectId });
   
       if (!channelDetails) {
         return res.status(404).json({ error: 'Channel not found' });
@@ -267,3 +193,25 @@ exports.updateChannel = async (req, res) => {
   };
   
 
+  
+  
+  // get particular licensor
+  exports.getOneRawChannel = async (req, res) => {
+      try {
+        const { id } = req.params;
+        const objectId = new ObjectId(id);
+        const oneChannelDetails = await rawChannel.findOne({ _id: objectId });
+    
+        if (!oneChannelDetails) {
+          return res.status(404).json({ error: 'Channel not found' });
+        }
+    
+        return res.status(200).json(oneChannelDetails);
+      } catch (error) {
+        if (error.name === 'CastError') {
+          return res.status(400).json({ error: 'Invalid Channel' });
+        }
+    
+        return res.status(500).json({ error: 'Internal Channel' });
+      }
+    };

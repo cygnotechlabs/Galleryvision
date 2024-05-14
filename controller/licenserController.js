@@ -8,15 +8,14 @@ exports.addLicensor = async (req, res) => {
       const {
         companyName,
         companyEmail,
-        companylogo,
+        companyLogo,
         licenserName,
         licenserEmail,
         licenserAddress,
         licenserPhno,
-        paymentMethod,
         bankAccNum,
         ifsc_iban,
-        preferredCurrency,
+        currency,
       } = req.body;
       
       const existingLicensor = await licensors.findOne({ licenserName });
@@ -30,15 +29,14 @@ exports.addLicensor = async (req, res) => {
       const newLicensor = new licensors({
         companyName,
         companyEmail,
-        companylogo,
+        companyLogo,
         licenserName,
         licenserEmail,
         licenserAddress,
         licenserPhno,
-        paymentMethod,
         bankAccNum,
         ifsc_iban,
-        preferredCurrency,
+        currency,
       });
   
       await newLicensor.save();
