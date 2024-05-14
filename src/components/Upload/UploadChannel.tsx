@@ -1,10 +1,39 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import axios from "axios";
 
 const UploadChannelCSV: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleSubmit = async () => {
+    if (!fileInputRef.current || !fileInputRef.current.files || fileInputRef.current.files.length === 0) {
+      console.error("No file selected.");
+      return;
+    }
+
+    const file = fileInputRef.current.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setUploading(true);
+      // Change the URL to your backend server endpoint
+      await axios.post("http://localhost:5000/channel/importChannel", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log("File uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      // You might want to handle this error, e.g., display a message to the user
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -42,7 +71,7 @@ const UploadChannelCSV: React.FC = () => {
             </div>
           </div>
           <p className="text-gray-500 text-xs pb-4 mt-4">
-            Supported formates: CSV files
+            Supported formats: CSV files
           </p>
           <input
             type="file"
@@ -51,8 +80,12 @@ const UploadChannelCSV: React.FC = () => {
             className="hidden"
           />
         </div>
-        <button className="bg-black text-white w-[304px] py-2 px-8 rounded-md mt-4">
-          Upload file
+        <button
+          className="bg-black text-white w-[304px] py-2 px-8 rounded-md mt-4"
+          onClick={handleSubmit}
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading...' : 'Upload file'}
         </button>
       </div>
     </div>

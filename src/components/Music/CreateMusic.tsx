@@ -2,56 +2,46 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
 type Props = {};
 
-const CreateChannel = ({}: Props) => {
-  const [message, setMessage] = useState("");
-  const [formData, setFormData] = useState({
-    channelId: "",
-    channelName: "",
-    commission: "",
-    email: "",
-    logo: "",
+const CreateMusic: React.FC<Props> = () => {
+  const [message, setMessage] = useState<string>("");
+  const [musicData, setMusicData] = useState({
+    licensor: "",
+    licensorId: "",
     licensorName: "",
+    licensorEmail: "",
+    commision: "",
   });
 
   const history = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setMusicData({ ...musicData, [name]: value });
   };
 
-  const createChannel = async () => {
+  const createMusic = async () => {
     try {
-      // POST request using Axios
       const response = await axios.post(
-        "http://localhost:3000/add-channel",
-        formData
+        "http://localhost:3001/add-music",
+        musicData
       );
-
-      // Handle success
-      console.log(response.data.message);
       setMessage(response.data.message);
-      // Clear form after successful creation
-      setFormData({
-        channelId: "",
-        channelName: "",
-        commission: "",
-        email: "",
-        logo: "",
+      setMusicData({
+        licensor: "",
+        licensorId: "",
         licensorName: "",
+        licensorEmail: "",
+        commision: "",
       });
-
-      // Redirect to "/channel" after 1 second
       setTimeout(() => {
-        history("/channel");
+        history("/music");
       }, 1000);
     } catch (error: any) {
-      // Handle error
       if (error.response) {
-        console.error(error.response.data.message);
         setMessage(error.response.data.message);
       } else {
         console.error(error.message);
@@ -64,7 +54,7 @@ const CreateChannel = ({}: Props) => {
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
-            to="/unassigned-channels"
+            to="/unassigned-musics"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
             <svg
@@ -87,7 +77,7 @@ const CreateChannel = ({}: Props) => {
       </div>
       <div className="bg-white shadow-md rounded-xl ml-[34px] px-8 py-8 mt-[24px] mr-[34px] h-[75svh] pr-9">
         <div className="flex justify-between">
-          <p className="text-2xl font-bold">Create Channel</p>
+          <p className="text-2xl font-bold">Create Music</p>
         </div>
         <div className="mt-5">
           <div>
@@ -104,35 +94,33 @@ const CreateChannel = ({}: Props) => {
           </div>
           <div className=" py-6 flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Select licensor</label>
+              <label htmlFor="">Music Name</label>
               <input
                 type="text"
-                name="licensorName"
-                value={formData.licensorName}
+                name="licensor"
+                value={musicData.licensor}
                 onChange={handleChange}
-                placeholder={`Select licensor `}
+                placeholder={`Enter licensor name`}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
               />
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Channel ID</label>
+              <label htmlFor="">Music ID</label>
               <input
                 type="text"
-                name="channelId"
-                value={formData.channelId}
+                name="licensorId"
                 onChange={handleChange}
-                placeholder={`Enter Channel ID `}
+                placeholder={`Enter Licensor ID`}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
               />
             </div>{" "}
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Channel name</label>
+              <label htmlFor="">Licenser Name</label>
               <input
                 type="text"
-                name="channelName"
-                value={formData.channelName}
+                name="licensorName"
                 onChange={handleChange}
-                placeholder={`Enter Channel name `}
+                placeholder={`Enter Licenser name`}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg"
               />
             </div>
@@ -142,10 +130,9 @@ const CreateChannel = ({}: Props) => {
               <label htmlFor="">Email</label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
+                name="licensorEmail"
                 onChange={handleChange}
-                placeholder={`Enter email `}
+                placeholder={`Enter email`}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
               />
             </div>
@@ -153,10 +140,9 @@ const CreateChannel = ({}: Props) => {
               <label htmlFor="">Commission (%)</label>
               <input
                 type="number"
-                name="commission"
-                value={formData.commission}
+                name="commision"
                 onChange={handleChange}
-                placeholder={`Enter Commission `}
+                placeholder={`Enter Commission`}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
               />
             </div>{" "}
@@ -164,17 +150,17 @@ const CreateChannel = ({}: Props) => {
           <div className="flex justify-end pt-5">
             <button
               className=" bg-black text-white font-bold px-3 py-3 rounded-lg"
-              onClick={createChannel}
+              onClick={createMusic}
             >
-              Create channel
+              Create Music
             </button>
           </div>
         </div>
-        {/* message of sussecs or error */}
+        {/* message of success or error */}
         <div className="px-3 py-3">{message}</div>
       </div>
     </div>
   );
 };
 
-export default CreateChannel;
+export default CreateMusic;

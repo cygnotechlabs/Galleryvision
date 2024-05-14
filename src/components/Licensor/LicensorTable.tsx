@@ -31,7 +31,7 @@ function LicensorTable({}: Props) {
           <input
             type="text"
             placeholder="Search"
-            className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
+            className="border border-gray-300 rounded-md px-4 w-[566px] h-[42px] pr-[40px]"
           />
           {/* Filter Button */}
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">

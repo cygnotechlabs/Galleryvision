@@ -1,18 +1,12 @@
-import { useEffect, useState } from "react";
+
 
 import ChannelTable from "../components/Channel/ChannelTable";
 import { Plus } from "../components/icons/icon";
 import { Link } from "react-router-dom";
 
-function Channel() {
-  const [channels, setChannels] = useState([]);
 
-  useEffect(() => {
-    fetch("http://localhost:3000/get-linked-channel")
-      .then((response) => response.json())
-      .then((data) => setChannels(data))
-      .catch((error) => console.error("Error fetching channels:", error));
-  }, []);
+function Channel() {
+ 
 
   return (
     <>
@@ -31,7 +25,7 @@ function Channel() {
           </Link>
         </div>
 
-        <ChannelTable channels={channels} />
+        <ChannelTable />
       </div>
     </>
   );

@@ -1,143 +1,196 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
 import { Edit, Filter } from "../icons/icon";
 import AssignMusic from "./AssignMusic";
+import axios from "axios";
 
-type Props = {};
+type Music = {
+  _id: string;
+  licensorId: string;
+  licensorName: string;
+  licensor: string;
+  licensorEmail: string;
+  commision: string;
+  ytRevenue: string;
+};
 
-const unassignedMusics = [
-  { id: "CH001", revenue: "$5000" },
-  { id: "CH002", revenue: "$3000" },
-  { id: "CH003", revenue: "$4500" },
-  { id: "CH004", revenue: "$7000" },
-  { id: "CH005", revenue: "$2000" },
-  // ... add more demo data as needed
-];
-function UnassignedMusic({}: Props) {
+function UnassignedMusic() {
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const rowsPerPage = 10;
+  const [selectedMusic, setSelectedMusic] = useState<Music>({
+    _id: "",
+    licensorName: "",
+    licensorId: "",
+    licensorEmail: "",
+    commision: "",
+    ytRevenue: "",
+    licensor: "",
+  });
+  const [musics, setMusics] = useState<Music[]>([
+    {
+      _id: "",
+      licensorName: "",
+      licensorId: "",
+      licensor: "",
+      licensorEmail: "",
+      commision: "",
+      ytRevenue: "",
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/get-rawmusic");
+        setMusics(response.data);
+        console.log(currentMusicData);
+      } catch (error) {
+        console.error("Error fetching music data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  // Calculate the current music data for the active page
+  const indexOfLastMusic = currentPage * rowsPerPage;
+  const indexOfFirstMusic = indexOfLastMusic - rowsPerPage;
+  const currentMusicData = musics.slice(indexOfFirstMusic, indexOfLastMusic);
+
   return (
-    <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
-      <div className="relative pl-8 pb-5 pt-8 pr-8 ">
-        <div className="flex justify-between text-sm">
-          <input
-            type="text"
-            placeholder="             Search"
-            className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="absolute left-12 top-[53px] transform -translate-y-1/2 w-6 h-6"
+    <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+      <div className="flex justify-between items-center pl-[34px]">
+        <div>
+          <Link
+            to="/music"
+            className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-            />
-          </svg>
-          <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
-            Filter
-            <span>
-              <Filter />
-            </span>
-          </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              />
+            </svg>
+            Back
+          </Link>
         </div>
+        <Link
+          to="/create-music"
+          className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
+        >
+          Create Music
+        </Link>
       </div>
-      <div className="overflow-x-auto px-9 rounded-lg">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="px-4 py-1 text-left text-sm">Music ID</th>
-              <th className="px-4 py-1 text-left text-sm">Partner Revenue</th>
-              <th className="px-4 py-1 text-left text-sm">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {unassignedMusics.map((music, index) => (
-              <tr key={index} className="bg-white">
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.id}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.revenue}
-                </td>
-                <td className="px-4 py-1  border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setOpen(true)}
-                      className="flex bg-black gap-2 hover:bg-gray-600 text-white font-medium py-2 px-2  border text-sm items-center border-black rounded-lg"
-                    >
-                      <Edit />
-                      Assign licensor
-                    </button>
-                  </div>
-                </td>
+      <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
+        <div className="relative pl-8 pb-5 pt-8 pr-8 ">
+          <div className="flex justify-between text-sm">
+            <input
+              type="text"
+              placeholder="             Search"
+              className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="absolute left-12 top-[53px] transform -translate-y-1/2 w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
+            </svg>
+            <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
+              Filter
+              <span>
+                <Filter />
+              </span>
+            </button>
+          </div>
+        </div>
+        <div className="px-9 rounded-lg">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="px-4 py-1 text-left text-sm">Music ID</th>
+                <th className="px-4 py-1 text-left text-sm">Licensor Email</th>
+                <th className="px-4 py-1 text-left text-sm">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="pt-4 flex justify-center">
-        <nav className="flex items-center gap-96" aria-label="Pagination">
-          <div>Showing 1 of 5 of 20 entries</div>
-          <ul className="flex list-style-none">
+            </thead>
+            <tbody>
+              {currentMusicData.map((music, index) => (
+                <tr key={index} className="bg-white">
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {music.licensorId}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {music.licensorEmail}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200">
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => {
+                          setOpen(true);
+                          setSelectedMusic(music);
+                        }}
+                        className="flex bg-black gap-2 hover:bg-gray-600 text-white font-medium py-2 px-2  border text-sm items-center border-black rounded-lg"
+                      >
+                        <Edit />
+                        Assign licensor
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="pt-4 flex justify-center">
+          <ul className="flex">
             <li>
-              <a
-                href="#"
-                className="py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+              <button
+                className="px-3 py-1 mr-1 border border-gray-300 rounded-md hover:bg-gray-200"
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
               >
-                Previous
-              </a>
+                {"< Prev"}
+              </button>
             </li>
+            {/* Map through each page number and render a button */}
+
             <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+              <button
+                className="px-3 py-1 ml-1 border border-gray-300 rounded-md hover:bg-gray-200"
+                onClick={() => paginate(currentPage + 1)}
+                disabled={
+                  currentPage === Math.ceil(musics.length / rowsPerPage)
+                }
               >
-                1
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight bg-red-500 text-white border border-gray-300 hover:bg-red-600 hover:text-white"
-              >
-                2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-              >
-                3
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-              >
-                4
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Next
-              </a>
+                {"Next >"}
+              </button>
             </li>
           </ul>
-        </nav>
+        </div>
+
+        <Modal open={open} onClose={() => setOpen(false)}>
+          <AssignMusic music={selectedMusic} onClose={() => setOpen(false)} />
+        </Modal>
       </div>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <AssignMusic onClose={() => setOpen(false)} />
-      </Modal>
     </div>
   );
 }

@@ -1,39 +1,36 @@
 import { useState } from "react";
 import { Close } from "../icons/icon";
+import axios from "axios";
 
 type Props = {
   channelId: string;
   onClose: () => void;
-  onChannelAdded: (newChannel: any) => void;
 };
 
-const AssignChannel = ({ channelId, onClose, onChannelAdded }: Props) => {
-  const [channelName, setChannelName] = useState("");
-  const [email, setEmail] = useState("");
-  const [commission, setCommission] = useState("");
+const AssignChannel = ({ channelId, onClose }: Props) => {
+  const [updatedData, setUpdatedData] = useState([
+    {
+      _id: "",
+      channelId: "",
+      channelName: "",
+      commission: "",
+      email: "",
+      licensorName: "",
+      logo: "",
+      __v: 0,
+    },
+  ]);
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/update-channel/${channelId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            channelName,
-            email,
-            commission,
-          }),
-        }
-      );
-      const data = await response.json();
-      onChannelAdded(data);
-      onClose();
-    } catch (error) {
-      console.error("Error adding channel:", error);
-    }
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    axios
+      .put(`http://localhost:3000/update-channel/${channelId}`, updatedData)
+      .then((res) => setUpdatedData(res.data))
+      .catch((err) => console.log(err));
+    onClose();
+  };
+  const handleUpdate = (event: { target: { name: any; value: any } }) => {
+    setUpdatedData({ ...updatedData, [event.target.name]: event.target.value });
   };
 
   return (
@@ -63,6 +60,7 @@ const AssignChannel = ({ channelId, onClose, onChannelAdded }: Props) => {
               <label htmlFor="">Select licensor</label>
               <input
                 type="text"
+                onChange={handleUpdate}
                 placeholder={`Select licensor `}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg "
               />
@@ -71,8 +69,7 @@ const AssignChannel = ({ channelId, onClose, onChannelAdded }: Props) => {
               <label htmlFor="">Channel ID</label>
               <input
                 type="text"
-                value={channelId}
-                readOnly
+                onChange={handleUpdate}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg "
               />
             </div>{" "}
@@ -81,8 +78,7 @@ const AssignChannel = ({ channelId, onClose, onChannelAdded }: Props) => {
               <input
                 type="text"
                 placeholder={`Channel name `}
-                value={channelName}
-                onChange={(e) => setChannelName(e.target.value)}
+                onChange={handleUpdate}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
               />
             </div>
@@ -93,8 +89,7 @@ const AssignChannel = ({ channelId, onClose, onChannelAdded }: Props) => {
               <input
                 type="email"
                 placeholder={`Email `}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleUpdate}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg "
               />
             </div>
@@ -103,8 +98,7 @@ const AssignChannel = ({ channelId, onClose, onChannelAdded }: Props) => {
               <input
                 type="number"
                 placeholder={`Commission `}
-                value={commission}
-                onChange={(e) => setCommission(e.target.value)}
+                onChange={handleUpdate}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg "
               />
             </div>{" "}

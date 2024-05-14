@@ -30,9 +30,6 @@ function UnassignedChannel() {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const handleChannelAdded = (newChannel: Channel) => {
-    setChannels((prevChannels) => [...prevChannels, newChannel]);
-  };
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
@@ -59,12 +56,11 @@ function UnassignedChannel() {
             Back
           </Link>
         </div>
-        <button
-          onClick={() => setOpen(true)}
+        <Link to="/create-channel"
           className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
         >
           Create Channel
-        </button>
+        </Link>
       </div>
       <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
         <div className="relative pl-8 pb-5 pt-8 pr-8 ">
@@ -162,7 +158,6 @@ function UnassignedChannel() {
           <AssignChannel
             channelId={selectedChannelId}
             onClose={() => setOpen(false)}
-            onChannelAdded={handleChannelAdded}
           />
         </Modal>
       </div>

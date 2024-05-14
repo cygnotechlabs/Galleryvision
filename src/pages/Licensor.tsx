@@ -14,14 +14,14 @@ interface Licensor {
 function Licensor({}: Props) {
   return (
     <>
-      <div className=" bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+      <div className=" bg-gray-100 pl-[34px] pt-[20px] ">
         <div className="flex justify-between items-center pl-[34px]">
           <div>
             <h1 className="text-xl font-bold">Licensors</h1>
             <h1 className="pt-2">List of licensors created in the system</h1>
           </div>
           <Link
-            to="/licensordetails"
+            to="/create-licensor"
             className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
           >
             Create licensor

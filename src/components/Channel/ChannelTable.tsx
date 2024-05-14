@@ -1,21 +1,49 @@
-import { useState } from "react";
+import axios from "axios";
+import { Key, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
 import { Edit, Eye, Filter } from "../icons/icon";
 import EditChannel from "./EditChannel";
-import { useNavigate } from "react-router-dom";
 
-type Props = {
-  channels: any[]; // Add channels property to the Props type
-};
+type Props = {};
+interface ChannelType {
+  [x: string]: any;
+  channelId: string;
+  channelName: string;
+  commission: string;
+  email: string;
+  logo: string;
+  licensorName: string;
+}
 
-function ChannelTable({ channels }: Props) {
+function ChannelTable({}: Props) {
   const [openEdit, setOpenEdit] = useState(false);
+  const [editChannelId, setEditChannelId] = useState();
+  const [channels, setChannels] = useState([
+    {
+      channelId: "",
+      channelName: "",
+      commission: "",
+      email: "",
+      logo: "",
+      licensorName: "",
+    },
+  ]);
 
-  const navigate = useNavigate(); // useNavigate hook
+  useEffect(() => {
+    const fetchChannels = () => {
+      axios
+        .get("http://localhost:3000/get-linked-channel")
+        .then((response) => {
+          setChannels(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching channels:", error);
+        });
+    };
+    fetchChannels();
+  }, [openEdit]);
 
-  const handleClick = () => {
-    navigate("/channel-view"); // Navigate to "/channel-view" route
-  };
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
@@ -60,43 +88,47 @@ function ChannelTable({ channels }: Props) {
             </tr>
           </thead>
           <tbody>
-            {channels.map((channel, index) => (
-              <tr key={index} className="bg-white">
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.logo}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.channelName}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.lisencor}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.email}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {channel.commission}
-                </td>
-                <td className="px-4 py-1  border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <button
-                      className="flex gap-2 bg-red-100 hover:bg-pink-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-red-500 rounded-lg"
-                      onClick={handleClick} // Add the onClick event handler
-                    >
-                      <Eye /> {/* Render the Eye icon */}
-                      View
-                    </button>
-                    <button
-                      onClick={() => setOpenEdit(true)}
-                      className="flex bg-gray-300 gap-2 hover:bg-gray-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-black rounded-lg"
-                    >
-                      <Edit />
-                      Edit
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {channels.map(
+              (channel: ChannelType, index: Key | null | undefined) => (
+                <tr key={index} className="bg-white">
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {channel.logo}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {channel.channelName}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {channel.licensorName}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {channel.email}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200 text-sm">
+                    {channel.commission}
+                  </td>
+                  <td className="px-4 py-1  border-gray-200">
+                    <div className="flex items-center space-x-2">
+                      <Link to={`/channel-view/${channel._id}`}>
+                        <button className="flex gap-2 bg-red-100 hover:bg-pink-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-red-500 rounded-lg">
+                          <Eye />
+                          View
+                        </button>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setOpenEdit(true);
+                          setEditChannelId(channel._id);
+                        }}
+                        className="flex bg-gray-300 gap-2 hover:bg-gray-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-black rounded-lg"
+                      >
+                        <Edit />
+                        Edit
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
@@ -156,8 +188,18 @@ function ChannelTable({ channels }: Props) {
           </ul>
         </nav>
       </div>
-      <Modal onClose={() => setOpenEdit(false)} open={openEdit}>
-        <EditChannel onClose={() => setOpenEdit(false)} />
+      <Modal
+        onClose={() => {
+          setOpenEdit(false);
+        }}
+        open={openEdit}
+      >
+        <EditChannel
+          channelId={editChannelId}
+          onClose={() => {
+            setOpenEdit(false);
+          }}
+        />
       </Modal>
     </div>
   );
