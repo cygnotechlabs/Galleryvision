@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
 import { Edit, Filter } from "../icons/icon";
 import AssignChannel from "./AssignChannel";
+import axios from "axios";
 
 type Channel = {
   _id: string;
@@ -18,10 +19,18 @@ function UnassignedChannel() {
   const [selectedChannelId, setSelectedChannelId] = useState<string>("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/get-unlinked-channel")
-      .then((response) => response.json())
-      .then((data) => setChannels(data))
-      .catch((error) => console.error("Error fetching channels:", error));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/get-unlinked-channel"
+        ); // Await the axios request
+        setChannels(response.data); // Set the data in the state
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const indexOfLastRow = currentPage * rowsPerPage;
@@ -29,7 +38,6 @@ function UnassignedChannel() {
   const currentRows = channels.slice(indexOfFirstRow, indexOfLastRow);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
@@ -56,7 +64,8 @@ function UnassignedChannel() {
             Back
           </Link>
         </div>
-        <Link to="/create-channel"
+        <Link
+          to="/create-channel"
           className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
         >
           Create Channel

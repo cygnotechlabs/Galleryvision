@@ -25,6 +25,8 @@ const CreateMusic: React.FC<Props> = () => {
 
   const createMusic = async () => {
     try {
+      console.log(musicData);
+
       const response = await axios.post(
         "http://localhost:3001/add-music",
         musicData

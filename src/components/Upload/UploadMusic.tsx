@@ -7,8 +7,9 @@ const UploadMusic: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
 
-  const notify = () =>
-    toast("File uploaded successfully!", {});
+  const notify = () => {
+    toast.success("File uploaded successfully!", { position: "top-center" });
+  };
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -37,7 +38,7 @@ const UploadMusic: React.FC = () => {
         },
       });
       console.log("File uploaded successfully!");
-      notify(); // Notify after successful upload
+      notify();
     } catch (error) {
       console.error("Error uploading file:", error);
       // You might want to handle this error, e.g., display a message to the user
@@ -98,8 +99,7 @@ const UploadMusic: React.FC = () => {
           {uploading ? "Uploading..." : "Upload file"}
         </button>
       </div>
-      <ToastContainer theme="colored" />{" "}
-      {/* Place ToastContainer outside of the button */}
+      <ToastContainer theme="colored" />
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Close } from "../icons/icon";
 import axios from "axios";
+import { useState } from "react";
+import { Close } from "../icons/icon";
 
 type Music = {
   _id: string;
@@ -19,10 +19,6 @@ type Props = {
 
 const EditMusic = ({ onClose, music }: Props) => {
   const [formData, setFormData] = useState<Music>(music);
-
-  useEffect(() => {
-    // This useEffect is empty since we don't want it to run on every re-render
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

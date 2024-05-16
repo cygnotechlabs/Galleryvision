@@ -1,30 +1,55 @@
 import { Block, Close, Email, Flag } from "../icons/icon";
 
-type Props = {};
-
-const LicensorView = (props: Props) => {
+type Props = {
+  licensor: Licensor;
+  onClose: () => void;
+};
+interface Licensor {
+  _id: string;
+  companyName: string;
+  companyEmail: string;
+  companyLogo: string;
+  licenserName: string;
+  licenserEmail: string;
+  licenserAddress: string;
+  licenserPhno: string;
+  bankAccNum: string;
+  ifsc_iban: string;
+  currency: string;
+}
+const LicensorView = ({ licensor, onClose }: Props) => {
+  console.log(licensor.companyLogo);
+  
   return (
     <div className="w-[1135px] h-[849px] bg-white rounded-xl ">
       <div className="flex px-8 pt-8 items-center justify-between ">
         <p className="text-base font-bold">Licensor Details</p>
-        <Close />
+        <button onClick={onClose}>
+          <Close />
+        </button>
       </div>
       <div className="mx-8 mt-4 w-[1071px] px-6 py-6 h-[181px] bg-gray-100 rounded-lg flex">
-        <div className="flex justify-center items-center w-[153px] h-[133px]">
-          logo
+        <div className="flex justify-center items-center w-[153px] h-[133px] pr-2 py-2">
+          {licensor.companyLogo && (
+            <img
+              src={licensor.companyLogo} // Set the src attribute to the base64 string
+              alt="Company Logo"
+              className="w-[150px] h-[150px] object-contain"
+            />
+          )}
         </div>
         <div className="w-[837px] h-[133px]">
-          <h1 className="text-lg font-bold">T-Series</h1>
+          <h1 className="text-lg font-bold">{licensor.licenserName}</h1>
           <div className="flex w-[600px] h-[91px] mt-5 ">
             <div className="flex flex-col gap-1 pr-16 border-gray-500 border-r  ">
               <Block />
               <p className="text-sm text-gray-500">Licensor ID</p>
-              <p className="text-sm font-bold">LD0001</p>
+              <p className="text-sm font-bold">{licensor._id}</p>
             </div>
             <div className="flex flex-col gap-1 px-16 border-gray-500 border-r">
               <Email />
               <p className="text-sm text-gray-500">Email</p>
-              <p className="text-sm font-bold">T-Series@mail.com</p>
+              <p className="text-sm font-bold">{licensor.licenserEmail}</p>
             </div>
             <div className="flex flex-col gap-1 pl-16">
               <Flag />
@@ -37,27 +62,25 @@ const LicensorView = (props: Props) => {
       <div className="mx-8 mt-4 w-[1071px] px-6 py-6 h-[131px] bg-gray-100 rounded-lg">
         <p className="text-base font-bold">Contact Details</p>
         <div className="flex items-center mt-4">
-          <div className="pr-6 ">John Doe</div>
+          <div className="pr-6 ">{licensor.licenserName}</div>
           <div className="px-6 border-gray-500 border-x">
             <p className="text-base text-gray-500">Email</p>
-            <p className="text-sm font-medium">T-Series@mail.com</p>
+            <p className="text-sm font-medium">{licensor.companyEmail}</p>
           </div>
           <div className="px-6 border-r border-gray-500">
             <p className="text-base text-gray-500">Phone</p>
-            <p className="text-sm font-medium">(225) 555-0118</p>
+            <p className="text-sm font-medium">{licensor.licenserPhno}</p>
           </div>
           <div className="pl-6">
             <p className="text-base text-gray-500">Address</p>
-            <p className="text-sm font-medium">
-              8502 Preston Rd. Inglewood, Maine 98380
-            </p>
+            <p className="text-sm font-medium">{licensor.licenserAddress}</p>
           </div>
         </div>
       </div>
       <div className="mx-8 mt-4 w-[1071px] px-6 py-6 h-[131px] bg-gray-100 rounded-lg">
         <p className="text-base font-bold">Bank Details</p>
         <div className="flex items-center mt-4">
-          <div className="pr-6 ">
+          {/* <div className="pr-6 ">
             <p className="text-base text-gray-500">Bank name</p>
             <p className="text-sm font-medium">ICICI Bank</p>
           </div>
@@ -68,26 +91,24 @@ const LicensorView = (props: Props) => {
           <div className="px-6 border-r border-gray-500">
             <p className="text-base text-gray-500">Acc holder name</p>
             <p className="text-sm font-medium">Kristin</p>
-          </div>
+          </div> */}
           <div className="px-6 border-r border-gray-500">
             <p className="text-base text-gray-500">Acc number</p>
-            <p className="text-sm font-medium">xxxx xxxx xxxx xxxx</p>
+            <p className="text-sm font-medium">{licensor.bankAccNum}</p>
           </div>
           <div className="px-6 border-r border-gray-500">
             <p className="text-base text-gray-500">IFSC code</p>
-            <p className="text-sm font-medium">xxxx xxxx xxxx xxxx</p>
+            <p className="text-sm font-medium">{licensor.ifsc_iban}</p>
           </div>
           <div className="pl-6">
             <p className="text-base text-gray-500">Preferred currency</p>
-            <p className="text-sm font-medium">INR</p>
+            <p className="text-sm font-medium">{licensor.currency}</p>
           </div>
         </div>
       </div>
       <div className="mx-8 mt-4 w-[1071px] px-6 py-6 h-[246px] bg-gray-100 rounded-lg">
         <p className="text-base font-bold">Company Details</p>
-        <div className="flex items-center mt-4">
-          
-        </div>
+        <div className="flex items-center mt-4"></div>
       </div>
     </div>
   );

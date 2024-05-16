@@ -14,6 +14,7 @@ import UnassignedMusic from "./components/Music/UnassignedMusic";
 import MusicView from "./components/Music/MusicView";
 import CreateMusic from "./components/Music/CreateMusic";
 import Dashboard from "./pages/Dashboard";
+import EditLicensor from "./components/Licensor/EditLicensor";
 
 const AppRoutes: any = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes: any = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/licensor" element={<Licensor />} />
         <Route path="/create-licensor" element={<CreateLicensor />} />
+        <Route path="//update-licensor/:id" element={<EditLicensor />} />
         <Route path="/channel" element={<Channel />} />
         <Route path="/create-channel" element={<CreateChannel />} />
         <Route path="/channel-view/:id" element={<ChannelView />} />

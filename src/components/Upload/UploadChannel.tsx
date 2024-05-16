@@ -1,3 +1,5 @@
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React, { useRef, useState } from "react";
 import axios from "axios";
 
@@ -5,29 +7,42 @@ const UploadChannelCSV: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
 
+  const notify = () => {
+    toast.success("File uploaded successfully!", { position: "top-center" });
+  };
+
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
   };
 
   const handleSubmit = async () => {
-    if (!fileInputRef.current || !fileInputRef.current.files || fileInputRef.current.files.length === 0) {
+    if (
+      !fileInputRef.current ||
+      !fileInputRef.current.files ||
+      fileInputRef.current.files.length === 0
+    ) {
       console.error("No file selected.");
       return;
     }
 
     const file = fileInputRef.current.files[0];
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     try {
       setUploading(true);
       // Change the URL to your backend server endpoint
-      await axios.post("http://localhost:5000/channel/importChannel", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+      await axios.post(
+        "http://localhost:5000/channel/importChannel",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
       console.log("File uploaded successfully!");
+      notify();
     } catch (error) {
       console.error("Error uploading file:", error);
       // You might want to handle this error, e.g., display a message to the user
@@ -85,9 +100,10 @@ const UploadChannelCSV: React.FC = () => {
           onClick={handleSubmit}
           disabled={uploading}
         >
-          {uploading ? 'Uploading...' : 'Upload file'}
+          {uploading ? "Uploading..." : "Upload file"}
         </button>
       </div>
+      <ToastContainer theme="colored" />
     </div>
   );
 };

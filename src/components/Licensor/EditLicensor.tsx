@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Back, HomeXl } from "../icons/icon";
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
@@ -14,85 +14,88 @@ interface FormData {
   companyLogo: string;
   licenserName: string;
   licenserEmail: string;
-  licenserPhno: string;
   licenserAddress: string;
+  licenserPhno: string;
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
 }
 
-const CreateLicensor: React.FC<Props> = () => {
+const EditLicensor: React.FC<Props> = () => {
+  const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<FormData>({
     companyName: "",
     companyEmail: "",
     companyLogo: "",
     licenserName: "",
     licenserEmail: "",
-    licenserPhno: "",
     licenserAddress: "",
+    licenserPhno: "",
     bankAccNum: "",
     ifsc_iban: "",
     currency: "",
   });
 
   const notify = () => {
-    toast.success("Licensor created successfully!", { position: "top-center" });
+    toast.success("Licesor edited successfully!", { position: "top-center" });
   };
   const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/view-licensor/${id}`
+        );
+        setFormData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          companyLogo: reader.result?.toString() || "",
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log("add licensor", formData);
-      const response = await axios.post(
-        "http://localhost:3000/add-licensor",
+      const response = await axios.put(
+        `http://localhost:3000/update-licensor/${id}`,
         formData
       );
       if (response.status === 200) {
-        console.log("Data submitted successfully!");
-        notify();
+        console.log("Data updated successfully!");
         setTimeout(() => {
           navigate("/licensor");
         }, 2000);
+        notify();
       } else {
-        console.error("Failed to submit data.");
-        notify();
-        setTimeout(() => {
-          navigate("/licensor");
-        }, 2000);
+        console.error("Failed to update data.");
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        // Log the response data for more information
-        console.error("Server responded with:", error.response.data);
-        alert(`Error: ${error.response.data.message || "Conflict occurred"}`);
-      } else {
-        console.error("Error:", error);
-      }
-    }
-  };
-  const handleImageChange = (e: any) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      // After reading the file, set the base64 data to state
-      setFormData({
-        ...formData,
-        companyLogo: reader.result ? reader.result.toString() : "",
-      });
-    };
-
-    if (file) {
-      // Read the file as data URL (base64)
-      reader.readAsDataURL(file);
+      console.error("Error:", error);
     }
   };
 
@@ -112,7 +115,7 @@ const CreateLicensor: React.FC<Props> = () => {
 
         <div className="flex flex-col mr-[34px] bg-white w-[95%] rounded-2xl h-[82%] m-[34px] my-[20px] pb-6">
           <h2 className="text-xl font-bold pl-[32px] pt-[20px]">
-            Create Licensor
+            Edit Licensor
           </h2>
           <div className="flex pl-[32px] pt-[20px] items-center gap-2">
             <p className="flex items-center justify-center bg-red-700 w-[20px] h-[20px] text-xs px-2 rounded-full text-white">
@@ -312,15 +315,14 @@ const CreateLicensor: React.FC<Props> = () => {
                   <label htmlFor="" className="text-sm font-semibold">
                     Currency
                   </label>
-                  <select
+                  <input
+                    type="text"
+                    placeholder="Enter currency"
                     name="currency"
                     value={formData.currency}
                     onChange={handleChange}
                     className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                  >
-                    <option value="INR">INR</option>
-                    <option value="USD">USD</option>
-                  </select>
+                  />
                 </div>
               </div>
             </div>
@@ -340,4 +342,4 @@ const CreateLicensor: React.FC<Props> = () => {
   );
 };
 
-export default CreateLicensor;
+export default EditLicensor;

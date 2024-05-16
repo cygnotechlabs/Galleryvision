@@ -25,6 +25,8 @@ const CreateChannel = ({}: Props) => {
 
   const createChannel = async () => {
     try {
+      
+      
       // POST request using Axios
       const response = await axios.post(
         "http://localhost:3000/add-channel",
