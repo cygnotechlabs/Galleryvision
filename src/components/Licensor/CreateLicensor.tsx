@@ -12,10 +12,10 @@ interface FormData {
   companyName: string;
   companyEmail: string;
   companyLogo: string;
-  licenserName: string;
-  licenserEmail: string;
-  licenserPhno: string;
-  licenserAddress: string;
+  licensorName: string;
+  licensorEmail: string;
+  licensorPhno: string;
+  licensorAddress: string;
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
@@ -26,10 +26,10 @@ const CreateLicensor: React.FC<Props> = () => {
     companyName: "",
     companyEmail: "",
     companyLogo: "",
-    licenserName: "",
-    licenserEmail: "",
-    licenserPhno: "",
-    licenserAddress: "",
+    licensorName: "",
+    licensorEmail: "",
+    licensorPhno: "",
+    licensorAddress: "",
     bankAccNum: "",
     ifsc_iban: "",
     currency: "",
@@ -192,13 +192,13 @@ const CreateLicensor: React.FC<Props> = () => {
             <div className="flex items-center gap-6">
               <div className="flex flex-col gap-2 w-[45%]">
                 <label htmlFor="" className="text-sm font-semibold">
-                  Licenser Name
+                  Licensor Name
                 </label>
                 <input
                   type="text"
                   placeholder="Full name"
-                  name="licenserName"
-                  value={formData.licenserName}
+                  name="licensorName"
+                  value={formData.licensorName}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -210,8 +210,8 @@ const CreateLicensor: React.FC<Props> = () => {
                 <input
                   type="email"
                   placeholder="Enter email"
-                  name="licenserEmail"
-                  value={formData.licenserEmail}
+                  name="licensorEmail"
+                  value={formData.licensorEmail}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -225,8 +225,8 @@ const CreateLicensor: React.FC<Props> = () => {
                 <input
                   type="text"
                   placeholder="Enter address"
-                  name="licenserAddress"
-                  value={formData.licenserAddress}
+                  name="licensorAddress"
+                  value={formData.licensorAddress}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -238,8 +238,8 @@ const CreateLicensor: React.FC<Props> = () => {
                 <input
                   type="text"
                   placeholder="Phone Number"
-                  name="licenserPhno"
-                  value={formData.licenserPhno}
+                  name="licensorPhno"
+                  value={formData.licensorPhno}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />

@@ -2,71 +2,78 @@ import axios from "axios";
 import { Key, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter } from "../icons/icon";
+import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import EditChannel from "./EditChannel";
+import { DeleteModal } from "../../UI/DeleteModal";
 
 type Props = {};
 interface ChannelType {
-  [x: string]: any;
+  _id: string;
   channelId: string;
   channelName: string;
   commission: string;
-  email: string;
-  logo: string;
+  channelEmail: string;
   licensorName: string;
+  channelLogo: string;
 }
 
 function ChannelTable({}: Props) {
   const [openEdit, setOpenEdit] = useState(false);
-  const [editChannelId, setEditChannelId] = useState();
-  const [channels, setChannels] = useState([
-    {
-      channelId: "",
-      channelName: "",
-      commission: "",
-      email: "",
-      logo: "",
-      licensorName: "",
-    },
-  ]);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [editChannelId, setEditChannelId] = useState<string | undefined>();
+  const [channelDeleteId, setChannelDeleteId] = useState<string | undefined>();
+  const [channels, setChannels] = useState<ChannelType[]>([]);
 
   useEffect(() => {
-    const fetchChannels = () => {
-      axios
-        .get("http://localhost:3000/get-linked-channel")
-        .then((response) => {
-          setChannels(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching channels:", error);
-        });
-    };
     fetchChannels();
-  }, [openEdit]);
+  }, []);
+
+  const fetchChannels = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/get-linked-channel"
+      );
+      setChannels(response.data);
+    } catch (error) {
+      console.error("Error fetching channels:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!channelDeleteId) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:3000/remove-channel/${channelDeleteId}`
+      );
+      setOpenDelete(false);
+    } catch (error) {
+      console.error("Error deleting channel:", error);
+    }
+    fetchChannels();
+  };
+
+  function handleSearch(): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
         <div className="flex justify-between text-sm">
-          <input
-            type="text"
-            placeholder="             Search"
-            className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="absolute left-12 top-[53px] transform -translate-y-1/2 w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          <div className="flex">
+            <input
+              type="text"
+              placeholder="Search"
+              className="border border-gray-300 rounded-s-md px-4 w-[566px] h-[42px] pr-[40px]"
             />
-          </svg>
+            <button
+              onClick={handleSearch}
+              className="bg-black text-white px-2 rounded-e-2xl"
+            >
+              <Search />
+            </button>
+          </div>
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
             Filter
             <span>
@@ -91,25 +98,31 @@ function ChannelTable({}: Props) {
             {channels.map(
               (channel: ChannelType, index: Key | null | undefined) => (
                 <tr key={index} className="bg-white">
-                  <td className="px-4 py-1  border-gray-200 text-sm">
-                    {channel.logo}
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {channel.channelLogo && (
+                      <img
+                        src={channel.channelLogo}
+                        alt="Company Logo"
+                        className="mx-auto w-12 object-contain rounded-full"
+                      />
+                    )}
                   </td>
-                  <td className="px-4 py-1  border-gray-200 text-sm">
+                  <td className="px-4 py-1 border-gray-200 text-sm">
                     {channel.channelName}
                   </td>
-                  <td className="px-4 py-1  border-gray-200 text-sm">
+                  <td className="px-4 py-1 border-gray-200 text-sm">
                     {channel.licensorName}
                   </td>
-                  <td className="px-4 py-1  border-gray-200 text-sm">
-                    {channel.email}
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {channel.channelEmail}
                   </td>
-                  <td className="px-4 py-1  border-gray-200 text-sm">
+                  <td className="px-4 py-1 border-gray-200 text-sm">
                     {channel.commission}
                   </td>
-                  <td className="px-4 py-1  border-gray-200">
+                  <td className="px-4 py-1 border-gray-200">
                     <div className="flex items-center space-x-2">
                       <Link to={`/channel-view/${channel._id}`}>
-                        <button className="flex gap-2 bg-red-100 hover:bg-pink-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-red-500 rounded-lg">
+                        <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
                           <Eye />
                           View
                         </button>
@@ -119,10 +132,19 @@ function ChannelTable({}: Props) {
                           setOpenEdit(true);
                           setEditChannelId(channel._id);
                         }}
-                        className="flex bg-gray-300 gap-2 hover:bg-gray-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-black rounded-lg"
+                        className="flex gap-2 bg-gray-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
                       >
                         <Edit />
                         Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setOpenDelete(true);
+                          setChannelDeleteId(channel._id);
+                        }}
+                        className="flex gap-2 bg-red-400 hover:bg-gray-400 text-white hover:text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
+                      >
+                        <Trash />
                       </button>
                     </div>
                   </td>
@@ -188,6 +210,7 @@ function ChannelTable({}: Props) {
           </ul>
         </nav>
       </div>
+
       <Modal
         onClose={() => {
           setOpenEdit(false);
@@ -199,6 +222,17 @@ function ChannelTable({}: Props) {
           onClose={() => {
             setOpenEdit(false);
           }}
+        />
+      </Modal>
+      <Modal
+        onClose={() => {
+          setOpenDelete(false);
+        }}
+        open={openDelete}
+      >
+        <DeleteModal
+          onClose={() => setOpenDelete(false)}
+          handleDelete={handleDelete}
         />
       </Modal>
     </div>

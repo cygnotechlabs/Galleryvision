@@ -1,36 +1,94 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
 
 type Props = {
-  channelId: string;
+  channel: Channel;
   onClose: () => void;
 };
 
-const AssignChannel = ({ channelId, onClose }: Props) => {
-  const [updatedData, setUpdatedData] = useState([
-    {
-      _id: "",
-      channelId: "",
-      channelName: "",
-      commission: "",
-      email: "",
-      licensorName: "",
-      logo: "",
-      __v: 0,
-    },
-  ]);
+type Channel = {
+  _id: string;
+  channelId: string;
+  channelName: string;
+  commission: string;
+  channelEmail: string;
+  licensorName: string;
+  licensorId: string;
+  channelLogo: string;
+};
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+type Licensor = {
+  _id: string;
+  licensorName: string;
+};
+
+const AssignChannel = ({ channel, onClose }: Props) => {
+  const [licensors, setLicensors] = useState<Licensor[]>([]);
+  const [updatedData, setUpdatedData] = useState<Channel>(channel);
+
+  useEffect(() => {
+    const getLicensorName = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/get-licensor");
+        setLicensors(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getLicensorName();
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    axios
-      .put(`http://localhost:3000/update-channel/${channelId}`, updatedData)
-      .then((res) => setUpdatedData(res.data))
-      .catch((err) => console.log(err));
-    onClose();
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/assign-channel`,
+        updatedData
+      );
+      setUpdatedData(response.data);
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   };
-  const handleUpdate = (event: { target: { name: any; value: any } }) => {
-    setUpdatedData({ ...updatedData, [event.target.name]: event.target.value });
+
+  const handleUpdate = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = event.target;
+    setUpdatedData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleLicensorChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedLicensor = licensors.find(
+      (licensor) => licensor.licensorName === event.target.value
+    );
+    if (selectedLicensor) {
+      setUpdatedData((prevData) => ({
+        ...prevData,
+        licensorName: selectedLicensor.licensorName,
+        licensorId: selectedLicensor._id,
+      }));
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setUpdatedData((prevData) => ({
+        ...prevData,
+        channelLogo: reader.result ? reader.result.toString() : "",
+      }));
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -49,64 +107,98 @@ const AssignChannel = ({ channelId, onClose }: Props) => {
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>logo</div>
                 <div className="text-sm font-medium">
-                  Drop your logo here, or browse
+                  Drop your logo here, or{" "}
+                  <label className="cursor-pointer text-blue-500">
+                    browse
+                    <input
+                      type="file"
+                      accept="image/jpg, image/png"
+                      name="channelLogo"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
-                <div className="text-xs">Supports, JPG, PNG</div>
+                <div className="text-xs">Supports, JPG, PNG</div>{" "}
+                {updatedData.channelLogo && (
+                  <div className="w-16 h-16">
+                    <img
+                      src={updatedData.channelLogo}
+                      alt="Company Logo"
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
-          <div className=" py-6 flex justify-between">
+          <div className="py-6 flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Select licensor</label>
+              <label htmlFor="licensorName">Select licensor</label>
+              <select
+                name="licensorName"
+                onChange={handleLicensorChange}
+                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                value={updatedData.licensorName}
+              >
+                <option value="">Select Licensor</option>
+                {licensors.map((licensor, index) => (
+                  <option key={index} value={licensor.licensorName}>
+                    {licensor.licensorName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-4">
+              <label htmlFor="channelId">Channel ID</label>
               <input
                 type="text"
-                onChange={handleUpdate}
-                placeholder={`Select licensor `}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg "
+                name="channelId"
+                placeholder="Channel ID"
+                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                value={updatedData.channelId}
               />
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Channel ID</label>
+              <label htmlFor="channelName">Channel name</label>
               <input
                 type="text"
-                onChange={handleUpdate}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg "
-              />
-            </div>{" "}
-            <div className="flex flex-col gap-4">
-              <label htmlFor="">Channel name</label>
-              <input
-                type="text"
-                placeholder={`Channel name `}
+                name="channelName"
+                placeholder="Channel name"
                 onChange={handleUpdate}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                value={updatedData.channelName}
               />
             </div>
-          </div>{" "}
+          </div>
           <div className="flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Email</label>
+              <label htmlFor="channelEmail">Email</label>
               <input
                 type="email"
-                placeholder={`Email `}
+                name="channelEmail"
+                placeholder="Email"
                 onChange={handleUpdate}
-                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+                value={updatedData.channelEmail}
               />
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Commission (%)</label>
+              <label htmlFor="commission">Commission (%)</label>
               <input
                 type="number"
-                placeholder={`Commission `}
+                name="commission"
+                placeholder="Commission"
                 onChange={handleUpdate}
-                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+                value={updatedData.commission}
               />
-            </div>{" "}
+            </div>
           </div>
           <div className="flex justify-end pt-5">
             <button
               type="submit"
-              className=" bg-black text-white font-bold px-2 py-2 rounded-lg"
+              className="bg-black text-white font-bold px-2 py-2 rounded-lg"
             >
               Add & Save
             </button>

@@ -7,11 +7,14 @@ type Props = {};
 const CreateMusic: React.FC<Props> = () => {
   const [message, setMessage] = useState<string>("");
   const [musicData, setMusicData] = useState({
-    licensor: "",
+    _id: "",
     licensorId: "",
+    musicId: "",
     licensorName: "",
-    licensorEmail: "",
+    musicName: "",
+    musicEmail: "",
     commision: "",
+    musicLogo: "",
   });
 
   const history = useNavigate();
@@ -33,11 +36,14 @@ const CreateMusic: React.FC<Props> = () => {
       );
       setMessage(response.data.message);
       setMusicData({
-        licensor: "",
+        _id: "",
         licensorId: "",
+        musicId: "",
         licensorName: "",
-        licensorEmail: "",
+        musicName: "",
+        musicEmail: "",
         commision: "",
+        musicLogo: "",
       });
       setTimeout(() => {
         history("/music");
@@ -100,7 +106,7 @@ const CreateMusic: React.FC<Props> = () => {
               <input
                 type="text"
                 name="licensor"
-                value={musicData.licensor}
+                value={musicData.musicName}
                 onChange={handleChange}
                 placeholder={`Enter licensor name`}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "

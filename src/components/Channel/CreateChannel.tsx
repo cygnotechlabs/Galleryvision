@@ -1,32 +1,64 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { Back } from "../icons/icon";
 
 type Props = {};
+type Licensor = {
+  _id: string;
+  licensorName: string;
+};
 
 const CreateChannel = ({}: Props) => {
+  const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     channelId: "",
     channelName: "",
     commission: "",
-    email: "",
-    logo: "",
+    channelEmail: "",
     licensorName: "",
+    licensorId: "",
+    channelLogo: "",
   });
 
+  useEffect(() => {
+    const getLicensorName = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/get-licensor");
+        setLicensors(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    getLicensorName();
+  }, []);
   const history = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    setFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [name]: value };
+
+      if (name === "licensorName") {
+        const selectedLicensor = licensors.find(
+          (licensor) => licensor.licensorName === value
+        );
+        updatedFormData.licensorId = selectedLicensor
+          ? selectedLicensor._id
+          : "";
+      }
+
+      return updatedFormData;
+    });
   };
 
   const createChannel = async () => {
     try {
-      
-      
       // POST request using Axios
       const response = await axios.post(
         "http://localhost:3000/add-channel",
@@ -41,9 +73,10 @@ const CreateChannel = ({}: Props) => {
         channelId: "",
         channelName: "",
         commission: "",
-        email: "",
-        logo: "",
+        channelEmail: "",
         licensorName: "",
+        licensorId: "",
+        channelLogo: "",
       });
 
       // Redirect to "/channel" after 1 second
@@ -61,6 +94,24 @@ const CreateChannel = ({}: Props) => {
     }
   };
 
+  const handleImageChange = (e: any) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      // After reading the file, set the base64 data to state
+      setFormData({
+        ...formData,
+        channelLogo: reader.result ? reader.result.toString() : "",
+      });
+    };
+
+    if (file) {
+      // Read the file as data URL (base64)
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
       <div className="flex justify-between items-center pl-[34px]">
@@ -69,20 +120,7 @@ const CreateChannel = ({}: Props) => {
             to="/unassigned-channels"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
+            <Back />
             Back
           </Link>
         </div>
@@ -98,23 +136,47 @@ const CreateChannel = ({}: Props) => {
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>logo</div>
                 <div className="text-sm font-medium">
-                  Drop your logo here, or browse
+                  Drop your logo here, or{" "}
+                  <label className="cursor-pointer text-blue-500">
+                    browse
+                    <input
+                      type="file"
+                      accept="image/jpg, image/png"
+                      name="companyLogo"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
                 <div className="text-xs">Supports, JPG, PNG</div>
+                {formData.channelLogo && (
+                  <div className="w-16 h-16">
+                    <img
+                      src={formData.channelLogo}
+                      alt="Company Logo"
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
           <div className=" py-6 flex justify-between">
             <div className="flex flex-col gap-4">
               <label htmlFor="">Select licensor</label>
-              <input
-                type="text"
+              <select
                 name="licensorName"
                 value={formData.licensorName}
                 onChange={handleChange}
-                placeholder={`Select licensor `}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
-              />
+              >
+                <option value="">Select Licensor</option>
+                {licensors.map((licensor, index) => (
+                  <option key={index} value={licensor.licensorName}>
+                    {licensor.licensorName}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="">Channel ID</label>
@@ -144,8 +206,8 @@ const CreateChannel = ({}: Props) => {
               <label htmlFor="">Email</label>
               <input
                 type="email"
-                name="email"
-                value={formData.email}
+                name="channelEmail"
+                value={formData.channelEmail}
                 onChange={handleChange}
                 placeholder={`Enter email `}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
@@ -172,7 +234,7 @@ const CreateChannel = ({}: Props) => {
             </button>
           </div>
         </div>
-        {/* message of sussecs or error */}
+        {/* message of success or error */}
         <div className="px-3 py-3">{message}</div>
       </div>
     </div>

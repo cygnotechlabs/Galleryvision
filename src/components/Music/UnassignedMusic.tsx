@@ -8,11 +8,12 @@ import axios from "axios";
 type Music = {
   _id: string;
   licensorId: string;
+  musicId: string;
   licensorName: string;
+  musicName: string;
   licensor: string;
-  licensorEmail: string;
   commision: string;
-  ytRevenue: string;
+  musicLogo: string;
 };
 
 function UnassignedMusic() {
@@ -21,22 +22,24 @@ function UnassignedMusic() {
   const rowsPerPage = 10;
   const [selectedMusic, setSelectedMusic] = useState<Music>({
     _id: "",
-    licensorName: "",
     licensorId: "",
-    licensorEmail: "",
-    commision: "",
-    ytRevenue: "",
+    musicId: "",
+    licensorName: "",
+    musicName: "",
     licensor: "",
+    commision: "",
+    musicLogo: "",
   });
   const [musics, setMusics] = useState<Music[]>([
     {
       _id: "",
-      licensorName: "",
       licensorId: "",
+      musicId: "",
+      licensorName: "",
+      musicName: "",
       licensor: "",
-      licensorEmail: "",
       commision: "",
-      ytRevenue: "",
+      musicLogo: "",
     },
   ]);
 
@@ -128,7 +131,7 @@ function UnassignedMusic() {
             <thead>
               <tr className="bg-gray-200">
                 <th className="px-4 py-1 text-left text-sm">Music ID</th>
-                <th className="px-4 py-1 text-left text-sm">Licensor Email</th>
+                <th className="px-4 py-1 text-left text-sm">Music Name</th>
                 <th className="px-4 py-1 text-left text-sm">Actions</th>
               </tr>
             </thead>
@@ -136,10 +139,10 @@ function UnassignedMusic() {
               {currentMusicData.map((music, index) => (
                 <tr key={index} className="bg-white">
                   <td className="px-4 py-1  border-gray-200 text-sm">
-                    {music.licensorId}
+                    {music.musicId}
                   </td>
                   <td className="px-4 py-1  border-gray-200 text-sm">
-                    {music.licensorEmail}
+                    {music.licensor}
                   </td>
                   <td className="px-4 py-1  border-gray-200">
                     <div className="flex items-center space-x-2">

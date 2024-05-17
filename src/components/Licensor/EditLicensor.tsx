@@ -12,10 +12,10 @@ interface FormData {
   companyName: string;
   companyEmail: string;
   companyLogo: string;
-  licenserName: string;
-  licenserEmail: string;
-  licenserAddress: string;
-  licenserPhno: string;
+  licensorName: string;
+  licensorEmail: string;
+  licensorAddress: string;
+  licensorPhno: string;
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
@@ -27,17 +27,17 @@ const EditLicensor: React.FC<Props> = () => {
     companyName: "",
     companyEmail: "",
     companyLogo: "",
-    licenserName: "",
-    licenserEmail: "",
-    licenserAddress: "",
-    licenserPhno: "",
+    licensorName: "",
+    licensorEmail: "",
+    licensorAddress: "",
+    licensorPhno: "",
     bankAccNum: "",
     ifsc_iban: "",
     currency: "",
   });
 
   const notify = () => {
-    toast.success("Licesor edited successfully!", { position: "top-center" });
+    toast.success("Licensor edited successfully!", { position: "top-center" });
   };
   const navigate = useNavigate();
   useEffect(() => {
@@ -195,13 +195,13 @@ const EditLicensor: React.FC<Props> = () => {
             <div className="flex items-center gap-6">
               <div className="flex flex-col gap-2 w-[45%]">
                 <label htmlFor="" className="text-sm font-semibold">
-                  Licenser Name
+                  Licensor Name
                 </label>
                 <input
                   type="text"
                   placeholder="Full name"
-                  name="licenserName"
-                  value={formData.licenserName}
+                  name="licensorName"
+                  value={formData.licensorName}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -213,8 +213,8 @@ const EditLicensor: React.FC<Props> = () => {
                 <input
                   type="email"
                   placeholder="Enter email"
-                  name="licenserEmail"
-                  value={formData.licenserEmail}
+                  name="licensorEmail"
+                  value={formData.licensorEmail}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -228,8 +228,8 @@ const EditLicensor: React.FC<Props> = () => {
                 <input
                   type="text"
                   placeholder="Enter address"
-                  name="licenserAddress"
-                  value={formData.licenserAddress}
+                  name="licensorAddress"
+                  value={formData.licensorAddress}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -241,8 +241,8 @@ const EditLicensor: React.FC<Props> = () => {
                 <input
                   type="text"
                   placeholder="Phone Number"
-                  name="licenserPhno"
-                  value={formData.licenserPhno}
+                  name="licensorPhno"
+                  value={formData.licensorPhno}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
                 />
@@ -315,14 +315,15 @@ const EditLicensor: React.FC<Props> = () => {
                   <label htmlFor="" className="text-sm font-semibold">
                     Currency
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Enter currency"
+                  <select
                     name="currency"
                     value={formData.currency}
                     onChange={handleChange}
                     className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                  />
+                  >
+                    <option value="INR">INR</option>
+                    <option value="USD">USD</option>
+                  </select>
                 </div>
               </div>
             </div>

@@ -7,7 +7,6 @@ import axios from "axios";
 
 type Channel = {
   _id: string;
-  channelId: string;
   partnerRevenue: number;
 };
 
@@ -16,23 +15,21 @@ function UnassignedChannel() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
-  const [selectedChannelId, setSelectedChannelId] = useState<string>("");
+  const [selectedChannel, setSelectedChannel] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/get-unlinked-channel"
-        ); // Await the axios request
-        setChannels(response.data); // Set the data in the state
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
     fetchData();
   }, []);
-
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/get-unlinked-channel"
+      ); // Await the axios request
+      setChannels(response.data); // Set the data in the state
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = channels.slice(indexOfFirstRow, indexOfLastRow);
@@ -111,7 +108,7 @@ function UnassignedChannel() {
               </tr>
             </thead>
             <tbody>
-              {currentRows.map((channel, index) => (
+              {currentRows.map((channel: any, index) => (
                 <tr key={index} className="bg-white">
                   <td className="px-4 py-1  border-gray-200 text-sm">
                     {channel.channelId}
@@ -124,7 +121,7 @@ function UnassignedChannel() {
                       <button
                         onClick={() => {
                           setOpen(true);
-                          setSelectedChannelId(channel.channelId);
+                          setSelectedChannel(channel);
                         }}
                         className="flex bg-black gap-2 hover:bg-gray-600 text-white font-medium py-2 px-2  border text-sm items-center border-black rounded-lg"
                       >
@@ -165,8 +162,11 @@ function UnassignedChannel() {
 
         <Modal open={open} onClose={() => setOpen(false)}>
           <AssignChannel
-            channelId={selectedChannelId}
-            onClose={() => setOpen(false)}
+            channel={selectedChannel}
+            onClose={() => {
+              setOpen(false);
+              fetchData();
+            }}
           />
         </Modal>
       </div>

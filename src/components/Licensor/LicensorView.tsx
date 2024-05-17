@@ -9,17 +9,17 @@ interface Licensor {
   companyName: string;
   companyEmail: string;
   companyLogo: string;
-  licenserName: string;
-  licenserEmail: string;
-  licenserAddress: string;
-  licenserPhno: string;
+  licensorName: string;
+  licensorEmail: string;
+  licensorPhno: string;
+  licensorAddress: string;
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
 }
 const LicensorView = ({ licensor, onClose }: Props) => {
   console.log(licensor.companyLogo);
-  
+
   return (
     <div className="w-[1135px] h-[849px] bg-white rounded-xl ">
       <div className="flex px-8 pt-8 items-center justify-between ">
@@ -39,7 +39,7 @@ const LicensorView = ({ licensor, onClose }: Props) => {
           )}
         </div>
         <div className="w-[837px] h-[133px]">
-          <h1 className="text-lg font-bold">{licensor.licenserName}</h1>
+          <h1 className="text-lg font-bold">{licensor.licensorName}</h1>
           <div className="flex w-[600px] h-[91px] mt-5 ">
             <div className="flex flex-col gap-1 pr-16 border-gray-500 border-r  ">
               <Block />
@@ -49,7 +49,7 @@ const LicensorView = ({ licensor, onClose }: Props) => {
             <div className="flex flex-col gap-1 px-16 border-gray-500 border-r">
               <Email />
               <p className="text-sm text-gray-500">Email</p>
-              <p className="text-sm font-bold">{licensor.licenserEmail}</p>
+              <p className="text-sm font-bold">{licensor.licensorEmail}</p>
             </div>
             <div className="flex flex-col gap-1 pl-16">
               <Flag />
@@ -62,18 +62,18 @@ const LicensorView = ({ licensor, onClose }: Props) => {
       <div className="mx-8 mt-4 w-[1071px] px-6 py-6 h-[131px] bg-gray-100 rounded-lg">
         <p className="text-base font-bold">Contact Details</p>
         <div className="flex items-center mt-4">
-          <div className="pr-6 ">{licensor.licenserName}</div>
+          <div className="pr-6 ">{licensor.licensorName}</div>
           <div className="px-6 border-gray-500 border-x">
             <p className="text-base text-gray-500">Email</p>
             <p className="text-sm font-medium">{licensor.companyEmail}</p>
           </div>
           <div className="px-6 border-r border-gray-500">
             <p className="text-base text-gray-500">Phone</p>
-            <p className="text-sm font-medium">{licensor.licenserPhno}</p>
+            <p className="text-sm font-medium">{licensor.licensorPhno}</p>
           </div>
           <div className="pl-6">
             <p className="text-base text-gray-500">Address</p>
-            <p className="text-sm font-medium">{licensor.licenserAddress}</p>
+            <p className="text-sm font-medium">{licensor.licensorAddress}</p>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ const LicensorView = ({ licensor, onClose }: Props) => {
             <p className="text-sm font-medium">{licensor.ifsc_iban}</p>
           </div>
           <div className="pl-6">
-            <p className="text-base text-gray-500">Preferred currency</p>
+            <p className="text-base text-gray-500">Currency</p>
             <p className="text-sm font-medium">{licensor.currency}</p>
           </div>
         </div>

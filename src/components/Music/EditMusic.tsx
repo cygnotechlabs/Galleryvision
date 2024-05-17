@@ -5,11 +5,12 @@ import { Close } from "../icons/icon";
 type Music = {
   _id: string;
   licensorId: string;
+  musicId: string;
   licensorName: string;
-  licensorEmail: string;
+  musicName: string;
+  musicEmail: string;
   commision: string;
-  ytRevenue: string;
-  licensor: string;
+  musicLogo: string;
 };
 
 type Props = {
@@ -73,7 +74,7 @@ const EditMusic = ({ onClose, music }: Props) => {
               id="licensor"
               name="licensor"
               onChange={handleChange}
-              placeholder={`${music.licensor}`}
+              placeholder={`${music.licensorName}`}
               className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
             />
           </div>

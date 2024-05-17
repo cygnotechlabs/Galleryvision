@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   music: Music; // Add music prop here
@@ -11,26 +10,41 @@ type Props = {
 type Music = {
   _id: string;
   licensorId: string;
-  licensor: string;
+  musicId: string;
   licensorName: string;
-  licensorEmail: string;
+  musicName: string;
+  musicEmail: string;
   commision: string;
-  ytRevenue: string;
+  musicLogo: string;
+};
+type Licensor = {
+  _id: string;
+  licensorName: string;
 };
 
 const AssignMusic = ({ music, onClose }: Props) => {
+  const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [musicData, setMusicData] = useState<Music>({
     _id: "",
     licensorId: "",
-    licensor: "",
+    musicId: "",
     licensorName: "",
-    licensorEmail: "",
+    musicName: "",
+    musicEmail: "",
     commision: "",
-    ytRevenue: "",
+    musicLogo: "",
   });
-
-  const history = useNavigate();
-
+  useEffect(() => {
+    const getLicensorName = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/get-licensor");
+        setLicensors(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    getLicensorName();
+  }, []);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -38,7 +52,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
     setMusicData({ ...musicData, [name]: value });
   };
 
-  const createMusic = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -46,11 +60,38 @@ const AssignMusic = ({ music, onClose }: Props) => {
         musicData
       );
       console.log(response.data);
-      setTimeout(() => {
-        history("/music");
-      }, 1000);
     } catch (error: any) {
       console.error(error.message);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setMusicData((prevData) => ({
+        ...prevData,
+        channelLogo: reader.result ? reader.result.toString() : "",
+      }));
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleLicensorChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedLicensor = licensors.find(
+      (licensor) => licensor.licensorName === event.target.value
+    );
+    if (selectedLicensor) {
+      setMusicData((prevData) => ({
+        ...prevData,
+        licensorName: selectedLicensor.licensorName,
+        licensorId: selectedLicensor._id,
+      }));
     }
   };
 
@@ -63,29 +104,54 @@ const AssignMusic = ({ music, onClose }: Props) => {
         </button>
       </div>
       <div className="mt-5">
-        <form onSubmit={createMusic}>
+        <form onSubmit={handleSubmit}>
           <div>
-            <p>Add Music logo</p>
+            <p>Add music logo</p>
             <div className="bg-slate-100 px-4 py-6 w-[723px] h-[184px] rounded-2xl">
-              <div className="flex flex-col gap-3 items-center justify-center bg-white w-full h-full border-2 border-green-200 border-dashed rounded-2xl">
+              <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>logo</div>
                 <div className="text-sm font-medium">
-                  Drop your logo here, or browse
+                  Drop your logo here, or{" "}
+                  <label className="cursor-pointer text-blue-500">
+                    browse
+                    <input
+                      type="file"
+                      accept="image/jpg, image/png"
+                      name="channelLogo"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
-                <div className="text-xs">Supports, JPG, PNG</div>
+                <div className="text-xs">Supports, JPG, PNG</div>{" "}
+                {music.musicLogo && (
+                  <div className="w-16 h-16">
+                    <img
+                      src={music.musicLogo}
+                      alt="Company Logo"
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
           <div className="py-6 flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Select licensor</label>
-              <input
-                type="text"
-                name="licensor"
-                onChange={handleChange}
-                placeholder="Select licensor"
+              <label htmlFor="licensorName">Select licensor</label>
+              <select
+                name="licensorName"
+                onChange={handleLicensorChange}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
-              />
+                value={music.licensorName}
+              >
+                <option value="">Select Licensor</option>
+                {licensors.map((licensor, index) => (
+                  <option key={index} value={licensor.licensorName}>
+                    {licensor.licensorName}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="">Music ID</label>
@@ -93,7 +159,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 type="text"
                 name="licensorId"
                 onChange={handleChange}
-                value={music?.licensorId}
+                value={music.musicId}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
               />
             </div>
@@ -104,7 +170,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 placeholder="Music name"
                 name="licensorName"
                 onChange={handleChange}
-                value={music?.licensorName}
+                value={music.musicName}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
               />
             </div>
@@ -117,7 +183,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 placeholder="Email"
                 name="licensorEmail"
                 onChange={handleChange}
-                value={music?.licensorEmail}
+                value={music?.musicEmail}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               />
             </div>

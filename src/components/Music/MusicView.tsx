@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { Block, Email, Flag, Rupee } from "../icons/icon";
+import { Back, Block, Email, Flag, Rupee } from "../icons/icon";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -29,20 +29,7 @@ const MusicView = ({}: Props) => {
       <div className="pl-[34px] pt-[45px]">
         <Link to="/music">
           <button className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
+          <Back/>
             Back
           </button>
         </Link>

@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Block, Email, Flag, Rupee } from "../icons/icon";
+import { Back, Block, Email, Flag, Rupee } from "../icons/icon";
 
 type Props = {};
 
@@ -29,20 +29,7 @@ const ChannelView = ({}: Props) => {
       <div className="pl-[34px] pt-[45px]">
         <Link to="/channel">
           <button className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
+            <Back />
             Back
           </button>
         </Link>
@@ -52,7 +39,13 @@ const ChannelView = ({}: Props) => {
           <h2 className="text-xl font-bold mb-4 ">Channel Details</h2>
           <div className="flex px-[24px] gap-8 py-[24px] rounded-lg h-[181px] bg-gray-100">
             <div className="flex items-center justify-center border px-[30px] w-[153px] h-[120px] py-[16px]">
-              {channelData.logo}
+              {channelData.channelLogo && (
+                <img
+                  src={channelData.channelLogo}
+                  alt="Company Logo"
+                  className="mx-auto object-contain"
+                />
+              )}
             </div>
             <div>
               <p className="font-bold text-lg">{channelData.channelName}</p>
@@ -67,13 +60,15 @@ const ChannelView = ({}: Props) => {
                 <div className="px-[52px] border-x border-gray-400">
                   <Email />
                   <p className="text-sm text-gray-400 py-1">Email</p>
-                  <p className="text-sm font-bold">{channelData.email}</p>
+                  <p className="text-sm font-bold">
+                    {channelData.channelEmail}
+                  </p>
                 </div>
-                <div className="px-[52px] border-r border-gray-400">
+                {/* <div className="px-[52px] border-r border-gray-400">
                   <Flag />
                   <p className="text-sm text-gray-400  py-1">Country</p>
                   <p className="text-sm font-bold">{channelData.country}</p>
-                </div>
+                </div> */}
                 <div className="px-[52px]">
                   <Rupee />
                   <p className="text-sm text-gray-400 py-1">Commission %</p>

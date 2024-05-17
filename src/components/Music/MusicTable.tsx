@@ -4,18 +4,18 @@ import { Edit, Eye, Filter, Trash } from "../icons/icon";
 import EditMusic from "./EditMusic";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import DeleteModal from "../../UI/DeleteModal";
-import { useNavigate } from "react-router-dom";
+import { DeleteModal } from "../../UI/DeleteModal";
 type Props = {};
 
 type Music = {
   _id: string;
   licensorId: string;
+  musicId: string;
   licensorName: string;
-  licensorEmail: string;
+  musicName: string;
+  musicEmail: string;
   commision: string;
-  ytRevenue: string;
-  licensor: string;
+  musicLogo: string;
 };
 function MusicTable({}: Props) {
   const [openEdit, setOpenEdit] = useState(false);
@@ -23,47 +23,44 @@ function MusicTable({}: Props) {
   const [deleteId, setDeleteId] = useState<string>("");
   const [music, setMusic] = useState({
     _id: "",
-    licensorName: "",
     licensorId: "",
-    licensor: "",
-    licensorEmail: "",
+    musicId: "",
+    licensorName: "",
+    musicName: "",
+    musicEmail: "",
     commision: "",
-    ytRevenue: "",
+    musicLogo: "",
   });
   const [musics, setMusics] = useState<Music[]>([
     {
       _id: "",
-      licensorName: "",
       licensorId: "",
-      licensor: "",
-      licensorEmail: "",
+      musicId: "",
+      licensorName: "",
+      musicName: "",
+      musicEmail: "",
       commision: "",
-      ytRevenue: "",
+      musicLogo: "",
     },
   ]);
-  const history = useNavigate();
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/get-Musics");
-        setMusics(response.data);
-      } catch (error) {
-        console.error("Error fetching music data:", error);
-      }
-      setTimeout(() => {
-        history("/music");
-      }, 1000);
-    };
-
-    fetchData(); // Call the fetchData function immediately
+    fetchData();
   }, []);
-
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/get-Musics");
+      setMusics(response.data);
+    } catch (error) {
+      console.error("Error fetching music data:", error);
+    }
+  };
   const handleDelete = () => {
-    axios.delete(`http://localhost:3001/del-mchannel/${deleteId}`);
-
-    setTimeout(() => {
-      history("/music");
-    }, 1000);
+    try {
+      axios.delete(`http://localhost:3001/del-mchannel/${deleteId}`);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting channel:", error);
+    }
   };
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
@@ -115,13 +112,13 @@ function MusicTable({}: Props) {
                   {music._id}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
+                  {music.musicName}
+                </td>
+                <td className="px-4 py-1  border-gray-200 text-sm">
                   {music.licensorName}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.licensor}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.licensorEmail}
+                  {music.musicEmail}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
                   {music.commision}
@@ -225,11 +222,24 @@ function MusicTable({}: Props) {
       >
         <DeleteModal
           onClose={() => setOpenDelete(false)}
-          handleDelete={() => handleDelete()}
+          handleDelete={() => {
+            handleDelete();
+            fetchData();
+          }}
         />
       </Modal>
-      <Modal onClose={() => setOpenEdit(false)} open={openEdit}>
-        <EditMusic music={music} onClose={() => setOpenEdit(false)} />
+      <Modal
+        onClose={() => {
+          setOpenEdit(false);
+        }}
+        open={openEdit}
+      >
+        <EditMusic
+          music={music}
+          onClose={() => {
+            setOpenEdit(false);
+          }}
+        />
       </Modal>
     </div>
   );

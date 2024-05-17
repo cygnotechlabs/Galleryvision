@@ -15,6 +15,7 @@ import MusicView from "./components/Music/MusicView";
 import CreateMusic from "./components/Music/CreateMusic";
 import Dashboard from "./pages/Dashboard";
 import EditLicensor from "./components/Licensor/EditLicensor";
+import Login from "./components/Login/Login";
 
 const AppRoutes: any = () => {
   return (
@@ -37,6 +38,7 @@ const AppRoutes: any = () => {
         <Route path="/settings" element={<Settings />} />
         <Route path="/csv-upload" element={<Upload />} />
       </Route>
+      <Route path="/login" element={<Login />} />
     </Routes>
   );
 };
