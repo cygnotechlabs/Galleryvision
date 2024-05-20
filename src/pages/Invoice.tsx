@@ -1,70 +1,53 @@
 import React, { useState } from "react";
-import GernateChannelInvoice from "../components/Invoice/GernateChannelInvoice";
-import GernateMusicInvoice from "../components/Invoice/GernateMusicInvoice";
 
-const MonthYearDropdown: React.FC = () => {
-  const [selectedValue, setSelectedValue] = useState<string>("");
+import { Invoice } from "../components/icons/icon";
+import GenataredChannelInvoice from "../components/Invoice/GenataredChannelInvoice";
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedValue(event.target.value);
+const InvoicePage: React.FC = () => {
+  const [isClicked, setIsClicked] = useState<string>("");
+
+  const handleClick = (button: string) => {
+    setIsClicked(button);
   };
 
-  const months: string[] = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const currentYear: number = new Date().getFullYear();
-  const years: number[] = Array.from(
-    { length: 1 },
-    (_, index) => currentYear + index
-  );
-
-  const options: string[] = months.flatMap((month) => {
-    return years.map((year) => `${month} ${year}`);
-  });
-
   return (
-    <div className="flex flex-col px-8 py-5 bg-gray-100 h-[90vh] gap-5">
-      <p className="text-lg font-bold">Generate invoice</p>
-      <div className="px-8 py-8 bg-white rounded-2xl w-[1372px]">
-        <div className=" flex justify-between">
-          <div>
-            <p className="text-lg font-bold">Select Month</p>
-            <p className="text-sm text-gray-500">
-              Select the month for the invoice you want to generate
-            </p>
-          </div>
-          <div className="w-1/4">
-            <select
-              value={selectedValue}
-              onChange={handleSelectChange}
-              className="w-full border px-3 py-3 rounded-lg"
-            >
-              <option value="">Select Month and Year</option>
-              {options.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
+    <div className="flex flex-col px-8 py-5 bg-gray-100 gap-5">
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-1">
+          <p className="text-2xl font-bold">Invoices</p>
+          <p className="text-sm font-normal text-gray-400">
+            List of Invoices generated in the system
+          </p>
         </div>
-        <GernateChannelInvoice />
-        <GernateMusicInvoice />
+        <div className="flex px-4 py-3 rounded-lg bg-black text-white">
+          Generate new Invoice <Invoice />
+        </div>
       </div>
+      <div className="flex my-4 py-4 bg-white gap-4 rounded-lg px-4">
+        <div
+          className={`py-2 w-[50%] text-center font-bold rounded-lg hover:bg-red-100 cursor-pointer ${
+            isClicked === "channels"
+              ? "text-red-700 border-red-300 border bg-red-100"
+              : "border text-black "
+          }`}
+          onClick={() => handleClick("channels")}
+        >
+          Channels
+        </div>
+        <div
+          className={`py-2 w-[50%] text-center font-bold rounded-lg hover:bg-red-100 cursor-pointer ${
+            isClicked === "music"
+              ? "text-red-700 border-red-300 border bg-red-100"
+              : "border text-black"
+          }`}
+          onClick={() => handleClick("music")}
+        >
+          Music Partner
+        </div>
+      </div>
+      <GenataredChannelInvoice />
     </div>
   );
 };
 
-export default MonthYearDropdown;
+export default InvoicePage;

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo/gv-logo.png";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 interface SidebarProps {
   children: ReactNode;
@@ -9,12 +9,12 @@ interface SidebarProps {
 export default function Sidebar({ children }: SidebarProps) {
   return (
     <aside className="h-screen border-b-0 fixed left-0 top-0">
-      <nav className="h-full w-[385px] flex flex-col bg-white overflow-y-auto">
+      <nav className="h-full w-[360px] flex flex-col bg-white overflow-y-auto">
         <div className="py-[32px] px-[32px] flex justify-between items-center">
           <img src={logo} className="w-[146px] h-[60px]" alt="Logo" />
           <span></span>
         </div>
-        <ul className="flex-col px-6">{children}</ul>
+        <ul className="flex-col">{children}</ul>
       </nav>
     </aside>
   );
@@ -45,7 +45,6 @@ export function Sidebaritem({
       >
         {icon}
         <span className="w-[92px] h-[22px] ml-3">{text}</span>
-        {/* Optionally render based on active or alert props */}
       </li>
     </Link>
   );

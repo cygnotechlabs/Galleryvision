@@ -59,7 +59,7 @@ function MusicTable({}: Props) {
       axios.delete(`http://localhost:3001/del-mchannel/${deleteId}`);
       fetchData();
     } catch (error) {
-      console.error("Error deleting channel:", error);
+      console.error("Error deleting music:", error);
     }
   };
   return (
@@ -109,7 +109,12 @@ function MusicTable({}: Props) {
             {musics.map((music, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music._id}
+                {music.musicLogo && (
+                      <img
+                        src={music.musicLogo}
+                        alt="Company Logo"
+                        className="mx-auto w-12 object-contain rounded-full"
+                      /> )}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
                   {music.musicName}

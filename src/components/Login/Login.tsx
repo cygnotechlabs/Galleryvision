@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
 import image from "../../assets/Image/login-image.png";
 import logo from "../../assets/logo/gv-logo.png";
+import axios from "axios";
 
 type Props = {};
 
 function Login({}: Props) {
+
+  // const onSubmit = ()=>{
+  //   responce = axios.get('')
+  // }
+
+
   return (
     <div className="flex w-screen h-screen">
       <div className="w-1/2 relative">
