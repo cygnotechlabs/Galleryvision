@@ -27,6 +27,7 @@ const Login = lazy(() => import("./components/Login/Login"));
 const GenerateInvoice = lazy(
   () => import("./components/Invoice/GenarateInvoice")
 );
+const ViewInvoice = lazy(() => import("./components/Invoice/ViewInvoice"));
 
 const AppRoutes: React.FC = () => {
   return (
@@ -37,6 +38,7 @@ const AppRoutes: React.FC = () => {
           {/* INVOICE */}
           <Route path="invoice" element={<Invoice />} />
           <Route path="generate-invoice" element={<GenerateInvoice />} />
+          <Route path="view-invoice" element={<ViewInvoice />} />
 
           {/* LICENSOR */}
           <Route path="licensor" element={<Licensor />} />

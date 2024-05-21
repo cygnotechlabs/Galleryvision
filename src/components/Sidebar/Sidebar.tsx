@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo/gv-logo.png";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
 interface SidebarProps {
   children: ReactNode;

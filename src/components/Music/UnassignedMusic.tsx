@@ -11,6 +11,7 @@ type Music = {
   musicId: string;
   licensorName: string;
   musicName: string;
+  musicEmail: string;
   licensor: string;
   commision: string;
   musicLogo: string;
@@ -26,6 +27,7 @@ function UnassignedMusic() {
     musicId: "",
     licensorName: "",
     musicName: "",
+    musicEmail: "",
     licensor: "",
     commision: "",
     musicLogo: "",
@@ -37,6 +39,7 @@ function UnassignedMusic() {
       musicId: "",
       licensorName: "",
       musicName: "",
+      musicEmail: "",
       licensor: "",
       commision: "",
       musicLogo: "",
@@ -142,7 +145,7 @@ function UnassignedMusic() {
                     {music.musicId}
                   </td>
                   <td className="px-4 py-1  border-gray-200 text-sm">
-                    {music.licensor}
+                    {music.musicName}
                   </td>
                   <td className="px-4 py-1  border-gray-200">
                     <div className="flex items-center space-x-2">

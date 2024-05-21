@@ -3,7 +3,7 @@ import empty from "../../../public/empty.png";
 import { Link } from "react-router-dom";
 type Props = {};
 
-const GenataredChannelInvoice = ({}: Props) => {
+const GenataredMusicInvoice = ({}: Props) => {
   return (
     <div className="bg-white rounded-lg">
       <div className="m-8 flex items-center justify-between">
@@ -24,7 +24,7 @@ const GenataredChannelInvoice = ({}: Props) => {
         </p>
         <Link to={"/generate-invoice"}>
           <div className=" px-3 py-3 w-[12.5%] mx-auto rounded-lg bg-black text-white">
-            Generate new Invoice 
+            Generate new Invoice
           </div>
         </Link>
       </div>
@@ -32,4 +32,4 @@ const GenataredChannelInvoice = ({}: Props) => {
   );
 };
 
-export default GenataredChannelInvoice;
+export default GenataredMusicInvoice;

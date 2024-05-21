@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 import { Invoice } from "../components/icons/icon";
 import GenataredChannelInvoice from "../components/Invoice/GenataredChannelInvoice";
+import { Link } from "react-router-dom";
+import GenataredMusicInvoice from "../components/Invoice/GenaratedInvoiceMusic";
 
 const InvoicePage: React.FC = () => {
-  const [isClicked, setIsClicked] = useState<string>("");
+  const [isClicked, setIsClicked] = useState<string>("channels");
 
   const handleClick = (button: string) => {
     setIsClicked(button);
@@ -19,9 +21,12 @@ const InvoicePage: React.FC = () => {
             List of Invoices generated in the system
           </p>
         </div>
-        <div className="flex px-4 py-3 rounded-lg bg-black text-white">
-          Generate new Invoice <Invoice />
-        </div>
+        <Link to={"/generate-invoice"}>
+          <div className="flex gap-1 px-4 py-3 rounded-lg bg-black text-white">
+            Generate new Invoice
+            <Invoice />
+          </div>
+        </Link>
       </div>
       <div className="flex my-4 py-4 bg-white gap-4 rounded-lg px-4">
         <div
@@ -45,7 +50,11 @@ const InvoicePage: React.FC = () => {
           Music Partner
         </div>
       </div>
-      <GenataredChannelInvoice />
+      {isClicked === "channels" ? (
+        <GenataredChannelInvoice />
+      ) : (
+        <GenataredMusicInvoice />
+      )}
     </div>
   );
 };

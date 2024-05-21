@@ -28,17 +28,16 @@ const AssignMusic = ({ music, onClose }: Props) => {
   const [musicData, setMusicData] = useState<Music>(music);
 
   useEffect(() => {
-    const getLicensorName = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/get-licensor");
-        setLicensors(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     getLicensorName();
   }, []);
-
+  const getLicensorName = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/get-licensor");
+      setLicensors(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -55,6 +54,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
       );
       setMusicData(response.data);
       onClose();
+      getLicensorName();
     } catch (error: any) {
       console.error(error.message);
     }
@@ -166,7 +166,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 placeholder="Music name"
                 name="musicName"
                 onChange={handleChange}
-                value={musicData.licensor}
+                value={musicData.musicName}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
               />
             </div>
