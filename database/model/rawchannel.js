@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const channelRawSchema = new mongoose.Schema({
     channelId: {type : String},
-    ytRevenue: {type : String},
+    date: {type : String},
     partnerRevenue: {type : String}
 });
 

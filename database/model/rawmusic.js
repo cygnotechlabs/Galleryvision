@@ -1,10 +1,10 @@
+//music_raw Schema
 const mongoose = require('mongoose');
 
 const musicRawSchema = new mongoose.Schema({
-    licenserId: {type : String},
-    licenserEmail: {type : String},
-    commision: {type : String},
-    ytRevenue: {type : String},
+    musicId: {type : String},
+    date: {type : String},
+    musicName: {type : String},
     partnerRevenue: {type : String}
 });
 

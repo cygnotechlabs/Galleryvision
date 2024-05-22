@@ -1,16 +1,23 @@
 const mongoose = require('mongoose')
 
+const dateSchema = new mongoose.Schema({
+    month: {
+      type: String
+    },
+    year: {
+      type: String
+    },
+    currencyRate: {
+      type: String
+    }
+}, { _id: false });
+
 const currencySchema = mongoose.Schema({
     currencyName: {
-        type: String,
-        unique: true,
-        required: true
+        type: String
       },
-      currencyRate: {
-        type: Number,
-        required: true
-      }
-})
+      date:[dateSchema]
+});
 
 const currency = mongoose.model('currency',currencySchema)
 

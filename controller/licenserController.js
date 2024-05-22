@@ -1,24 +1,26 @@
 const licensors = require('../database/model/licensor');
+const channels = require('../database/model/channel'); 
+const musics = require('../database/model/musics');
 const { ObjectId } = require("mongodb");
 
 // add licensor
 exports.addLicensor = async (req, res) => {
-  console.log(req.body);
+  console.log("add licensor :",req.body);
     try {
       const {
         companyName,
         companyEmail,
         companyLogo,
-        licenserName,
-        licenserEmail,
-        licenserAddress,
-        licenserPhno,
+        licensorName,
+        licensorEmail,
+        licensorPhno,
+        licensorAddress,
         bankAccNum,
         ifsc_iban,
         currency,
       } = req.body;
       
-      const existingLicensor = await licensors.findOne({ licenserName });
+      const existingLicensor = await licensors.findOne({ licensorName });
 
     if (existingLicensor) {
       return res.status(409).json({
@@ -30,10 +32,10 @@ exports.addLicensor = async (req, res) => {
         companyName,
         companyEmail,
         companyLogo,
-        licenserName,
-        licenserEmail,
-        licenserAddress,
-        licenserPhno,
+        licensorName,
+        licensorEmail,
+        licensorPhno,
+        licensorAddress,
         bankAccNum,
         ifsc_iban,
         currency,
@@ -66,7 +68,7 @@ exports.getLicensor = async (req, res) => {
 };
 
 // get particular licensor
-exports.getOneLicenser = async (req, res) => {
+exports.getOneLicensor = async (req, res) => {
     try {
       const { id } = req.params;
       const objectId = new ObjectId(id);
@@ -86,22 +88,59 @@ exports.getOneLicenser = async (req, res) => {
     }
   };
 
-//remove licensor
-exports.removelicensor = async (req,res)=>{
-    const { id } = req.params
-    console.log("id to delete : ", id);
-    try {
-      const objectid = new ObjectId(id);
-      console.log("Object-id : ", objectid);
-      const removeLicensor = await licensors.deleteOne({ _id: objectid });
-      if (removeLicensor) {
-        const allLicensor = await licensors.find();
-        res.status(200).json(allLicensor);
+// remove licensor
+// exports.removelicensor = async (req,res)=>{
+//     const { id } = req.params
+//     console.log("id to delete : ", id);
+//     try {
+//       const objectid = new ObjectId(id);
+//       console.log("Object-id : ", objectid);
+//       const removeLicensor = await licensors.deleteOne({ _id: objectid });
+//       if (removeLicensor) {
+//         const allLicensor = await licensors.find();
+//         res.status(200).json(allLicensor);
+//       }
+//     } catch (error) {
+//       res.status(401).json(error);
+//     }
+// }
+
+
+exports.removelicensor = async (req, res) => {
+  const { id } = req.params;
+  console.log("id to delete:", id);
+
+  try {
+      const objectId = new ObjectId(id);
+      console.log("Object-id:", objectId);
+
+      // Delete the licensor document
+      const removeLicensor = await licensors.deleteOne({ _id: objectId });
+
+      if (removeLicensor.deletedCount === 1) {
+          // Delete associated channels
+          await channels.deleteMany({ licensorId: id });
+
+          // Delete associated music
+          await musics.deleteMany({ licensorId: id });
+
+          // Fetch the updated list of licensors
+          const allLicensors = await licensors.find();
+
+          
+          res.status(200).json(allLicensors);
+      } else {
+          res.status(404).json({ error: "Licensor not found" });
       }
-    } catch (error) {
-      res.status(401).json(error);
-    }
-}
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred" });
+  }
+};
+
+
+
+
 
 // update licensor
 exports.updateLicensor = async (req, res) => {
