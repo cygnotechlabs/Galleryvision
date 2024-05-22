@@ -44,7 +44,7 @@ const EditLicensor: React.FC<Props> = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/view-licensor/${id}`
+          `http://localhost:4000/view-licensor/${id}`
         );
         setFormData(response.data);
       } catch (error) {
@@ -82,7 +82,7 @@ const EditLicensor: React.FC<Props> = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:3000/update-licensor/${id}`,
+        `http://localhost:4000/update-licensor/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -105,7 +105,7 @@ const EditLicensor: React.FC<Props> = () => {
     <form onSubmit={handleSubmit}>
       <div className="bg-gray-100">
         <div className="pl-[34px]">
-          <Link to="/licensor">
+          <Link to="/home/licensor">
             <button className="flex gap-1 border font-medium text-sm border-gray-400 items-center rounded-lg px-3 py-2">
               <Back />
               Back

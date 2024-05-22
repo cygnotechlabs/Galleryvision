@@ -5,6 +5,7 @@ import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import axios from "axios";
 import { DeleteModalLicensor } from "../../UI/DeleteModal";
 import { Link } from "react-router-dom";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 interface Licensor {
@@ -49,7 +50,7 @@ function LicensorTable({}: Props) {
   }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/get-licensor"); // Await the axios request
+      const response = await axios.get(API_ENDPOINTS.GET_LINKED_CHANNEL); 
       setLicensors(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -58,9 +59,7 @@ function LicensorTable({}: Props) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `http://localhost:3000/remove-licensor/${licensorDeleteId}`
-      );
+      await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId));
       setLicensors((prevLicensors) =>
         prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
       );
@@ -83,7 +82,7 @@ function LicensorTable({}: Props) {
     console.log(filteredLicensors);
   };
   return (
-    <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
+    <div className="bg-white shadow-md rounded-xl  mt-6 h-[75svh] pr-9">
       {/* Search and Filter */}
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
         {/* Search Input */}
@@ -147,7 +146,7 @@ function LicensorTable({}: Props) {
                       <Eye />
                       View
                     </button>
-                    <Link to={`/update-licensor/${licensor._id}`}>
+                    <Link to={`/home/update-licensor/${licensor._id}`}>
                       <button className="flex gap-2 bg-gray-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
                         <Edit />
                         Edit

@@ -33,7 +33,7 @@ const UploadChannelCSV: React.FC = () => {
       setUploading(true);
       // Change the URL to your backend server endpoint
       await axios.post(
-        "http://localhost:5000/channel/importChannel",
+        "http://localhost:4000/channel/importChannel",
         formData,
         {
           headers: {

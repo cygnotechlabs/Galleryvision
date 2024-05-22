@@ -5,6 +5,7 @@ import Modal from "../../layouts/Modal";
 import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import EditChannel from "./EditChannel";
 import { DeleteModal } from "../../UI/DeleteModal";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 interface ChannelType {
@@ -30,9 +31,7 @@ function ChannelTable({}: Props) {
 
   const fetchChannels = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/get-linked-channel"
-      );
+      const response = await axios.get(API_ENDPOINTS.GET_LINKED_CHANNEL);
       setChannels(response.data);
     } catch (error) {
       console.error("Error fetching channels:", error);
@@ -44,7 +43,7 @@ function ChannelTable({}: Props) {
 
     try {
       await axios.delete(
-        `http://localhost:3000/remove-channel/${channelDeleteId}`
+        API_ENDPOINTS.REMOVE_CHANNEL(channelDeleteId)
       );
       setOpenDelete(false);
     } catch (error) {
@@ -121,7 +120,7 @@ function ChannelTable({}: Props) {
                   </td>
                   <td className="px-4 py-1 border-gray-200">
                     <div className="flex items-center space-x-2">
-                      <Link to={`/channel-view/${channel._id}`}>
+                      <Link to={`/home/channel-view/${channel._id}`}>
                         <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
                           <Eye />
                           View
@@ -221,12 +220,14 @@ function ChannelTable({}: Props) {
           channelId={editChannelId}
           onClose={() => {
             setOpenEdit(false);
+            fetchChannels();
           }}
         />
       </Modal>
       <Modal
         onClose={() => {
           setOpenDelete(false);
+          fetchChannels();
         }}
         open={openDelete}
       >

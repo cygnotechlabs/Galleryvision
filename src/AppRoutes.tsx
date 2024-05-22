@@ -1,71 +1,84 @@
+// src/AppRoutes.tsx
 import { Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./Context/AuthContext";
 
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Root = lazy(() => import("./pages/Root"));
+const Login = lazy(() => import("./components/Login/Login"));
+
+// Channel
 const ChannelView = lazy(() => import("./components/Channel/ChannelView"));
 const CreateChannel = lazy(() => import("./components/Channel/CreateChannel"));
 const UnassignedChannel = lazy(
   () => import("./components/Channel/UnassignedChannel")
 );
 const Channel = lazy(() => import("./pages/Channel"));
+
+// Invoice
 const Invoice = lazy(() => import("./pages/Invoice"));
+const ViewInvoice = lazy(() => import("./components/Invoice/ViewInvoice"));
+const GenerateInvoice = lazy(
+  () => import("./components/Invoice/GenarateInvoice")
+);
+
+// Licensor
 const Licensor = lazy(() => import("./pages/Licensor"));
-const Music = lazy(() => import("./pages/Music"));
-const Root = lazy(() => import("./pages/Root"));
-const Settings = lazy(() => import("./pages/Settings"));
-const Upload = lazy(() => import("./pages/Upload"));
 const CreateLicensor = lazy(
   () => import("./components/Licensor/CreateLicensor")
 );
+const EditLicensor = lazy(() => import("./components/Licensor/EditLicensor"));
+
+// Music
+const Music = lazy(() => import("./pages/Music"));
 const UnassignedMusic = lazy(
   () => import("./components/Music/UnassignedMusic")
 );
 const MusicView = lazy(() => import("./components/Music/MusicView"));
 const CreateMusic = lazy(() => import("./components/Music/CreateMusic"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const EditLicensor = lazy(() => import("./components/Licensor/EditLicensor"));
-const Login = lazy(() => import("./components/Login/Login"));
-const GenerateInvoice = lazy(
-  () => import("./components/Invoice/GenarateInvoice")
-);
-const ViewInvoice = lazy(() => import("./components/Invoice/ViewInvoice"));
+
+// Upload
+const Upload = lazy(() => import("./pages/Upload"));
+const Settings = lazy(() => import("./pages/Settings"));
+
+// Payment
+const Payment = lazy(() => import("./pages/Payment"));
 
 const AppRoutes: React.FC = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Routes>
-        <Route path="/" element={<Root />}>
-          <Route index element={<Dashboard />} />
-          {/* INVOICE */}
-          <Route path="invoice" element={<Invoice />} />
-          <Route path="generate-invoice" element={<GenerateInvoice />} />
-          <Route path="view-invoice" element={<ViewInvoice />} />
-
-          {/* LICENSOR */}
-          <Route path="licensor" element={<Licensor />} />
-          <Route path="create-licensor" element={<CreateLicensor />} />
-          <Route path="update-licensor/:id" element={<EditLicensor />} />
-
-          {/* CHANNEL */}
-          <Route path="channel" element={<Channel />} />
-          <Route path="create-channel" element={<CreateChannel />} />
-          <Route path="channel-view/:id" element={<ChannelView />} />
-          <Route path="unassigned-channels" element={<UnassignedChannel />} />
-
-          {/* MUSIC */}
-          <Route path="music" element={<Music />} />
-          <Route path="music-view/:id" element={<MusicView />} />
-          <Route path="create-music" element={<CreateMusic />} />
-          <Route path="unassigned-musics" element={<UnassignedMusic />} />
-
-          {/* UPLOAD */}
-          <Route path="csv-upload" element={<Upload />} />
-
-          {/* SETTINGS */}
-          <Route path="settings" element={<Settings />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </Suspense>
+    <AuthProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="home" element={<Root />}>
+              <Route index element={<Dashboard />} />
+              <Route path="invoice" element={<Invoice />} />
+              <Route path="generate-invoice" element={<GenerateInvoice />} />
+              <Route path="view-invoice" element={<ViewInvoice />} />
+              <Route path="licensor" element={<Licensor />} />
+              <Route path="create-licensor" element={<CreateLicensor />} />
+              <Route path="update-licensor/:id" element={<EditLicensor />} />
+              <Route path="channel" element={<Channel />} />
+              <Route path="create-channel" element={<CreateChannel />} />
+              <Route path="channel-view/:id" element={<ChannelView />} />
+              <Route
+                path="unassigned-channels"
+                element={<UnassignedChannel />}
+              />
+              <Route path="music" element={<Music />} />
+              <Route path="music-view/:id" element={<MusicView />} />
+              <Route path="create-music" element={<CreateMusic />} />
+              <Route path="unassigned-musics" element={<UnassignedMusic />} />
+              <Route path="csv-upload" element={<Upload />} />
+              <Route path="payment" element={<Payment />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Route>
+        </Routes>
+      </Suspense>
+    </AuthProvider>
   );
 };
 

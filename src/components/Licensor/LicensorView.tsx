@@ -53,8 +53,8 @@ const LicensorView = ({ licensor, onClose }: Props) => {
             </div>
             <div className="flex flex-col gap-1 pl-16">
               <Flag />
-              <p className="text-sm text-gray-500">Country</p>
-              <p className="text-sm font-bold">India</p>
+              {/* <p className="text-sm text-gray-500">Country</p>
+              <p className="text-sm font-bold">India</p> */}
             </div>
           </div>
         </div>

@@ -1,14 +1,18 @@
-import { Back } from "../icons/icon";
+import { Link } from "react-router-dom";
+import { Back, Download, Emailsm, Invoice } from "../icons/icon";
 
 type Props = {};
 
 const ViewInvoice = ({}: Props) => {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-1 justify-center items-center  border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]">
-        <Back />
-        Back
-      </div>
+      <Link to={"/invoice"}>
+        <div className="flex gap-1 justify-center items-center  border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]">
+          <Back />
+          Back
+        </div>
+      </Link>
+
       <div className="flex flex-col gap-6 bg-white w-[75%] p-8">
         <p className="text-lg font-bold ">Preview</p>
         <div className="flex flex-col gap-6 w-[94%] border-2 p-8 mx-8">
@@ -79,7 +83,7 @@ const ViewInvoice = ({}: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-1 border-b-2 pb-6">
+          <div className="flex flex-col gap-1 border-b-2  pb-6">
             <div className="flex justify-between gap-2">
               <p className="text-sm">Total revence</p>
               <p className="font-bold text-sm">$ 32000</p>
@@ -93,6 +97,18 @@ const ViewInvoice = ({}: Props) => {
               <p className="font-bold text-sm">$ 28000</p>
             </div>
           </div>
+        </div>
+        <div className="flex justify-end gap-4 mx-8">
+          <button className="flex items-center gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-gray-100">
+            <Invoice />
+            Print
+          </button>
+          <button className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100">
+            <Emailsm /> Emial
+          </button>
+          <button className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black">
+            <Download /> Download Pdf
+          </button>
         </div>
       </div>
     </div>

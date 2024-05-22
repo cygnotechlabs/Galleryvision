@@ -27,9 +27,9 @@ const MusicView = ({}: Props) => {
   return (
     <div className="bg-gray-100 h-[90svh]">
       <div className="pl-[34px] pt-[45px]">
-        <Link to="/music">
+        <Link to="/home/music">
           <button className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm">
-          <Back/>
+            <Back />
             Back
           </button>
         </Link>
@@ -39,20 +39,26 @@ const MusicView = ({}: Props) => {
           <h2 className="text-xl font-bold mb-4 ">Music Details</h2>
           <div className="flex px-[24px] gap-8 py-[24px] rounded-lg h-[181px] bg-gray-100">
             <div className="flex items-center justify-center border px-[30px] w-[153px] h-[120px] py-[16px]">
-              logo
+              {musicData.musicLogo && (
+                <img
+                  src={musicData.musicLogo} // Set the src attribute to the base64 string
+                  alt="Company Logo"
+                  className="w-[150px] h-[150px] object-contain"
+                />
+              )}
             </div>
             <div>
-              <p className="font-bold text-lg">{musicData.licensorName}</p>
+              <p className="font-bold text-lg">{musicData.musicName}</p>
               <div className="flex py-5 ">
                 <div className="pr-[52px] ">
                   <Block />
                   <p className="text-sm text-gray-400 py-1">Licensor</p>
-                  <p className="text-sm font-bold">{musicData.licensor}</p>
+                  <p className="text-sm font-bold">{musicData.licensorName}</p>
                 </div>
                 <div className="px-[52px] border-x border-gray-400">
                   <Email />
                   <p className="text-sm text-gray-400 py-1">Email</p>
-                  <p className="text-sm font-bold">{musicData.licensorEmail}</p>
+                  <p className="text-sm font-bold">{musicData.musicEmail}</p>
                 </div>
                 <div className="px-[52px] border-r border-gray-400">
                   <Flag />
@@ -62,7 +68,7 @@ const MusicView = ({}: Props) => {
                 <div className="px-[52px]">
                   <Rupee />
                   <p className="text-sm text-gray-400 py-1">Commission %</p>
-                  <p className="text-sm font-bold">{musicData.commision}</p>
+                  <p className="text-sm font-bold">{musicData.commission}</p>
                 </div>
               </div>
             </div>

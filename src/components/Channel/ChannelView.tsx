@@ -1,7 +1,8 @@
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { Back, Block, Email, Flag, Rupee } from "../icons/icon";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Back, Block, Email, Rupee } from "../icons/icon";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 
@@ -12,9 +13,7 @@ const ChannelView = ({}: Props) => {
   useEffect(() => {
     const fetchChannelData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/view-channel/${id}`
-        );
+        const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id));
         setChannelData(response.data);
       } catch (error) {
         console.error("Error fetching channel data:", error);
@@ -27,7 +26,7 @@ const ChannelView = ({}: Props) => {
   return (
     <div className="bg-gray-100 h-[90svh]">
       <div className="pl-[34px] pt-[45px]">
-        <Link to="/channel">
+        <Link to="/home/channel">
           <button className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm">
             <Back />
             Back

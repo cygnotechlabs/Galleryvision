@@ -10,14 +10,14 @@ function Channel() {
 
   return (
     <>
-      <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
-        <div className="flex justify-between items-center pl-[34px]">
+      <div className="bg-gray-100  pt-[20px]">
+        <div className="flex justify-between items-center pl-8">
           <div>
             <h1 className="text-xl font-bold">Channel</h1>
             <h1 className="pt-2">List of channels created in the system</h1>
           </div>
           <Link
-            to="/unassigned-channels"
+            to="/home/unassigned-channels"
             className="flex gap-1 border font-bold text-white items-center rounded-lg px-5 py-3 mr-8 text-lg bg-black"
           >
             <Plus />

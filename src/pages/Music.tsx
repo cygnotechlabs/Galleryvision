@@ -12,7 +12,7 @@ function Music() {
             <h1 className="pt-2">List of musics created in the system</h1>
           </div>
           <Link
-            to="/unassigned-musics"
+            to="/home/unassigned-musics"
             className="flex gap-1 border font-bold text-white items-center rounded-lg px-5 py-3 mr-8 text-lg bg-black"
           >
             <Plus /> Add Music

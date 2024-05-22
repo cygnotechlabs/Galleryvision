@@ -14,7 +14,7 @@ type Music = {
   licensorName: string;
   musicName: string;
   musicEmail: string;
-  commision: string;
+  commission: string;
   musicLogo: string;
 };
 function MusicTable({}: Props) {
@@ -28,21 +28,10 @@ function MusicTable({}: Props) {
     licensorName: "",
     musicName: "",
     musicEmail: "",
-    commision: "",
+    commission: "",
     musicLogo: "",
   });
-  const [musics, setMusics] = useState<Music[]>([
-    {
-      _id: "",
-      licensorId: "",
-      musicId: "",
-      licensorName: "",
-      musicName: "",
-      musicEmail: "",
-      commision: "",
-      musicLogo: "",
-    },
-  ]);
+  const [musics, setMusics] = useState<Music[]>([]);
   useEffect(() => {
     fetchData();
   }, []);
@@ -109,12 +98,13 @@ function MusicTable({}: Props) {
             {musics.map((music, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                {music.musicLogo && (
-                      <img
-                        src={music.musicLogo}
-                        alt="Company Logo"
-                        className="mx-auto w-12 object-contain rounded-full"
-                      /> )}
+                  {music.musicLogo && (
+                    <img
+                      src={music.musicLogo}
+                      alt="Company Logo"
+                      className="mx-auto w-12 object-contain rounded-full"
+                    />
+                  )}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
                   {music.musicName}
@@ -126,12 +116,12 @@ function MusicTable({}: Props) {
                   {music.musicEmail}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.commision}
+                  {music.commission}
                 </td>
                 <td className="px-4 py-1  border-gray-200">
                   <div className="flex items-center space-x-2">
-                    <Link to={`/music-view/${music._id}`}>
-                      <button className="flex gap-2 bg-red-100 hover:bg-pink-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-red-500 rounded-lg">
+                    <Link to={`/home/music-view/${music._id}`}>
+                      <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
                         <Eye />
                         View
                       </button>
@@ -141,18 +131,17 @@ function MusicTable({}: Props) {
                         setOpenEdit(true);
                         setMusic(music);
                       }}
-                      className="flex bg-gray-300 gap-2 hover:bg-gray-600 text-black font-medium py-1 px-2 w-[90px] border text-sm items-center border-black rounded-lg"
+                      className="flex gap-2 bg-gray-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
                     >
                       <Edit />
                       Edit
                     </button>
-
                     <button
                       onClick={() => {
                         setOpenDelete(true);
                         setDeleteId(music._id);
                       }}
-                      className="flex bg-red-500 gap-2 hover:bg-gray-600 text-black font-medium py-[6px]  px-2  border text-sm items-center border-black rounded-lg"
+                      className="flex gap-2 bg-red-400 hover:bg-gray-400 text-white hover:text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
                     >
                       <Trash />
                     </button>
@@ -243,6 +232,7 @@ function MusicTable({}: Props) {
           music={music}
           onClose={() => {
             setOpenEdit(false);
+            fetchData();
           }}
         />
       </Modal>

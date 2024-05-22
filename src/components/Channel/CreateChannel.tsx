@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Back } from "../icons/icon";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 type Licensor = {
@@ -25,7 +26,7 @@ const CreateChannel = ({}: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/get-licensor");
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -60,10 +61,7 @@ const CreateChannel = ({}: Props) => {
   const createChannel = async () => {
     try {
       // POST request using Axios
-      const response = await axios.post(
-        "http://localhost:3000/add-channel",
-        formData
-      );
+      const response = await axios.post(API_ENDPOINTS.ADD_CHANNEL, formData);
 
       // Handle success
       console.log(response.data.message);
@@ -81,7 +79,7 @@ const CreateChannel = ({}: Props) => {
 
       // Redirect to "/channel" after 1 second
       setTimeout(() => {
-        history("/channel");
+        history("/home/channel");
       }, 1000);
     } catch (error: any) {
       // Handle error
@@ -117,7 +115,7 @@ const CreateChannel = ({}: Props) => {
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
-            to="/unassigned-channels"
+            to="/home/unassigned-channels"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
             <Back />

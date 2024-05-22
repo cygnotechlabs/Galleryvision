@@ -1,16 +1,61 @@
-import { Link } from "react-router-dom";
+// src/components/Login/Login.tsx
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import image from "../../assets/Image/login-image.png";
 import logo from "../../assets/logo/gv-logo.png";
 import axios from "axios";
+import { useAuth } from "../../Context/AuthContext";
 
 type Props = {};
 
 function Login({}: Props) {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  // const onSubmit = ()=>{
-  //   responce = axios.get('')
-  // }
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const validateForm = () => {
+    if (!email || !password) {
+      setError("Both email and password are required.");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:3001/login", {
+        email,
+        password,
+      });
+      if (response.status === 200) {
+        login(response.data.token);
+        navigate("home");
+      } else {
+        setError("Login failed. Please check your credentials.");
+      }
+    } catch (error: any) {
+      setError("An error occurred during login. Please try again.");
+    }
+  };
 
   return (
     <div className="flex w-screen h-screen">
@@ -41,7 +86,7 @@ function Login({}: Props) {
 
         <div className="flex flex-col justify-center px-28">
           <p className="text-4xl font-bold mb-8">Login</p>
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="flex flex-col gap-2">
                 <label
@@ -58,6 +103,8 @@ function Login({}: Props) {
                   required
                   className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="name@email.com"
+                  value={email}
+                  onChange={handleEmailChange}
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -75,6 +122,8 @@ function Login({}: Props) {
                   required
                   className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Password"
+                  value={password}
+                  onChange={handlePasswordChange}
                 />
               </div>
             </div>
@@ -96,15 +145,15 @@ function Login({}: Props) {
               </div>
             </div>
 
+            {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+
             <div>
-              <Link to={"/"}>
-                <button
-                  type="submit"
-                  className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Login
-                </button>
-              </Link>
+              <button
+                type="submit"
+                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Login
+              </button>
             </div>
           </form>
         </div>

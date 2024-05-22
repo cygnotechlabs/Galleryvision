@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
-import { Edit, Filter } from "../icons/icon";
+import { Back, Edit, Filter } from "../icons/icon";
 import AssignChannel from "./AssignChannel";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Channel = {
   _id: string;
@@ -22,9 +23,7 @@ function UnassignedChannel() {
   }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/get-unlinked-channel"
-      ); // Await the axios request
+      const response = await axios.get(API_ENDPOINTS.GET_UNLINKED_CHANNEL); // Await the axios request
       setChannels(response.data); // Set the data in the state
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -41,28 +40,15 @@ function UnassignedChannel() {
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
-            to="/channel"
+            to="/home/channel"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
+            <Back />
             Back
           </Link>
         </div>
         <Link
-          to="/create-channel"
+          to="/home/create-channel"
           className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
         >
           Create Channel

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
-import { Edit, Filter } from "../icons/icon";
+import { Back, Edit, Filter } from "../icons/icon";
 import AssignMusic from "./AssignMusic";
 import axios from "axios";
 
@@ -13,7 +13,7 @@ type Music = {
   musicName: string;
   musicEmail: string;
   licensor: string;
-  commision: string;
+  commission: string;
   musicLogo: string;
 };
 
@@ -29,7 +29,7 @@ function UnassignedMusic() {
     musicName: "",
     musicEmail: "",
     licensor: "",
-    commision: "",
+    commission: "",
     musicLogo: "",
   });
   const [musics, setMusics] = useState<Music[]>([
@@ -41,25 +41,23 @@ function UnassignedMusic() {
       musicName: "",
       musicEmail: "",
       licensor: "",
-      commision: "",
+      commission: "",
       musicLogo: "",
     },
   ]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/get-rawmusic");
-        setMusics(response.data);
-        console.log(currentMusicData);
-      } catch (error) {
-        console.error("Error fetching music data:", error);
-      }
-    };
-
     fetchData();
   }, []);
-
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/get-rawmusic");
+      setMusics(response.data);
+      console.log(currentMusicData);
+    } catch (error) {
+      console.error("Error fetching music data:", error);
+    }
+  };
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Calculate the current music data for the active page
@@ -72,28 +70,15 @@ function UnassignedMusic() {
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
-            to="/music"
+            to="/home/music"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
+            <Back />
             Back
           </Link>
         </div>
         <Link
-          to="/create-music"
+          to="/home/create-music"
           className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
         >
           Create Music
@@ -194,7 +179,13 @@ function UnassignedMusic() {
         </div>
 
         <Modal open={open} onClose={() => setOpen(false)}>
-          <AssignMusic music={selectedMusic} onClose={() => setOpen(false)} />
+          <AssignMusic
+            music={selectedMusic}
+            onClose={() => {
+              setOpen(false);
+              fetchData();
+            }}
+          />
         </Modal>
       </div>
     </div>

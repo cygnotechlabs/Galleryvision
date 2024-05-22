@@ -52,20 +52,20 @@ const CreateLicensor: React.FC<Props> = () => {
     try {
       console.log("add licensor", formData);
       const response = await axios.post(
-        "http://localhost:3000/add-licensor",
+        "http://localhost:4000/add-licensor",
         formData
       );
       if (response.status === 200) {
         console.log("Data submitted successfully!");
         notify();
         setTimeout(() => {
-          navigate("/licensor");
+          navigate("/home/licensor");
         }, 2000);
       } else {
         console.error("Failed to submit data.");
         notify();
         setTimeout(() => {
-          navigate("/licensor");
+          navigate("/home/licensor");
         }, 2000);
       }
     } catch (error) {
@@ -102,7 +102,7 @@ const CreateLicensor: React.FC<Props> = () => {
     <form onSubmit={handleSubmit}>
       <div className="bg-gray-100">
         <div className="pl-[34px]">
-          <Link to="/licensor">
+          <Link to="/home/licensor">
             <button className="flex gap-1 border font-medium text-sm border-gray-400 items-center rounded-lg px-3 py-2">
               <Back />
               Back
@@ -165,6 +165,7 @@ const CreateLicensor: React.FC<Props> = () => {
                   value={formData.companyName}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                  required
                 />
               </div>
               <div className="flex flex-col gap-2 w-[50svh]">
@@ -178,6 +179,7 @@ const CreateLicensor: React.FC<Props> = () => {
                   value={formData.companyEmail}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                  required
                 />
               </div>
             </div>
@@ -201,6 +203,7 @@ const CreateLicensor: React.FC<Props> = () => {
                   value={formData.licensorName}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                  required
                 />
               </div>
               <div className="flex flex-col gap-2 w-[45%]">
@@ -214,6 +217,7 @@ const CreateLicensor: React.FC<Props> = () => {
                   value={formData.licensorEmail}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                  required
                 />
               </div>
             </div>
@@ -229,6 +233,7 @@ const CreateLicensor: React.FC<Props> = () => {
                   value={formData.licensorAddress}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                  required
                 />
               </div>
               <div className="flex flex-col gap-2 w-[45%]">
@@ -242,6 +247,7 @@ const CreateLicensor: React.FC<Props> = () => {
                   value={formData.licensorPhno}
                   onChange={handleChange}
                   className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                  required
                 />
               </div>
             </div>
@@ -293,6 +299,7 @@ const CreateLicensor: React.FC<Props> = () => {
                     value={formData.bankAccNum}
                     onChange={handleChange}
                     className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                    required
                   />
                 </div>
                 <div className="flex flex-col gap-2 w-[30%]">
@@ -306,6 +313,7 @@ const CreateLicensor: React.FC<Props> = () => {
                     value={formData.ifsc_iban}
                     onChange={handleChange}
                     className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                    required
                   />
                 </div>
                 <div className="flex flex-col gap-2 w-[30%]">
@@ -317,6 +325,7 @@ const CreateLicensor: React.FC<Props> = () => {
                     value={formData.currency}
                     onChange={handleChange}
                     className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                    required
                   >
                     <option value="INR">INR</option>
                     <option value="USD">USD</option>

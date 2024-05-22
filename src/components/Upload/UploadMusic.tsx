@@ -32,7 +32,7 @@ const UploadMusic: React.FC = () => {
     try {
       setUploading(true);
       // Change the URL to your backend server endpoint
-      await axios.post("http://localhost:5000/music/importMusic", formData, {
+      await axios.post("http://localhost:4000/music/importMusic", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

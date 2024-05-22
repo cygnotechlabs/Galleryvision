@@ -17,69 +17,69 @@ type Props = {
 };
 
 const Layout = ({ children }: Props) => {
-  const [activeItem, setActiveItem] = useState<string | null>(null);
+  const [activeItem, setActiveItem] = useState<string>("Dashboard");
 
   // State to manage active item
   // Function to handle clicking on a sidebar item
   const handleItemClick = (text: string) => {
-    setActiveItem((prevActiveItem) => (prevActiveItem === text ? null : text));
+    setActiveItem(text);
   };
 
   return (
     <main className="flex font-custom bg-gray-100 h-screen ">
       <Sidebar>
-        <nav className="h-full w-[360px] flex flex-col bg-white overflow-y-auto fixed">
+        <nav className="h-full w-[15%] flex flex-col bg-white mx-3 fixed">
           <Sidebaritem
-            to="/"
+            to="/home"
             icon={<Home />}
             text="Dashboard"
             active={activeItem === "Dashboard"}
             onClick={() => handleItemClick("Dashboard")}
           />
           <Sidebaritem
-            to="/csv-upload"
+            to="csv-upload"
             icon={<Upload />}
             text="CSV Upload"
             active={activeItem === "CSV Upload"}
             onClick={() => handleItemClick("CSV Upload")}
           />
           <Sidebaritem
-            to="/licensor"
+            to="licensor"
             icon={<Licensor />}
             text="Licensor"
             active={activeItem === "Licensor"}
             onClick={() => handleItemClick("Licensor")}
           />
           <Sidebaritem
-            to="/channel"
+            to="channel"
             icon={<Channel />}
             text="Channel"
             active={activeItem === "Channel"}
             onClick={() => handleItemClick("Channel")}
           />
           <Sidebaritem
-            to="/music"
+            to="music"
             icon={<Music />}
-            text="Music"
+            text="Music Partner"
             active={activeItem === "Music"}
             onClick={() => handleItemClick("Music")}
           />
           <Sidebaritem
-            to="/invoice"
+            to="invoice"
             icon={<Invoice />}
             text="Invoice"
             active={activeItem === "Invoice"}
             onClick={() => handleItemClick("Invoice")}
           />
           <Sidebaritem
-            to="/payment"
+            to="payment"
             icon={<Payment />}
             text="Payment"
             active={activeItem === "Payment"}
             onClick={() => handleItemClick("Payment")}
           />
           <Sidebaritem
-            to="/settings"
+            to="settings"
             icon={<Settings />}
             text="Settings"
             active={activeItem === "Settings"}
@@ -87,7 +87,7 @@ const Layout = ({ children }: Props) => {
           />
         </nav>
       </Sidebar>
-      <div className="ml-[360px] flex-1 flex flex-col">
+      <div className="ml-[320px] flex-1 flex flex-col">
         <Header />
         <div className="overflow-y-auto flex-1 p-4">{children}</div>
       </div>

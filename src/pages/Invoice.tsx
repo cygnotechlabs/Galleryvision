@@ -13,7 +13,7 @@ const InvoicePage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col px-8 py-5 bg-gray-100 gap-5">
+    <div className="flex flex-col px-8 py-5 bg-gray-100">
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-1">
           <p className="text-2xl font-bold">Invoices</p>
@@ -21,7 +21,7 @@ const InvoicePage: React.FC = () => {
             List of Invoices generated in the system
           </p>
         </div>
-        <Link to={"/generate-invoice"}>
+        <Link to={"/home/generate-invoice"}>
           <div className="flex gap-1 px-4 py-3 rounded-lg bg-black text-white">
             Generate new Invoice
             <Invoice />

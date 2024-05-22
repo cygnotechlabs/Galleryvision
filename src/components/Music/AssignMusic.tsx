@@ -14,7 +14,7 @@ type Music = {
   licensorName: string;
   musicName: string;
   musicEmail: string;
-  commision: string;
+  commission: string;
   musicLogo: string;
   licensor: string;
 };
@@ -28,16 +28,17 @@ const AssignMusic = ({ music, onClose }: Props) => {
   const [musicData, setMusicData] = useState<Music>(music);
 
   useEffect(() => {
+    const getLicensorName = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/get-licensor");
+        setLicensors(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
     getLicensorName();
   }, []);
-  const getLicensorName = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/get-licensor");
-      setLicensors(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -54,7 +55,6 @@ const AssignMusic = ({ music, onClose }: Props) => {
       );
       setMusicData(response.data);
       onClose();
-      getLicensorName();
     } catch (error: any) {
       console.error(error.message);
     }
@@ -184,13 +184,13 @@ const AssignMusic = ({ music, onClose }: Props) => {
               />
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="commision">Commission (%)</label>
+              <label htmlFor="commission">Commission (%)</label>
               <input
                 type="number"
                 placeholder="Commission"
-                name="commision"
+                name="commission"
                 onChange={handleChange}
-                value={musicData.commision}
+                value={musicData.commission}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               />
             </div>

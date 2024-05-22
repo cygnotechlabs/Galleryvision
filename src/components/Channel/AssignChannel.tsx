@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {
   channel: Channel;
@@ -30,7 +31,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/get-licensor");
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -43,7 +44,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:3000/assign-channel`,
+        API_ENDPOINTS.ASSIGN_CHANNEL,
         updatedData
       );
       setUpdatedData(response.data);
