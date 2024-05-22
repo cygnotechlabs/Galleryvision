@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Back } from "../icons/icon";
+import API_ENDPOINTS from "../../config/apiConfig";
+
 
 type Props = {};
 type Licensor = {
@@ -24,7 +26,7 @@ const CreateMusic: React.FC<Props> = () => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/get-licensor");
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -62,7 +64,7 @@ const CreateMusic: React.FC<Props> = () => {
       console.log(musicData);
 
       const response = await axios.post(
-        "http://localhost:3001/add-music",
+        API_ENDPOINTS.ADD_MUSIC,
         musicData
       );
       setMessage(response.data.message);
@@ -162,6 +164,7 @@ const CreateMusic: React.FC<Props> = () => {
                 value={musicData.licensorName}
                 onChange={handleChange}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                required
               >
                 <option value="">Select Licensor</option>
                 {licensors.map((licensor, index) => (
@@ -180,6 +183,7 @@ const CreateMusic: React.FC<Props> = () => {
                 onChange={handleChange}
                 placeholder={`Enter Licensor ID`}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                required
               />
             </div>{" "}
             <div className="flex flex-col gap-4">
@@ -191,6 +195,7 @@ const CreateMusic: React.FC<Props> = () => {
                 onChange={handleChange}
                 placeholder={`Enter Licenser name`}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg"
+                required
               />
             </div>
           </div>{" "}
@@ -204,6 +209,7 @@ const CreateMusic: React.FC<Props> = () => {
                 onChange={handleChange}
                 placeholder={`Enter email`}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                required
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -215,6 +221,7 @@ const CreateMusic: React.FC<Props> = () => {
                 value={musicData.commission}
                 placeholder={`Enter Commission`}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                required
               />
             </div>{" "}
           </div>

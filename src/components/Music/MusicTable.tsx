@@ -5,6 +5,7 @@ import EditMusic from "./EditMusic";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { DeleteModal } from "../../UI/DeleteModal";
+import API_ENDPOINTS from "../../config/apiConfig";
 type Props = {};
 
 type Music = {
@@ -37,7 +38,7 @@ function MusicTable({}: Props) {
   }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/get-Musics");
+      const response = await axios.get(API_ENDPOINTS.GET_LINKEDMUSIC);
       setMusics(response.data);
     } catch (error) {
       console.error("Error fetching music data:", error);
@@ -45,7 +46,7 @@ function MusicTable({}: Props) {
   };
   const handleDelete = () => {
     try {
-      axios.delete(`http://localhost:3001/del-mchannel/${deleteId}`);
+      axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId));
       fetchData();
     } catch (error) {
       console.error("Error deleting music:", error);

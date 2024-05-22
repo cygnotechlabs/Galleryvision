@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Music = {
   _id: string;
@@ -29,7 +30,7 @@ const EditMusic = ({ onClose, music }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/get-licensor");
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -47,7 +48,7 @@ const EditMusic = ({ onClose, music }: Props) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3001/update-music/${formData._id}`,
+        API_ENDPOINTS.UPDATE_MUSIC(formData._id),
         formData
       );
       console.log(response.data); // Log the response if needed
@@ -133,6 +134,7 @@ const EditMusic = ({ onClose, music }: Props) => {
               onChange={handleLicensorChange}
               className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
               value={formData.licensorName || updatedData.licensorName}
+              required
             >
               <option value="">Select Licensor</option>
               {licensors.map((licensor, index) => (
@@ -152,6 +154,7 @@ const EditMusic = ({ onClose, music }: Props) => {
               onChange={handleChange}
               placeholder={music.musicId}
               className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+              required
             />
           </div>
           {/* Music name */}
@@ -162,8 +165,9 @@ const EditMusic = ({ onClose, music }: Props) => {
               id="licensorName"
               name="licensorName"
               onChange={handleChange}
-              placeholder={`${music.licensorName}`}
+              placeholder={`${music.musicName}`}
               className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+              required
             />
           </div>
         </div>
@@ -179,6 +183,7 @@ const EditMusic = ({ onClose, music }: Props) => {
               onChange={handleChange}
               placeholder={formData.musicEmail}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+              required
             />
           </div>
           {/* Commission */}
@@ -191,6 +196,7 @@ const EditMusic = ({ onClose, music }: Props) => {
               onChange={handleChange}
               placeholder={formData.commission}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+              required
             />
           </div>
         </div>

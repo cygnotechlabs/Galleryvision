@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { Back, Block, Email, Flag, Rupee } from "../icons/icon";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 
@@ -12,10 +13,10 @@ const MusicView = ({}: Props) => {
   useEffect(() => {
     const fetchChannelData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3001/mchannel-details/${id}`
-        );
-        setMusicData(response.data);
+        if (id) {
+          const response = await axios.get(API_ENDPOINTS.VIEW_MUSIC(id));
+          setMusicData(response.data);
+        }
       } catch (error) {
         console.error("Error fetching music data:", error);
       }

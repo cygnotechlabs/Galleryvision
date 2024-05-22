@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {
   music: Music;
@@ -30,7 +31,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/get-licensor");
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,7 +51,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:3001/assignMusic/`,
+        API_ENDPOINTS.ASSIGN_MUSIC,
         musicData
       );
       setMusicData(response.data);
@@ -140,6 +141,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 onChange={handleLicensorChange}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
                 value={musicData.licensorName}
+                required
               >
                 <option value="">Select Licensor</option>
                 {licensors.map((licensor, index) => (
@@ -157,6 +159,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 onChange={handleChange}
                 value={musicData.musicId}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                required
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -168,6 +171,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 onChange={handleChange}
                 value={musicData.musicName}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                required
               />
             </div>
           </div>
@@ -181,6 +185,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 onChange={handleChange}
                 value={musicData.musicEmail}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+                required
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -192,6 +197,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 onChange={handleChange}
                 value={musicData.commission}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+                required
               />
             </div>
           </div>

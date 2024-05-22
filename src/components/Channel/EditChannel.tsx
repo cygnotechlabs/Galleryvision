@@ -15,7 +15,7 @@ type ChannelData = {
 
 type Props = {
   onClose: () => void;
-  channelId?: string;
+  channelId?: string | undefined;
 };
 
 type Licensor = {
@@ -51,8 +51,12 @@ const EditChannel = ({ onClose, channelId }: Props) => {
   useEffect(() => {
     const fetchChannelData = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(channelId));
-        setChannelData(response.data);
+        if (channelId) {
+          const response = await axios.get(
+            API_ENDPOINTS.VIEW_CHANNEL(channelId)
+          );
+          setChannelData(response.data);
+        }
       } catch (error) {
         console.error("Error fetching channel data:", error);
       }
@@ -71,11 +75,13 @@ const EditChannel = ({ onClose, channelId }: Props) => {
   const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      await axios.put(API_ENDPOINTS.UPDATE_CHANNEL(channelId), {
-        ...channelData,
-        ...updatedData,
-      });
-      onClose();
+      if (channelId) {
+        await axios.put(API_ENDPOINTS.UPDATE_CHANNEL(channelId), {
+          ...channelData,
+          ...updatedData,
+        });
+        onClose();
+      }
     } catch (error) {
       console.error("Error updating channel data:", error);
     }

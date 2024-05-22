@@ -56,7 +56,7 @@ const AppRoutes: React.FC = () => {
               <Route index element={<Dashboard />} />
               <Route path="invoice" element={<Invoice />} />
               <Route path="generate-invoice" element={<GenerateInvoice />} />
-              <Route path="view-invoice" element={<ViewInvoice />} />
+              <Route path="view-invoice/:id" element={<ViewInvoice />} />
               <Route path="licensor" element={<Licensor />} />
               <Route path="create-licensor" element={<CreateLicensor />} />
               <Route path="update-licensor/:id" element={<EditLicensor />} />

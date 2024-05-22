@@ -7,14 +7,17 @@ import API_ENDPOINTS from "../../config/apiConfig";
 type Props = {};
 
 const ChannelView = ({}: Props) => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: string }>();
   const [channelData, setChannelData] = useState<any>(null);
 
   useEffect(() => {
     const fetchChannelData = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id));
-        setChannelData(response.data);
+        if (id) {
+          // Check if id is defined
+          const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id));
+          setChannelData(response.data);
+        }
       } catch (error) {
         console.error("Error fetching channel data:", error);
       }

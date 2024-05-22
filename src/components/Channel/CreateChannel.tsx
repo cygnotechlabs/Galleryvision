@@ -185,6 +185,7 @@ const CreateChannel = ({}: Props) => {
                 onChange={handleChange}
                 placeholder={`Enter Channel ID `}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                required
               />
             </div>{" "}
             <div className="flex flex-col gap-4">
@@ -196,6 +197,7 @@ const CreateChannel = ({}: Props) => {
                 onChange={handleChange}
                 placeholder={`Enter Channel name `}
                 className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg"
+                required
               />
             </div>
           </div>{" "}
@@ -209,6 +211,7 @@ const CreateChannel = ({}: Props) => {
                 onChange={handleChange}
                 placeholder={`Enter email `}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                required
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -220,6 +223,7 @@ const CreateChannel = ({}: Props) => {
                 onChange={handleChange}
                 placeholder={`Enter Commission `}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                required
               />
             </div>{" "}
           </div>

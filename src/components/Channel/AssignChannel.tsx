@@ -141,6 +141,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 onChange={handleLicensorChange}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
                 value={updatedData.licensorName}
+                required
               >
                 <option value="">Select Licensor</option>
                 {licensors.map((licensor, index) => (
@@ -158,6 +159,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 placeholder="Channel ID"
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
                 value={updatedData.channelId}
+                required
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -169,6 +171,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 onChange={handleUpdate}
                 className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
                 value={updatedData.channelName}
+                required
               />
             </div>
           </div>
@@ -182,6 +185,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 onChange={handleUpdate}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={updatedData.channelEmail}
+                required
               />
             </div>
             <div className="flex flex-col gap-4">
@@ -193,6 +197,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 onChange={handleUpdate}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={updatedData.commission}
+                required
               />
             </div>
           </div>

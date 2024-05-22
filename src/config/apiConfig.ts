@@ -13,6 +13,7 @@ const API_ENDPOINTS = {
   VIEW_RAWCHANNEL: (id: string) => `${BASE_URL}/view-rawchannel/${id}`,
 
   // Licensor Routes
+
   ADD_LICENSOR: `${BASE_URL}/add-licensor`,
   GET_LICENSOR: `${BASE_URL}/get-licensor`,
   VIEW_LICENSOR: (id: string) => `${BASE_URL}/view-licensor/${id}`,
@@ -22,9 +23,9 @@ const API_ENDPOINTS = {
   // Music Routes
   GET_RAWMUSIC: `${BASE_URL}/get-rawmusic`,
   VIEW_RAWMUSIC: (id: string) => `${BASE_URL}/view-rawmusic/${id}`,
-  GET_LINKEDMUSIC: `${BASE_URL}/get-linkedmusic`,
+  GET_LINKEDMUSIC: `${BASE_URL}/get-linked-music`,
   ADD_MUSIC: `${BASE_URL}/add-music`,
-  DEL_MUSIC: (id: string) => `${BASE_URL}/del-music/${id}`,
+  DEL_MUSIC: (id: string) => `${BASE_URL}/remove-music/${id}`,
   UPDATE_MUSIC: (id: string) => `${BASE_URL}/update-music/${id}`,
   VIEW_MUSIC: (id: string) => `${BASE_URL}/view-music/${id}`,
   ASSIGN_MUSIC: `${BASE_URL}/assign-music`,
@@ -40,6 +41,13 @@ const API_ENDPOINTS = {
   GET_CHANNEL_INVOICE: `${BASE_URL}/get-channel-Invoice`,
   VIEW_CHANNEL_INVOICE: (id: string) =>
     `${BASE_URL}/view-channel-Invoice/${id}`,
+
+  // Login Route
+  LOGIN: `${BASE_URL}/login`,
+
+  // Upload CSV
+  UPLOADCHANNEL:`${BASE_URL}/channel/importChannel`,
+  UPLOADMUSIC:`${BASE_URL}/music/importMusic`,
 };
 
 export default API_ENDPOINTS;

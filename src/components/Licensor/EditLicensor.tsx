@@ -5,6 +5,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 
@@ -39,24 +40,24 @@ const EditLicensor: React.FC<Props> = () => {
   const notify = () => {
     toast.success("Licensor edited successfully!", { position: "top-center" });
   };
+
   const navigate = useNavigate();
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/view-licensor/${id}`
-        );
-        setFormData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
+    if (id) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(API_ENDPOINTS.VIEW_LICENSOR(id));
+          setFormData(response.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }
   }, [id]);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -80,22 +81,21 @@ const EditLicensor: React.FC<Props> = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await axios.put(
-        `http://localhost:4000/update-licensor/${id}`,
-        formData
-      );
-      if (response.status === 200) {
-        console.log("Data updated successfully!");
-        setTimeout(() => {
-          navigate("/licensor");
-        }, 2000);
-        notify();
-      } else {
-        console.error("Failed to update data.");
+    if (id) {
+      try {
+        const response = await axios.put(API_ENDPOINTS.UPDATE_LICENSOR(id), formData);
+        if (response.status === 200) {
+          console.log("Data updated successfully!");
+          setTimeout(() => {
+            navigate("/licensor");
+          }, 2000);
+          notify();
+        } else {
+          console.error("Failed to update data.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
       }
-    } catch (error) {
-      console.error("Error:", error);
     }
   };
 

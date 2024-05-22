@@ -2,6 +2,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useRef, useState } from "react";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 const UploadMusic: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,7 @@ const UploadMusic: React.FC = () => {
     try {
       setUploading(true);
       // Change the URL to your backend server endpoint
-      await axios.post("http://localhost:4000/music/importMusic", formData, {
+      await axios.post(API_ENDPOINTS.UPLOADMUSIC, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

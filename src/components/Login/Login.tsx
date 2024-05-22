@@ -1,10 +1,10 @@
-// src/components/Login/Login.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import image from "../../assets/Image/login-image.png";
 import logo from "../../assets/logo/gv-logo.png";
 import axios from "axios";
 import { useAuth } from "../../Context/AuthContext";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 
@@ -13,6 +13,7 @@ function Login({}: Props) {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [stayLoggedIn, setStayLoggedIn] = useState(false); // New state for "stay logged in" option
   const [error, setError] = useState("");
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +22,10 @@ function Login({}: Props) {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+  };
+
+  const handleStayLoggedInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStayLoggedIn(e.target.checked);
   };
 
   const validateForm = () => {
@@ -42,12 +47,12 @@ function Login({}: Props) {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:3001/login", {
+      const response = await axios.post(API_ENDPOINTS.LOGIN, {
         email,
         password,
       });
       if (response.status === 200) {
-        login(response.data.token);
+        login(response.data.token, stayLoggedIn);
         navigate("home");
       } else {
         setError("Login failed. Please check your credentials.");
@@ -131,16 +136,18 @@ function Login({}: Props) {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
-                  id="remember-me"
-                  name="remember-me"
+                  id="stay-logged-in"
+                  name="stay-logged-in"
                   type="checkbox"
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  checked={stayLoggedIn}
+                  onChange={handleStayLoggedInChange}
                 />
                 <label
-                  htmlFor="remember-me"
+                  htmlFor="stay-logged-in"
                   className="ml-2 block text-sm text-gray-900"
                 >
-                  Remember password
+                  Stay logged in
                 </label>
               </div>
             </div>

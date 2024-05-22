@@ -4,6 +4,7 @@ import Modal from "../../layouts/Modal";
 import { Back, Edit, Filter } from "../icons/icon";
 import AssignMusic from "./AssignMusic";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Music = {
   _id: string;
@@ -32,26 +33,14 @@ function UnassignedMusic() {
     commission: "",
     musicLogo: "",
   });
-  const [musics, setMusics] = useState<Music[]>([
-    {
-      _id: "",
-      licensorId: "",
-      musicId: "",
-      licensorName: "",
-      musicName: "",
-      musicEmail: "",
-      licensor: "",
-      commission: "",
-      musicLogo: "",
-    },
-  ]);
+  const [musics, setMusics] = useState<Music[]>([]);
 
   useEffect(() => {
     fetchData();
   }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/get-rawmusic");
+      const response = await axios.get(API_ENDPOINTS.GET_RAWMUSIC);
       setMusics(response.data);
       console.log(currentMusicData);
     } catch (error) {

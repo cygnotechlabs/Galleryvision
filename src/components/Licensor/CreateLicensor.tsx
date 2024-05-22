@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import API_ENDPOINTS from "../../config/apiConfig";
 
 type Props = {};
 
@@ -32,7 +33,7 @@ const CreateLicensor: React.FC<Props> = () => {
     licensorAddress: "",
     bankAccNum: "",
     ifsc_iban: "",
-    currency: "",
+    currency: "INR",
   });
 
   const notify = () => {
@@ -52,7 +53,7 @@ const CreateLicensor: React.FC<Props> = () => {
     try {
       console.log("add licensor", formData);
       const response = await axios.post(
-        "http://localhost:4000/add-licensor",
+        API_ENDPOINTS.ADD_LICENSOR,
         formData
       );
       if (response.status === 200) {

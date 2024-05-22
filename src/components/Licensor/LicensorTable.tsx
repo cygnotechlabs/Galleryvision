@@ -50,7 +50,7 @@ function LicensorTable({}: Props) {
   }, []);
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_LINKED_CHANNEL); 
+      const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
       setLicensors(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
