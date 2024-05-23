@@ -12,7 +12,7 @@ const importMusic = async (req, res) => {
 
         let userData = [];
         const currentDate = new Date();
-        currentDate.setMonth(currentDate.getMonth()  );
+        currentDate.setMonth(currentDate.getMonth() );
         const month = currentDate.toLocaleString('en-US', { month: 'long' });
         const year = currentDate.getFullYear();
         const formattedDate = `${month} ${year}`;

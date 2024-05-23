@@ -24,7 +24,7 @@ server.use(express.json())
 
 server.use(router)
 
-const PORT =  4000
+const PORT =  5000
 
 server.get('/',(req,res)=>{
     res.status(200).json("Gallery vision server started")

@@ -123,4 +123,6 @@ router.post('/add-currency',SettingsController.addCurrency)
 
 //router.put('/update-currency/:id',SettingsController.updateCurrency)
 
-router.post('/view-channel-payment',PaymentController.viewChannelPayment)
+router.put('/channel-invoice-status/:id',PaymentController.ChannelInvoiceStatus)
+
+router.put('/music-invoice-status/:id',PaymentController.MusicInvoiceStatus)

@@ -159,25 +159,25 @@ exports.viewCurrency = async (req, res) => {
 
 
 exports.addCurrency = async (req, res) => {
-    const { currencyName, date } = req.body;
-  
-    if (!currencyName || !date || !Array.isArray(date)) {
+    const { INR, date } = req.body;
+    const USD = 1; // Assign a default value to USD
+  console.log("currency add",req.body);
+    if (!INR || !date) {
       return res.status(400).send('Invalid input data');
     }
   
     try {
-      const getCurrency = await currency.findOne({ currencyName });
+      let getCurrency = await currency.findOne({ date });
   
-      if (!getCurrency) {
-        // If the currency does not exist, create a new document
-        getCurrency = new currency({
-          currencyName,
-          date: date
-        });
+      if (getCurrency) {
+        getCurrency.INR = INR;
+         console.log("Date updated successfully"); 
       } else {
-        // If the currency exists, update the existing document
-        // This will replace the existing dates array with the new one
-        getCurrency.date.push(...date);
+        getCurrency = new currency({
+          date,
+          USD,
+          INR
+        });
       }
   
       await getCurrency.save();
@@ -186,7 +186,7 @@ exports.addCurrency = async (req, res) => {
       console.error(error);
       res.status(500).send('Server error');
     }
-  };
+};
   
 
 
@@ -245,29 +245,30 @@ exports.delCurrency = async (req, res) => {
 };
 
 
-exports.currencyConversion = async (req, res) => {
-    try {
-        const { currencyName } = req.body;
+// exports.currencyConversion = async (req, res) => {
+//     try {
+//         const { currencyName } = req.body;
 
-        // Assuming currencyName is a string and should not be converted to ObjectId
-        if (!currencyName || typeof currencyName !== 'string') {
-            return res.status(400).json({ error: 'Invalid Currency Name' });
-        }
+//         // Assuming currencyName is a string and should not be converted to ObjectId
+//         if (!currencyName || typeof currencyName !== 'string') {
+//             return res.status(400).json({ error: 'Invalid Currency Name' });
+//         }
 
-        const currencyRate = await currency.findOne({ currencyName: currencyName });
+//         const currencyRate = await currency.findOne({ currencyName: currencyName });
 
-        if (!currencyRate) {
-            return res.status(404).json({ error: 'Currency not found' });
-        }
+//         if (!currencyRate) {
+//             return res.status(404).json({ error: 'Currency not found' });
+//         }
 
-        return res.status(200).json(currencyRate);
-    } catch (error) {
-        console.error('Error fetching currency rate:', error);
+//         return res.status(200).json(currencyRate);
+//     } catch (error) {
+//         console.error('Error fetching currency rate:', error);
 
-        if (error.name === 'CastError') {
-            return res.status(400).json({ error: 'Invalid Currency' });
-        }
+//         if (error.name === 'CastError') {
+//             return res.status(400).json({ error: 'Invalid Currency' });
+//         }
 
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-}; 
+//         return res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// }; 
+

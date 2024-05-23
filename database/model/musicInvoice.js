@@ -4,6 +4,7 @@ const musicInvoicesSchema = mongoose.Schema({
   partnerName: { type: String},
   licensorId: { type: String},
   licensorName: { type: String},
+  licensorAddress: { type: String},
 
   accNum: { type: String},
   ifsc: { type: String},
@@ -18,7 +19,7 @@ const musicInvoicesSchema = mongoose.Schema({
   tax: { type: String},
   ptAfterTax: { type: String },
   commission: { type: String },
-  commisionAmount: { type: String },
+  commissionAmount: { type: String },
   totalPayout: { type: String },
   conversionRate: { type: String },
   payout: { type: String },
