@@ -24,6 +24,8 @@ function ChannelTable({}: Props) {
   const [editChannelId, setEditChannelId] = useState<string | undefined>();
   const [channelDeleteId, setChannelDeleteId] = useState<string | undefined>();
   const [channels, setChannels] = useState<ChannelType[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 12;
 
   useEffect(() => {
     fetchChannels();
@@ -42,9 +44,7 @@ function ChannelTable({}: Props) {
     if (!channelDeleteId) return;
 
     try {
-      await axios.delete(
-        API_ENDPOINTS.REMOVE_CHANNEL(channelDeleteId)
-      );
+      await axios.delete(API_ENDPOINTS.REMOVE_CHANNEL(channelDeleteId));
       setOpenDelete(false);
     } catch (error) {
       console.error("Error deleting channel:", error);
@@ -52,13 +52,28 @@ function ChannelTable({}: Props) {
     fetchChannels();
   };
 
-  function handleSearch(): void {
-    throw new Error("Function not implemented.");
-  }
+  const handleSearch = () => {
+    // set search funtion
+  };
+
+  const indexOfLastChannel = currentPage * rowsPerPage;
+  const indexOfFirstChannel = indexOfLastChannel - rowsPerPage;
+  const currentChannels = channels.slice(
+    indexOfFirstChannel,
+    indexOfLastChannel
+  );
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
+  };
 
   return (
-    <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
-      <div className="relative pl-8 pb-5 pt-8 pr-8 ">
+    <div className="bg-white shadow-md rounded-xl mx-[34px] my-6  pr-9">
+      <div className="relative pb-5 pt-8 px-8 ">
         <div className="flex justify-between text-sm">
           <div className="flex">
             <input
@@ -94,7 +109,7 @@ function ChannelTable({}: Props) {
             </tr>
           </thead>
           <tbody>
-            {channels.map(
+            {currentChannels.map(
               (channel: ChannelType, index: Key | null | undefined) => (
                 <tr key={index} className="bg-white">
                   <td className="px-4 py-1 border-gray-200 text-sm">
@@ -154,57 +169,31 @@ function ChannelTable({}: Props) {
         </table>
       </div>
 
-      <div className="pt-4 flex justify-center">
+      <div className="py-4 flex justify-center">
         <nav className="flex items-center gap-96" aria-label="Pagination">
-          <div>Showing 1 of 5 of 20 entries</div>
+          <div>
+            Showing {indexOfFirstChannel + 1} to{" "}
+            {Math.min(indexOfLastChannel, channels.length)} of {channels.length}{" "}
+            entries
+          </div>
           <ul className="flex list-style-none">
             <li>
-              <a
-                href="#"
-                className="py-2 px-3 ml-0 leading-tight text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1"
               >
                 Previous
-              </a>
+              </button>
             </li>
             <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-              >
-                1
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight bg-red-500 text-white border border-gray-300 hover:bg-red-600 hover:text-white"
-              >
-                2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-              >
-                3
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-              >
-                4
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+              <button
+                onClick={handleNextPage}
+                disabled={indexOfLastChannel >= channels.length}
+                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
               >
                 Next
-              </a>
+              </button>
             </li>
           </ul>
         </nav>

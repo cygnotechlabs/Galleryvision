@@ -1,3 +1,5 @@
+import Currency from "../components/Settings/Currency/Currency";
+
 const BASE_URL = "http://localhost:5000";
 
 const API_ENDPOINTS = {
@@ -48,6 +50,14 @@ const API_ENDPOINTS = {
   // Upload CSV
   UPLOADCHANNEL: `${BASE_URL}/channel/importChannel`,
   UPLOADMUSIC: `${BASE_URL}/music/importMusic`,
+
+  // Currency Convertion
+  CURRENCY_COVERSTION: `${BASE_URL}/add-currency`,
+
+  // PAYMENT
+  CHANGE_CHANNEL_STATUS: (id: string) =>
+    `${BASE_URL}/channel-invoice-status/${id}`,
+  CHANGE_MUSIC_STATUS: (id: string) => `${BASE_URL}/music-invoice-status/${id}`,
 };
 
 export default API_ENDPOINTS;

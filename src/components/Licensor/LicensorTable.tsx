@@ -28,6 +28,8 @@ function LicensorTable({}: Props) {
   const [licensorDeleteId, setLicensorDeleteId] = useState<string>("");
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 12;
 
   const [licensor, setLicensor] = useState({
     _id: "",
@@ -69,8 +71,8 @@ function LicensorTable({}: Props) {
     }
     fetchData();
   };
+
   const handleSearch = () => {
-    // Filter the licensors based on the search term
     const filteredLicensors = licensors.filter(
       (licensor) =>
         licensor.licensorName
@@ -78,9 +80,24 @@ function LicensorTable({}: Props) {
           .includes(searchTerm.toLowerCase()) ||
         licensor.companyName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    // Do something with the filtered licensors, like updating state or displaying them
-    console.log(filteredLicensors);
+    setLicensors(filteredLicensors);
   };
+
+  const indexOfLastLicensor = currentPage * rowsPerPage;
+  const indexOfFirstLicensor = indexOfLastLicensor - rowsPerPage;
+  const currentLicensors = licensors.slice(
+    indexOfFirstLicensor,
+    indexOfLastLicensor
+  );
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
+  };
+
   return (
     <div className="bg-white shadow-md rounded-xl  mt-6 h-[75svh] pr-9">
       {/* Search and Filter */}
@@ -123,7 +140,7 @@ function LicensorTable({}: Props) {
             </tr>
           </thead>
           <tbody>
-            {licensors.map((licensor, index) => (
+            {currentLicensors.map((licensor, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1 border-gray-200 text-sm">
                   {licensor.licensorName}
@@ -172,8 +189,31 @@ function LicensorTable({}: Props) {
       {/* Pagination */}
       <div className="pt-4 flex justify-center">
         <nav className="flex items-center gap-96" aria-label="Pagination">
-          <div>Showing 1 of 5 of {licensors.length} entries</div>
-          <ul className="flex list-style-none">{/* Pagination Links */}</ul>
+          <div>
+            Showing {indexOfFirstLicensor + 1} to{" "}
+            {Math.min(indexOfLastLicensor, licensors.length)} of{" "}
+            {licensors.length} entries
+          </div>
+          <ul className="flex list-style-none">
+            <li>
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1"
+              >
+                Previous
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={handleNextPage}
+                disabled={indexOfLastLicensor >= licensors.length}
+                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
+              >
+                Next
+              </button>
+            </li>
+          </ul>
         </nav>
       </div>
       {/* Modal */}

@@ -1,8 +1,9 @@
 import { Link, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Back, Download, Emailsm, Invoice } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
+import jsPDF from "jspdf";
 
 type Props = {};
 
@@ -27,11 +28,15 @@ type InvoiceData = {
   conversionRate: string;
   payout: string;
   status: string;
+  commissionAmount: string;
+  licensorAddress: string;
 };
 
-const ChannelViewInvoice = ({}: Props) => {
+const ChannelViewInvoice: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+  const invoiceRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,10 +54,25 @@ const ChannelViewInvoice = ({}: Props) => {
     fetchData();
   }, [id]);
 
+  const handleDownloadPdf = () => {
+    const doc = new jsPDF();
+    const element = invoiceRef.current;
+
+    if (element) {
+      doc.html(element, {
+        callback: function (pdf) {
+          pdf.save("invoice.pdf");
+        },
+        // Adjust position as needed
+        x: 10,
+        y: 10,
+      });
+    }
+  };
+
   if (!invoiceData) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="flex flex-col gap-4">
       <Link to={"/home/invoice"}>
@@ -62,7 +82,10 @@ const ChannelViewInvoice = ({}: Props) => {
         </div>
       </Link>
 
-      <div className="flex flex-col gap-6 bg-white w-[75%] p-8">
+      <div
+        className="flex flex-col gap-6 bg-white w-[75%] p-8"
+        ref={invoiceRef}
+      >
         <p className="text-lg font-bold">Preview</p>
         <div className="flex flex-col gap-6 w-[94%] border-2 p-8 mx-8">
           <p className="text-lg font-bold">{invoiceData.invoiceNumber}</p>
@@ -96,11 +119,11 @@ const ChannelViewInvoice = ({}: Props) => {
           </div>
           <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Music ID</p>
+              <p className="text-sm">Channel ID</p>
               <p className="font-bold text-sm">{invoiceData.channelId}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">PT Revenue</p>
+              <p className="text-sm">Partner Revenue</p>
               <p className="font-bold text-sm">{invoiceData.ptRevenue}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
@@ -110,11 +133,11 @@ const ChannelViewInvoice = ({}: Props) => {
           </div>
           <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">PT After Tax</p>
+              <p className="text-sm">Partner Revenue After Tax</p>
               <p className="font-bold text-sm">{invoiceData.ptAfterTax}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Commission</p>
+              <p className="text-sm">Commission(%)</p>
               <p className="font-bold text-sm">{invoiceData.commission}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
@@ -142,33 +165,34 @@ const ChannelViewInvoice = ({}: Props) => {
               <div className="flex gap-2">
                 {/* Replace with actual logo */}
                 <div className="flex-col">
-                  <p className="text-sm font-bold">Asianet</p>
-                  <p className="text-sm">asianet@gmail.com</p>
+                  <p className="text-sm font-bold">Channel Name : {invoiceData.channelName}</p>
+                  <p className="text-sm">Licensor Name : {invoiceData.licensorName}</p>
+                  <p className="text-sm">Licensor Address : {invoiceData.licensorAddress}</p>
                 </div>
               </div>
               <div className="flex gap-2">
                 {/* Replace with actual logo */}
-                <div className="flex-col">
+                {/* <div className="flex-col">
                   <p className="text-sm font-bold">Asianet</p>
                   <p className="text-sm">asianet@gmail.com</p>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              <p className="text-sm font-bold">Payment to</p>
+              {/* <p className="text-sm font-bold">Payment to</p> */}
               <div className="flex gap-2">
                 {/* Replace with actual logo */}
                 <div className="flex-col">
-                  <p className="text-sm font-bold">Gallery vision</p>
-                  <p className="text-sm">vision@email.com</p>
+                  {/* <p className="text-sm font-bold">Gallery vision</p> */}
+                  {/* <p className="text-sm">vision@email.com</p> */}
                 </div>
               </div>
               <div className="flex gap-2">
                 {/* Replace with actual logo */}
                 <div className="flex-col">
-                  <p className="text-sm font-bold">**** **** **** 4455</p>
+                  {/* <p className="text-sm font-bold">**** **** **** 4455</p> */}
                   <p className="text-sm">
-                    3891 Ranchview Dr. Richardson, California 62639
+                    {/* 3891 Ranchview Dr. Richardson, California 62639 */}
                   </p>
                 </div>
               </div>
@@ -176,16 +200,17 @@ const ChannelViewInvoice = ({}: Props) => {
           </div>
           <div className="flex flex-col gap-1 border-b-2 pb-6">
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Total Revenue</p>
-              <p className="font-bold text-sm">${invoiceData.ptRevenue}</p>
+              <p className="text-sm">Total Payout(USD)</p>
+              <p className="font-bold text-sm">${invoiceData.totalPayout}</p>
             </div>
+
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Commission (10%)</p>
-              <p className="font-bold text-sm">${invoiceData.commission}</p>
+              <p className="text-sm">Commission {invoiceData.commission}%</p>
+              <p className="font-bold text-sm">${invoiceData.commissionAmount}</p>
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Total Amount</p>
-              <p className="font-bold text-sm">${invoiceData.totalPayout}</p>
+              <p className="font-bold text-sm">{invoiceData.payout}</p>
             </div>
           </div>
         </div>
@@ -197,7 +222,10 @@ const ChannelViewInvoice = ({}: Props) => {
           <button className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100">
             <Emailsm /> Email
           </button>
-          <button className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black">
+          <button
+            onClick={handleDownloadPdf}
+            className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"
+          >
             <Download /> Download Pdf
           </button>
         </div>

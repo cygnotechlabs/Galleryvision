@@ -11,23 +11,32 @@ type Props = {
 
 const GenerateChannelInvoice = ({ selectedDate }: Props) => {
   const [buttonText, setButtonText] = useState("Generate invoice");
-  const notify = () => toast("Genarated Success");
 
   const generateChannelInvoice = async () => {
     setButtonText("Generating...");
     try {
-      await axios.post(API_ENDPOINTS.GENERATE_CHANNEL_INVOICE, {
-        date: selectedDate,
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.GENERATE_CHANNEL_INVOICE,
+        {
+          date: selectedDate,
+        }
+      );
       // Simulate a delay for demonstration purposes
+      const message = response.data.message;
+
+      console.log(message);
       setTimeout(() => {
         setButtonText("Generate invoice");
-      }, 2000); // Change text back after 2 seconds
+      }, 2000);
+      toast.success(message);
     } catch (error) {
-      console.error("Error generating Channel invoice:", error);
       setButtonText("Generate invoice");
-    } finally {
-      notify();
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.error);
+      } else {
+        // Handle other types of errors if necessary
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 

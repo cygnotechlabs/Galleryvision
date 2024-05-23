@@ -1,13 +1,12 @@
-import MonthYearSelector from "../../UI/MonthYear";
-import empty from "../../../public/empty.png";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import empty from "../../../public/empty.png";
+import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { Edit, Eye, Trash } from "../icons/icon";
-type Props = {
-  selectedDate: string;
-};
+import { Eye } from "../icons/icon";
+
+type Props = {};
 
 type Invoice = {
   _id: string;
@@ -30,12 +29,16 @@ type Invoice = {
   conversionRate: string;
   payout: string;
   status: string;
+  commissionAmount: string;
 };
 
-const GenataredChannelInvoice = ({ selectedDate }: Props) => {
-  const [openDelete, setOpenDelete] = useState(false);
+const GenataredChannelInvoice = ({}: Props) => {
   const [invoiceData, setInvoiceData] = useState<Invoice[]>([]);
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().slice(0, 7)
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 12;
 
   useEffect(() => {
     fetchData();
@@ -43,14 +46,35 @@ const GenataredChannelInvoice = ({ selectedDate }: Props) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_CHANNEL_INVOICE);
+      const response = await axios.get(API_ENDPOINTS.GET_CHANNEL_INVOICE, {
+        params: {
+          page: currentPage,
+          date: selectedDate,
+        },
+      });
       setInvoiceData(response.data);
     } catch (error) {
       console.error("Error fetching invoices:", error);
     }
   };
+
   const handleDateChange = (newDate: string) => {
-    // setSelectedDate(newDate);
+    setSelectedDate(newDate);
+  };
+
+  const indexOfLastInvoice = currentPage * rowsPerPage;
+  const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
+  const currentInvoices = invoiceData.slice(
+    indexOfFirstInvoice,
+    indexOfLastInvoice
+  );
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
   };
 
   return (
@@ -69,7 +93,7 @@ const GenataredChannelInvoice = ({ selectedDate }: Props) => {
           <button className="px-2 border bg-slate-200 rounded-lg">sort</button>
         </div>
       </div>
-      {invoiceData.length === 0 ? ( // Conditionally render based on invoiceData length
+      {invoiceData.length === 0 ? (
         <div className="flex gap-2 flex-col m-3">
           <img src={empty} alt="" className="w-[25%] mx-auto" />
           <p className="text-center text-lg text-gray-600">
@@ -82,68 +106,85 @@ const GenataredChannelInvoice = ({ selectedDate }: Props) => {
           </Link>
         </div>
       ) : (
-        <table className="w-full">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
-              <th className="px-4 py-2 text-left text-sm">Licensor name</th>
-              <th className="px-4 py-2 text-left text-sm">Music</th>
-              <th className="px-4 py-2 text-left text-sm">Partner revenue</th>
-              <th className="px-4 py-2 text-left text-sm">Commission</th>
-              <th className="px-4 py-2 text-left text-sm">status</th>
-              <th className="px-4 py-2 text-left text-sm"></th>
-              <th className="px-4 py-2 text-left text-sm">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {invoiceData.map((invoice, index) => (
-              <tr key={index} className="bg-white">
-                <td className="px-4 py-1 border-gray-200 text-sm">
-                  {invoice.invoiceNumber}
-                </td>
-                <td className="px-4 py-1 border-gray-200 text-sm">
-                  {invoice.licensorName}
-                </td>
-                <td className="px-4 py-1 border-gray-200 text-sm">
-                  {invoice.partnerName}
-                </td>
-                <td className="px-4 py-1 border-gray-200 text-sm">
-                  {invoice.ptRevenue}
-                </td>
-                <td className="px-4 py-1 border-gray-200 text-sm">
-                  {invoice.commission}
-                </td>
-                <td className="px-4 py-1 border-gray-200 text-sm">
-                  {invoice.status}
-                </td>
-                <td className="px-4 py-1 border-gray-200 text-sm"></td>
-                <td className="px-4 py-1 border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <Link to={`/home/view-invoices/${invoice._id}`}>
-                      <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
-                        <Eye />
-                      </button>
-                    </Link>
-                    <button
-                      onClick={() => {}}
-                      className="flex gap-2 bg-gray-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
-                    >
-                      <Edit />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setOpenDelete(true);
-                      }}
-                      className="flex gap-2 bg-red-400 hover:bg-gray-400 text-white hover:text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
-                    >
-                      <Trash />
-                    </button>
-                  </div>
-                </td>
+        <>
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
+                <th className="px-4 py-2 text-left text-sm">Licensor name</th>
+                <th className="px-4 py-2 text-left text-sm">Channel</th>
+                <th className="px-4 py-2 text-left text-sm">Partner revenue</th>
+                <th className="px-4 py-2 text-left text-sm">Commission</th>
+                <th className="px-4 py-2 text-left text-sm">status</th>
+                <th className="px-4 py-2 text-left text-sm"></th>
+                <th className="px-4 py-2 text-left text-sm">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentInvoices.map((invoice, index) => (
+                <tr key={index} className="bg-white">
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {invoice.invoiceNumber}
+                  </td>
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {invoice.licensorName}
+                  </td>
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {invoice.partnerName}
+                  </td>
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {invoice.ptRevenue}
+                  </td>
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {invoice.commission}
+                  </td>
+                  <td className="px-4 py-1 border-gray-200 text-sm">
+                    {invoice.status}
+                  </td>
+                  <td className="px-4 py-1 border-gray-200 text-sm"></td>
+                  <td className="px-4 py-1 border-gray-200">
+                    <div className="flex items-center space-x-2">
+                      <Link to={`/home/view-invoices/${invoice._id}`}>
+                        <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
+                          <Eye />
+                        </button>
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="pt-4 flex justify-center">
+            <nav className="flex items-center gap-96" aria-label="Pagination">
+              <div>
+                Showing {indexOfFirstInvoice + 1} to{" "}
+                {Math.min(indexOfLastInvoice, invoiceData.length)} of{" "}
+                {invoiceData.length} entries
+              </div>
+              <ul className="flex list-style-none">
+                <li>
+                  <button
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1"
+                  >
+                    Previous
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={handleNextPage}
+                    disabled={indexOfLastInvoice >= invoiceData.length}
+                    className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </>
       )}
     </div>
   );

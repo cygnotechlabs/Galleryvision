@@ -9,25 +9,29 @@ type Props = {
   selectedDate: string;
 };
 
-const GernateMusicInvoice = ({ selectedDate }: Props) => {
+const GenerateMusicInvoice = ({ selectedDate }: Props) => {
   const [buttonText, setButtonText] = useState("Generate invoice");
-  const notify = () => toast("Genarated Success");
 
-  
   const generateMusicInvoice = async () => {
     setButtonText("Generating...");
     try {
-      await axios.post(API_ENDPOINTS.GENERATE_MUSIC_INVOICE, {
+      const response = await axios.post(API_ENDPOINTS.GENERATE_MUSIC_INVOICE, {
         date: selectedDate,
       });
-      setTimeout(() => {
-        setButtonText("Generate invoice");
-      }, 2000); // Change text back after 2 seconds
+      const message = response.data.message;
+      console.log(message);
+
+      toast.success(message); // Pass the message directly to the toast function
     } catch (error) {
-      console.error("Error generating Music invoice:", error);
-      setButtonText("Generate invoice");
+      setButtonText("Generating...");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.error); // Provide a generic error message
+      } else {
+        // Handle other types of errors if necessary
+        console.error("An unexpected error occurred:", error);
+      }
     } finally {
-      notify();
+      setButtonText("Generate invoice");
     }
   };
 
@@ -55,4 +59,4 @@ const GernateMusicInvoice = ({ selectedDate }: Props) => {
   );
 };
 
-export default GernateMusicInvoice;
+export default GenerateMusicInvoice;

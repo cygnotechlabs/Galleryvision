@@ -10,17 +10,17 @@ const Settings = () => {
   };
 
   return (
-    <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+    <div className="bg-gray-100 pl-[34px] pt-[20px]">
       <p className="text-2xl font-bold">Settings</p>
-      <div className="flex w-[1107px] h-[363px] bg-white mt-6 rounded-2xl px-8 py-8">
-        <div className="border-r border-gray-300 h-[300px] w-[370px] ">
+      <div className="flex w-[70%]  bg-white mt-6 rounded-2xl px-8 py-8">
+        <div className="flex flex-col gap-2 border-r border-gray-300 px-2">
           <div
             className={`flex text-sm font-bold items-center p-6 w-[330px] h-[56px] rounded-2xl cursor-pointer ${
               activeComponent === "currency" ? "bg-red-100" : "hover:bg-red-100"
             }`}
             onClick={() => handleComponentClick("currency")}
           >
-            Currency
+            Currency Rate
           </div>
           <div
             className={`flex text-sm font-bold items-center p-6 w-[330px] h-[56px] rounded-2xl cursor-pointer ${

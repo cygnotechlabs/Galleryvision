@@ -25,6 +25,8 @@ type InvoiceData = {
   conversionRate: string;
   payout: string;
   status: string;
+  commissionAmount: string;
+
 };
 
 const MusicViewInvoice = ({}: Props) => {
@@ -179,8 +181,8 @@ const MusicViewInvoice = ({}: Props) => {
               <p className="font-bold text-sm">${invoiceData.ptRevenue}</p>
             </div>
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Commission (10%)</p>
-              <p className="font-bold text-sm">${invoiceData.commission}</p>
+              <p className="text-sm">Commission {invoiceData.commission}</p>
+              <p className="font-bold text-sm">${invoiceData.commissionAmount}</p>
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Total Amount</p>
