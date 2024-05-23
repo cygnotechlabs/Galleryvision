@@ -27,7 +27,7 @@ type InvoiceData = {
   status: string;
 };
 
-const ViewInvoice = ({}: Props) => {
+const MusicViewInvoice = ({}: Props) => {
   const { id } = useParams<{ id: string }>();
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
 
@@ -35,7 +35,9 @@ const ViewInvoice = ({}: Props) => {
     const fetchData = async () => {
       try {
         if (id) {
-          const response = await axios.get(API_ENDPOINTS.VIEW_MUSIC_INVOICE(id));
+          const response = await axios.get(
+            API_ENDPOINTS.VIEW_MUSIC_INVOICE(id)
+          );
           setInvoiceData(response.data);
         }
       } catch (error) {
@@ -203,4 +205,4 @@ const ViewInvoice = ({}: Props) => {
   );
 };
 
-export default ViewInvoice;
+export default MusicViewInvoice;

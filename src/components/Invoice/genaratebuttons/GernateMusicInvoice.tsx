@@ -32,7 +32,7 @@ const GernateMusicInvoice = ({ selectedDate }: Props) => {
   };
 
   return (
-    <div className="mt-5 bg-red-100 border-2 border-dashed rounded-2xl border-gray-400">
+    <div className="mt-5 bg-green-100 border-2 border-dashed rounded-2xl border-gray-400">
       <div className="flex justify-between gap-4 px-6 py-5">
         <div className="flex gap-4">
           <img className="w-12 rounded-full" src={logo} alt="Invoice Logo" />

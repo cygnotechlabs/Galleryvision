@@ -119,7 +119,7 @@ const GenataredChannelInvoice = ({ selectedDate }: Props) => {
                 <td className="px-4 py-1 border-gray-200 text-sm"></td>
                 <td className="px-4 py-1 border-gray-200">
                   <div className="flex items-center space-x-2">
-                    <Link to={`/home/view-invoice/${invoice._id}`}>
+                    <Link to={`/home/view-invoices/${invoice._id}`}>
                       <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
                         <Eye />
                       </button>

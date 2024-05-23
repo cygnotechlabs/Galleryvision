@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = "http://localhost:5000";
 
 const API_ENDPOINTS = {
   // Channel Routes
@@ -46,8 +46,8 @@ const API_ENDPOINTS = {
   LOGIN: `${BASE_URL}/login`,
 
   // Upload CSV
-  UPLOADCHANNEL:`${BASE_URL}/channel/importChannel`,
-  UPLOADMUSIC:`${BASE_URL}/music/importMusic`,
+  UPLOADCHANNEL: `${BASE_URL}/channel/importChannel`,
+  UPLOADMUSIC: `${BASE_URL}/music/importMusic`,
 };
 
 export default API_ENDPOINTS;

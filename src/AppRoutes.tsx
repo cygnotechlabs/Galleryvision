@@ -18,9 +18,14 @@ const Channel = lazy(() => import("./pages/Channel"));
 
 // Invoice
 const Invoice = lazy(() => import("./pages/Invoice"));
-const ViewInvoice = lazy(() => import("./components/Invoice/ViewInvoice"));
+const MusicViewInvoice = lazy(
+  () => import("./components/Invoice/MusicViewInvoice")
+);
 const GenerateInvoice = lazy(
   () => import("./components/Invoice/GenarateInvoice")
+);
+const ChannelViewInvoice = lazy(
+  () => import("./components/Invoice/ChannelVeiwInvoice")
 );
 
 // Licensor
@@ -56,7 +61,11 @@ const AppRoutes: React.FC = () => {
               <Route index element={<Dashboard />} />
               <Route path="invoice" element={<Invoice />} />
               <Route path="generate-invoice" element={<GenerateInvoice />} />
-              <Route path="view-invoice/:id" element={<ViewInvoice />} />
+              <Route path="view-invoice/:id" element={<MusicViewInvoice />} />
+              <Route
+                path="view-invoices/:id"
+                element={<ChannelViewInvoice />}
+              />
               <Route path="licensor" element={<Licensor />} />
               <Route path="create-licensor" element={<CreateLicensor />} />
               <Route path="update-licensor/:id" element={<EditLicensor />} />
