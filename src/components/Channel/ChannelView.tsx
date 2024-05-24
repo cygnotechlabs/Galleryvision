@@ -9,22 +9,23 @@ type Props = {};
 const ChannelView = ({}: Props) => {
   const { id } = useParams<{ id?: string }>();
   const [channelData, setChannelData] = useState<any>(null);
+  const [channelInvoice, setChannelInvoice] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchChannelData = async () => {
-      try {
-        if (id) {
-          // Check if id is defined
-          const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id));
-          setChannelData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching channel data:", error);
-      }
-    };
-
     fetchChannelData();
   }, [id]);
+
+  const fetchChannelData = async () => {
+    try {
+      if (id) {
+        const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id));
+        setChannelData(response.data.channelDetails);
+        setChannelInvoice(response.data.channelInvoice);
+      }
+    } catch (error) {
+      console.error("Error fetching channel data:", error);
+    }
+  };
 
   return (
     <div className="bg-gray-100 h-[90svh]">
@@ -66,11 +67,6 @@ const ChannelView = ({}: Props) => {
                     {channelData.channelEmail}
                   </p>
                 </div>
-                {/* <div className="px-[52px] border-r border-gray-400">
-                  <Flag />
-                  <p className="text-sm text-gray-400  py-1">Country</p>
-                  <p className="text-sm font-bold">{channelData.country}</p>
-                </div> */}
                 <div className="px-[52px]">
                   <Rupee />
                   <p className="text-sm text-gray-400 py-1">Commission %</p>
@@ -79,7 +75,28 @@ const ChannelView = ({}: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex px-[24px] gap-8 py-[24px] mt-4 rounded-lg h-[151px] bg-gray-100"></div>
+          <div className="flex px-6 py-6 mt-4 rounded-lg  bg-gray-100">
+            <table className="w-full">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="px-4 py-1 font-normal">Date</th>
+                  <th className="px-4 py-1 font-normal">Invoice Number</th>
+                  <th className="px-4 py-1 font-normal">Payout</th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {channelInvoice.map((invoice) => (
+                  <tr key={invoice._id}>
+                    <td className="px-4 py-1 font-normal">{invoice.date}</td>
+                    <td className="px-4 py-1 font-normal">
+                      {invoice.invoiceNumber}
+                    </td>
+                    <td className="px-4 py-1 font-normal">{invoice.payout}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

@@ -40,7 +40,7 @@ const LineChart = ({}: Props) => {
     ],
     datasets: [
       {
-        label: "Revenue",
+        label: "Channel",
         data: [
           6500, 5900, 8000, 8100, 5600, 5500, 4000, 6500, 5900, 8000, 8100,
           5600,
@@ -50,7 +50,7 @@ const LineChart = ({}: Props) => {
         tension: 0.1,
       },
       {
-        label: "Invoice                       ",
+        label: "Music                       ",
         data: [
           6500, 8900, 8000, 1060, 7600, 5670, 4000, 6500, 8900, 8000, 3100,
           7600,

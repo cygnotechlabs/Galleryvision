@@ -1,28 +1,30 @@
-import { Link, useParams } from "react-router-dom";
-import { Back, Block, Email, Flag, Rupee } from "../icons/icon";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { Back, Block, Email, Rupee } from "../icons/icon";
 
 type Props = {};
 
 const MusicView = ({}: Props) => {
   const { id } = useParams<{ id: string }>();
   const [musicData, setMusicData] = useState<any>(null);
+  const [musicInvoice, setMusicInvoice] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchChannelData = async () => {
+    const fetchMusicData = async () => {
       try {
         if (id) {
           const response = await axios.get(API_ENDPOINTS.VIEW_MUSIC(id));
-          setMusicData(response.data);
+          setMusicData(response.data.musicDetails);
+          setMusicInvoice(response.data.musicInvoice);
         }
       } catch (error) {
         console.error("Error fetching music data:", error);
       }
     };
 
-    fetchChannelData();
+    fetchMusicData();
   }, [id]);
 
   return (
@@ -42,7 +44,7 @@ const MusicView = ({}: Props) => {
             <div className="flex items-center justify-center border px-[30px] w-[153px] h-[120px] py-[16px]">
               {musicData.musicLogo && (
                 <img
-                  src={musicData.musicLogo} // Set the src attribute to the base64 string
+                  src={musicData.musicLogo}
                   alt="Company Logo"
                   className="w-[150px] h-[150px] object-contain"
                 />
@@ -61,11 +63,6 @@ const MusicView = ({}: Props) => {
                   <p className="text-sm text-gray-400 py-1">Email</p>
                   <p className="text-sm font-bold">{musicData.musicEmail}</p>
                 </div>
-                <div className="px-[52px] border-r border-gray-400">
-                  <Flag />
-                  <p className="text-sm text-gray-400 py-1">Country</p>
-                  <p className="text-sm font-bold">India</p>
-                </div>
                 <div className="px-[52px]">
                   <Rupee />
                   <p className="text-sm text-gray-400 py-1">Commission %</p>
@@ -74,7 +71,26 @@ const MusicView = ({}: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex px-[24px] gap-8 py-[24px] mt-4 rounded-lg h-[151px] bg-gray-100"></div>
+          <div className="flex px-6 mt-4 rounded-lg  bg-gray-100">
+            <table className="w-full">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="px-4 py-1 font-normal">Date</th>
+                  <th className="px-4 py-1 font-normal">Invoice Number</th>
+                  <th className="px-4 py-1 font-normal">Payout</th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {musicInvoice.map((invoice) => (
+                  <tr key={invoice._id}>
+                    <td>{invoice.date}</td>
+                    <td>{invoice.invoiceNumber}</td>
+                    <td>{invoice.payout}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

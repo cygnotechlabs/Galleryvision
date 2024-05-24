@@ -27,6 +27,7 @@ function LicensorTable({}: Props) {
   const [openDelete, setOpenDelete] = useState(false);
   const [licensorDeleteId, setLicensorDeleteId] = useState<string>("");
   const [licensors, setLicensors] = useState<Licensor[]>([]);
+  const [filteredLicensors, setFilteredLicensors] = useState<Licensor[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
@@ -50,10 +51,12 @@ function LicensorTable({}: Props) {
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
       setLicensors(response.data);
+      setFilteredLicensors(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -65,6 +68,9 @@ function LicensorTable({}: Props) {
       setLicensors((prevLicensors) =>
         prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
       );
+      setFilteredLicensors((prevLicensors) =>
+        prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
+      );
       setOpenDelete(false);
     } catch (error) {
       console.error("Error deleting licensor:", error);
@@ -72,20 +78,30 @@ function LicensorTable({}: Props) {
     fetchData();
   };
 
-  const handleSearch = () => {
-    const filteredLicensors = licensors.filter(
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    if (term === "") {
+      setFilteredLicensors(licensors);
+    } else {
+      const filtered = licensors.filter((licensor) =>
+        licensor.licensorName.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredLicensors(filtered);
+    }
+  };
+
+  const handleSuggestionClick = (licensorName: string) => {
+    setSearchTerm(licensorName);
+    const filtered = licensors.filter(
       (licensor) =>
-        licensor.licensorName
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        licensor.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+        licensor.licensorName.toLowerCase() === licensorName.toLowerCase()
     );
-    setLicensors(filteredLicensors);
+    setFilteredLicensors(filtered);
   };
 
   const indexOfLastLicensor = currentPage * rowsPerPage;
   const indexOfFirstLicensor = indexOfLastLicensor - rowsPerPage;
-  const currentLicensors = licensors.slice(
+  const currentLicensors = filteredLicensors.slice(
     indexOfFirstLicensor,
     indexOfLastLicensor
   );
@@ -104,20 +120,32 @@ function LicensorTable({}: Props) {
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
         {/* Search Input */}
         <div className="flex justify-between text-sm">
-          <div className="flex">
-            <input
-              type="text"
-              placeholder="Search"
-              className="border border-gray-300 rounded-s-md px-4 w-[566px] h-[42px] pr-[40px]"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button
-              onClick={handleSearch}
-              className="bg-black text-white px-2 rounded-e-2xl"
-            >
-              <Search />
-            </button>
+          <div className="flex flex-col w-[566px]">
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="Search"
+                className="border border-gray-300 rounded-s-md px-4 w-full h-[42px] pr-[40px]"
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+              <button className="bg-black text-white px-2 rounded-e-2xl">
+                <Search />
+              </button>
+            </div>
+            {searchTerm && (
+              <ul className="border border-gray-300 rounded-b-md bg-white max-h-48 overflow-y-auto">
+                {filteredLicensors.map((licensor) => (
+                  <li
+                    key={licensor._id}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => handleSuggestionClick(licensor.licensorName)}
+                  >
+                    {licensor.licensorName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {/* Filter Button */}
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
@@ -191,8 +219,8 @@ function LicensorTable({}: Props) {
         <nav className="flex items-center gap-96" aria-label="Pagination">
           <div>
             Showing {indexOfFirstLicensor + 1} to{" "}
-            {Math.min(indexOfLastLicensor, licensors.length)} of{" "}
-            {licensors.length} entries
+            {Math.min(indexOfLastLicensor, filteredLicensors.length)} of{" "}
+            {filteredLicensors.length} entries
           </div>
           <ul className="flex list-style-none">
             <li>

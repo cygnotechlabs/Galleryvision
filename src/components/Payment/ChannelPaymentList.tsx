@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { Arrow, Back, Eye } from "../icons/icon";
+import Modal from "../../layouts/Modal";
+import PaymentModal from "../../UI/PaymentModal";
 
 interface Props {}
 
@@ -69,6 +71,22 @@ const ChannelPaymentList: React.FC<Props> = () => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
   };
+  const handleStatusChange = async (invoiceId: string, newStatus: string) => {
+    try {
+      await axios.put(API_ENDPOINTS.CHANGE_CHANNEL_STATUS(invoiceId), {
+        status: newStatus,
+      });
+      setInvoices((prevInvoices) =>
+        prevInvoices.map((invoice) =>
+          invoice._id === invoiceId
+            ? { ...invoice, status: newStatus }
+            : invoice
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-5 bg-white py-4 rounded-lg">
@@ -110,6 +128,7 @@ const ChannelPaymentList: React.FC<Props> = () => {
               key={invoice._id}
               invoice={invoice}
               allChecked={allChecked}
+              handleStatusChange={handleStatusChange}
             />
           ))}
         </tbody>
@@ -141,29 +160,15 @@ export default ChannelPaymentList;
 interface InvoiceRowProps {
   invoice: Invoice;
   allChecked: boolean;
+  handleStatusChange: (invoiceId: string, newStatus: string) => Promise<void>;
 }
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
   invoice,
   allChecked,
+  handleStatusChange,
 }) => {
-  const [status, setStatus] = useState(invoice.status);
-
-  const handleStatusChange = async (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const newStatus = event.target.value;
-    setStatus(newStatus);
-
-    try {
-      await axios.put(API_ENDPOINTS.CHANGE_CHANNEL_STATUS(invoice._id), {
-        status: newStatus,
-      });
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
+  const [open, setOpen] = useState(false);
   return (
     <tr>
       <td className="px-4 py-1 text-left text-sm">
@@ -176,20 +181,30 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
       <td className="px-4 py-1 text-left text-sm">{invoice.currency}</td>
       <td className="px-4 py-1 text-left text-sm">{invoice.commission}</td>
       <td className="px-4 py-1 text-left text-sm">
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          className={`status ${status.toLowerCase()} p-1 border rounded`}
+        <button
+          className={
+            invoice.status === "paid"
+              ? "bg-green-200 py-1 rounded-lg px-2"
+              : "bg-red-200 px-2 rounded-lg py-1"
+          }
+          onClick={() => setOpen(true)}
         >
-          <option value="paid">paid</option>
-          <option value="unpaid">unpaid</option>
-        </select>
+          {invoice.status}
+        </button>
       </td>
       <td className="flex space-x-2">
         <button className="p-2 bg-gray-200 rounded">
           <Eye />
         </button>
       </td>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <PaymentModal
+          onClose={() => {
+            setOpen(false);
+            handleStatusChange(invoice._id, "paid");
+          }}
+        />
+      </Modal>
     </tr>
   );
 };

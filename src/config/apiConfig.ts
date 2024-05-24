@@ -1,5 +1,3 @@
-import Currency from "../components/Settings/Currency/Currency";
-
 const BASE_URL = "http://localhost:5000";
 
 const API_ENDPOINTS = {
@@ -13,6 +11,7 @@ const API_ENDPOINTS = {
   REMOVE_CHANNEL: (id: string) => `${BASE_URL}/remove-channel/${id}`,
   UPDATE_CHANNEL: (id: string) => `${BASE_URL}/update-channel/${id}`,
   VIEW_RAWCHANNEL: (id: string) => `${BASE_URL}/view-rawchannel/${id}`,
+  GET_CHANNEL_INVOICE_ID: `${BASE_URL}/get-channel-invoice-for-channel`,
 
   // Licensor Routes
 
