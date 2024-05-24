@@ -10,6 +10,8 @@ const musicInvoiceController =require('../controller/musicInvoiceController')
 const channelInvoiceController = require('../controller/channelInvoiceController')
 const SettingsController = require('../controller/settingController')
 const PaymentController = require('../controller/paymentController')
+const dashboardController = require('../controller/dashboardController')
+
 
 // collection to collection
 
@@ -131,3 +133,7 @@ router.post('/add-currency',SettingsController.addCurrency)
 router.put('/channel-invoice-status/:id',PaymentController.ChannelInvoiceStatus)
 
 router.put('/music-invoice-status/:id',PaymentController.MusicInvoiceStatus)
+
+//DASHBOARD
+
+router.get('/view-count',dashboardController.getCount)
