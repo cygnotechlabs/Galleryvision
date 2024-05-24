@@ -36,6 +36,7 @@ function MusicTable({}: Props) {
   });
   const [musics, setMusics] = useState<Music[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const rowsPerPage = 12;
 
   useEffect(() => {
@@ -62,7 +63,13 @@ function MusicTable({}: Props) {
 
   const indexOfLastMusic = currentPage * rowsPerPage;
   const indexOfFirstMusic = indexOfLastMusic - rowsPerPage;
-  const currentMusics = musics.slice(indexOfFirstMusic, indexOfLastMusic);
+  const filteredMusics = musics.filter((music) =>
+    music.musicName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const currentMusics = filteredMusics.slice(
+    indexOfFirstMusic,
+    indexOfLastMusic
+  );
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -72,29 +79,22 @@ function MusicTable({}: Props) {
     setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset current page when searching
+  };
+
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
         <div className="flex justify-between text-sm">
           <input
             type="text"
-            placeholder="             Search"
-            className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
+            placeholder="Search"
+            className="border border-gray-300 px-4 rounded-md w-[40%] h-[42px] pr-[40px]"
+            value={searchTerm}
+            onChange={handleSearch}
           />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="absolute left-12 top-[53px] transform -translate-y-1/2 w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-            />
-          </svg>
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
             Filter
             <span>

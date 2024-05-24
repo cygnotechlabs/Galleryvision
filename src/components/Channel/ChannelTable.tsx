@@ -1,11 +1,11 @@
 import axios from "axios";
 import { Key, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
-import EditChannel from "./EditChannel";
 import { DeleteModal } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import { Edit, Eye, Filter, Trash } from "../icons/icon";
+import EditChannel from "./EditChannel";
 
 type Props = {};
 interface ChannelType {
@@ -25,6 +25,8 @@ function ChannelTable({}: Props) {
   const [channelDeleteId, setChannelDeleteId] = useState<string | undefined>();
   const [channels, setChannels] = useState<ChannelType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredChannels, setFilteredChannels] = useState<ChannelType[]>([]);
   const rowsPerPage = 12;
 
   useEffect(() => {
@@ -35,6 +37,7 @@ function ChannelTable({}: Props) {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_LINKED_CHANNEL);
       setChannels(response.data);
+      setFilteredChannels(response.data);
     } catch (error) {
       console.error("Error fetching channels:", error);
     }
@@ -52,13 +55,21 @@ function ChannelTable({}: Props) {
     fetchChannels();
   };
 
-  const handleSearch = () => {
-    // set search funtion
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    if (term === "") {
+      setFilteredChannels(channels);
+    } else {
+      const filtered = channels.filter((channel) =>
+        channel.channelName.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredChannels(filtered);
+    }
   };
 
   const indexOfLastChannel = currentPage * rowsPerPage;
   const indexOfFirstChannel = indexOfLastChannel - rowsPerPage;
-  const currentChannels = channels.slice(
+  const currentChannels = filteredChannels.slice(
     indexOfFirstChannel,
     indexOfLastChannel
   );
@@ -80,13 +91,9 @@ function ChannelTable({}: Props) {
               type="text"
               placeholder="Search"
               className="border border-gray-300 rounded-s-md px-4 w-[566px] h-[42px] pr-[40px]"
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
             />
-            <button
-              onClick={handleSearch}
-              className="bg-black text-white px-2 rounded-e-2xl"
-            >
-              <Search />
-            </button>
           </div>
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
             Filter
@@ -173,8 +180,8 @@ function ChannelTable({}: Props) {
         <nav className="flex items-center gap-96" aria-label="Pagination">
           <div>
             Showing {indexOfFirstChannel + 1} to{" "}
-            {Math.min(indexOfLastChannel, channels.length)} of {channels.length}{" "}
-            entries
+            {Math.min(indexOfLastChannel, filteredChannels.length)} of{" "}
+            {filteredChannels.length} entries
           </div>
           <ul className="flex list-style-none">
             <li>

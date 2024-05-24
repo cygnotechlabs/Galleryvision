@@ -1,4 +1,4 @@
-import { Block, Close, Email, Flag } from "../icons/icon";
+import { Block, Close, Email } from "../icons/icon";
 
 type Props = {
   licensor: Licensor;

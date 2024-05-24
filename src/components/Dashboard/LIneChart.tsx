@@ -50,7 +50,7 @@ const LineChart = ({}: Props) => {
         tension: 0.1,
       },
       {
-        label: "Music                       ",
+        label: "Music",
         data: [
           6500, 8900, 8000, 1060, 7600, 5670, 4000, 6500, 8900, 8000, 3100,
           7600,

@@ -8,7 +8,13 @@ import API_ENDPOINTS from "../../config/apiConfig";
 
 type Channel = {
   _id: string;
-  partnerRevenue: number;
+  channelId: string;
+  channelName: string;
+  commission: string;
+  channelEmail: string;
+  licensorName: string;
+  licensorId: string;
+  channelLogo: string;
 };
 
 function UnassignedChannel() {
@@ -16,7 +22,16 @@ function UnassignedChannel() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
-  const [selectedChannel, setSelectedChannel] = useState<string>("");
+  const [selectedChannel, setSelectedChannel] = useState<Channel>({
+    _id: "",
+    channelId: "",
+    channelName: "",
+    commission: "",
+    channelEmail: "",
+    licensorName: "",
+    licensorId: "",
+    channelLogo: "",
+  });
 
   useEffect(() => {
     fetchData();

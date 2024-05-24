@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import Modal from "../../layouts/Modal";
-import LicensorView from "./LicensorView";
-import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import axios from "axios";
-import { DeleteModalLicensor } from "../../UI/DeleteModal";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { DeleteModalLicensor } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import { Edit, Eye, Filter, Trash } from "../icons/icon";
+import LicensorView from "./LicensorView";
 
 type Props = {};
 interface Licensor {
@@ -21,6 +21,18 @@ interface Licensor {
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
+  channel: Channel[];
+  music: Music[];
+}
+
+interface Channel {
+  channelId: string;
+  channelName?: string;
+}
+
+interface Music {
+  musicId: string;
+  musicName?: string;
 }
 
 function LicensorTable({}: Props) {
@@ -32,7 +44,7 @@ function LicensorTable({}: Props) {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
 
-  const [licensor, setLicensor] = useState({
+  const [licensor, setLicensor] = useState<Licensor>({
     _id: "",
     companyName: "",
     companyEmail: "",
@@ -45,6 +57,8 @@ function LicensorTable({}: Props) {
     bankAccNum: "",
     ifsc_iban: "",
     currency: "",
+    channel: [], // Initialize as an empty array of Channel type
+    music: [],
   });
   const [open, setOpen] = useState(false);
 
@@ -129,9 +143,6 @@ function LicensorTable({}: Props) {
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
               />
-              <button className="bg-black text-white px-2 rounded-e-2xl">
-                <Search />
-              </button>
             </div>
             {searchTerm && (
               <ul className="border border-gray-300 rounded-b-md bg-white max-h-48 overflow-y-auto">
