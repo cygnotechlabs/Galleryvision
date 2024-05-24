@@ -5,6 +5,18 @@ const Schema = mongoose.Schema;
 const channelSchema = new Schema({
     channelId: {
       type: String
+    },
+    channelName: {
+      type: String
+    }
+  }, { _id: false });
+
+  const musicSchema = new Schema({
+    musicId: {
+      type: String
+    },
+    musicName: {
+      type: String
     }
   }, { _id: false });
 
@@ -20,7 +32,7 @@ const licensorSchema = new Schema({
     ifsc_iban : { type: String },
     currency: { type: String },
     channel:[channelSchema],
-    music: []
+    music: [musicSchema]
 });
 
 const licensors = mongoose.model('licensors', licensorSchema);

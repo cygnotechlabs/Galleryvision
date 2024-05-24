@@ -89,7 +89,7 @@ exports.assignChannel = async (req, res) => {
     await rawchannels.deleteOne({ channelId });
     await licensors.updateOne(
       { _id: licensorId },
-      { $push: { channel: { channelId: channelId } } }
+      { $push: { channel: { channelId: channelId, channelName: channelName } } }
     );
 
     res.status(201).json({

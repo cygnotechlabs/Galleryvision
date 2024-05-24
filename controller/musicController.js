@@ -333,7 +333,7 @@ exports.getOneRawMusic = async (req, res) => {
       
       await licensors.updateOne(
         { _id: licensorId },
-        { $push: { music: musicId } }
+        { $push: { music : { musicId: musicId, musicName: musicName }  } }
       );
       
   
