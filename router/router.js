@@ -91,7 +91,9 @@ router.get('/view-rawchannel/:id',channelController.getOneRawChannel)
 
 
 // Music Invoice Route
-router.post("/generate-music-Invoice", musicInvoiceController.generateMusicInvoice);
+router.post("/generate-music-Invoice", musicInvoiceController.generateMusicInvoice
+    
+);
 
 router.get("/get-music-Invoice", musicInvoiceController.getMusicInvoice);
 
