@@ -43,6 +43,9 @@ router.delete('/remove-channel/:id',channelController.removeChannel)
 
 router.put('/update-channel/:id',channelController.updateChannel)
 
+// channel invoicesunder channel
+router.get('/get-channel-invoice-for-channel',channelController.getInvoiceForChannel)
+
 
 
 // licensor routes
@@ -74,7 +77,7 @@ router.delete('/remove-music/:id',musicController.delmusic)
 
 router.put('/update-music/:id',musicController.updateMusic)
 
-router.get('/view-music/:id',musicController.musicDetails)
+router.get('/view-music/:id',musicController.getOneMusic)
 
 router.post('/assign-music',musicController.assignMusic)
 

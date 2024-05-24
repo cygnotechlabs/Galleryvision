@@ -1,4 +1,5 @@
 const channels = require("../database/model/channel");
+const channelInvoices = require("../database/model/channelInvoice");
 const licensors = require("../database/model/licensor")
 const rawchannels = require("../database/model/rawchannel");
 const { ObjectId } = require("mongodb");
@@ -91,6 +92,7 @@ exports.assignChannel = async (req, res) => {
       { _id: licensorId },
       { $push: { channel: { channelId: channelId, channelName: channelName } } }
     );
+
 
     res.status(201).json({
       message: "Channel assigned and raw channel deleted successfully",
@@ -187,21 +189,80 @@ exports.getChannels = async (req, res) => {
     res.status(500).json("Internal server error");
   }
 };
+// get invoices
+exports.getInvoiceForChannel = async (req, res) => {
+  try {
+    const { channelId } = req.body; // Extracting channelId from the request body
+    console.log("get invoice for channel",cha);
+    if (!channelId) {
+      return res.status(400).json("Channel ID is required");
+    }
+
+    const channelInvoice = await channelInvoices.find({ channelId });
+
+    if (channelInvoice.length > 0) {
+      res.status(200).json(channelInvoice);
+    } else {
+      res.status(404).json("No invoices found for the specified channel");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Internal server error");
+  }
+};
+
+
 
 // get particular unassigned channel
+// exports.getOneChannel = async (req, res) => {
+//   console.log("view channel",req.body );
+//   try {
+//     const { id } = req.params;
+//     const objectId = new ObjectId(id);
+//     const channelDetails = await channels.findOne({ _id: objectId });
+
+//     if (!channelDetails) {
+//       return res.status(404).json({ error: "Channel not found" });
+//     }
+
+//     return res.status(200).json(channelDetails);
+//   } catch (error) {
+//     if (error.name === "CastError") {
+//       return res.status(400).json({ error: "Invalid channel ID" });
+//     }
+
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// };
+
+
 exports.getOneChannel = async (req, res) => {
-  console.log("view channel",req.body );
+  console.log("view channel", req.body);
   try {
     const { id } = req.params;
     const objectId = new ObjectId(id);
+
+    // Find the channel details
     const channelDetails = await channels.findOne({ _id: objectId });
 
     if (!channelDetails) {
       return res.status(404).json({ error: "Channel not found" });
     }
 
-    return res.status(200).json(channelDetails);
+    const channelId = channelDetails.channelId;
+    console.log("get invoice for channel", channelId);
+
+    if (!channelId) {
+      return res.status(400).json("Channel ID is required");
+    }
+
+    // Find the channel invoices
+    const channelInvoice = await channelInvoices.find({ channelId });
+
+    // Combine the channel details and invoices into one response
+    return res.status(200).json({ channelDetails, channelInvoice });
   } catch (error) {
+    console.error(error);
     if (error.name === "CastError") {
       return res.status(400).json({ error: "Invalid channel ID" });
     }

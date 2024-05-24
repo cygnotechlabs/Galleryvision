@@ -1,7 +1,8 @@
 const { ObjectId } = require('mongodb')
 const musics = require('../database/model/musics')
 const rawMusic = require('../database/model/rawmusic')
-const licensors = require('../database/model/licensor')
+const licensors = require('../database/model/licensor');
+const musicInvoices = require('../database/model/musicInvoice');
 
 // get rawMusic
 exports.getRawMusic = async (req, res) => {
@@ -257,25 +258,62 @@ exports.getOneRawMusic = async (req, res) => {
   // };
   
   //show a particular music channel
-  exports.musicDetails = async (req, res) => {
-     try{
+  // exports.musicDetails = async (req, res) => {
+  //    try{
+  //     const { id } = req.params;
+  //     const objectId = new ObjectId(id);
+  //     const mchanneldetails = await musics.findOne({ _id: objectId})
+  
+  //     if(!mchanneldetails) {
+  //       return res.status(404).json({ error: 'Music Channel not found'});
+  //     }
+  //     return res.status(200).json(mchanneldetails);
+  //    } 
+  //    catch (error) 
+  //    { 
+  //     if (error.name === 'CastError'){
+  //       return res.status(400).json({ error: 'Invalid Music Channel ID' });
+  //     }
+  //     return res.status(500).json({ errro: 'Internal Server Error!'})
+  //    }
+  // };
+
+  exports.getOneMusic = async (req, res) => {
+    console.log("view music", req.body);
+    try {
       const { id } = req.params;
       const objectId = new ObjectId(id);
-      const mchanneldetails = await musics.findOne({ _id: objectId})
   
-      if(!mchanneldetails) {
-        return res.status(404).json({ error: 'Music Channel not found'});
+      // Find the channel details
+      const musicDetails = await musics.findOne({ _id: objectId });
+  
+      if (!musicDetails) {
+        return res.status(404).json({ error: "music not found" });
       }
-      return res.status(200).json(mchanneldetails);
-     } 
-     catch (error) 
-     { 
-      if (error.name === 'CastError'){
-        return res.status(400).json({ error: 'Invalid Music Channel ID' });
+  
+      const musicId = musicDetails.musicId;
+      console.log("get invoice for music", musicId);
+  
+      if (!musicId) {
+        return res.status(400).json("music ID is required");
       }
-      return res.status(500).json({ errro: 'Internal Server Error!'})
-     }
+  
+      // Find the channel invoices
+      const musicInvoice = await musicInvoices.find({ musicId });
+  
+      // Combine the channel details and invoices into one response
+      return res.status(200).json({ musicDetails, musicInvoice });
+    } catch (error) {
+      console.error(error);
+      if (error.name === "CastError") {
+        return res.status(400).json({ error: "Invalid music ID" });
+      }
+  
+      return res.status(500).json({ error: "Internal server error" });
+    }
   };
+
+
   
   
   
