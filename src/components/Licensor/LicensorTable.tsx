@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { DeleteModalLicensor } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Trash } from "../icons/icon";
+import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import LicensorView from "./LicensorView";
 
 type Props = {};
@@ -136,6 +136,8 @@ function LicensorTable({}: Props) {
         <div className="flex justify-between text-sm">
           <div className="flex flex-col w-1/3">
             <div className="flex">
+
+              <p className="ms-2 p-4"><Search/></p>
               <input
                 type="text"
                 placeholder="Search"

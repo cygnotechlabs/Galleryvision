@@ -95,6 +95,7 @@ const ChannelPaymentList: React.FC<Props> = () => {
           type="text"
           className="border px-4 py-3 w-[50%] rounded-lg"
           placeholder={`Search`}
+
         />
         <div className="flex gap-2">
           <MonthYearSelector date="" onDateChange={handleDateChange} />
