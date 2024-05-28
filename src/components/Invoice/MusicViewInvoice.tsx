@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Back, Download, Emailsm, Invoice } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import MusicPDFGenerator from "./MusicPDFGenarator";
 
 type Props = {};
 
@@ -26,11 +28,13 @@ type InvoiceData = {
   payout: string;
   status: string;
   commissionAmount: string;
-
+  musicName: string;
+  licensorAddress: string;
 };
 
 const MusicViewInvoice = ({}: Props) => {
   const { id } = useParams<{ id: string }>();
+  const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
 
   useEffect(() => {
@@ -182,7 +186,9 @@ const MusicViewInvoice = ({}: Props) => {
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Commission {invoiceData.commission}</p>
-              <p className="font-bold text-sm">${invoiceData.commissionAmount}</p>
+              <p className="font-bold text-sm">
+                ${invoiceData.commissionAmount}
+              </p>
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Total Amount</p>
@@ -198,11 +204,17 @@ const MusicViewInvoice = ({}: Props) => {
           <button className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100">
             <Emailsm /> Email
           </button>
-          <button className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black">
+          <button
+            onClick={() => setOpen(true)}
+            className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"
+          >
             <Download /> Download Pdf
           </button>
         </div>
       </div>
+      <Modal onClose={() => setOpen(false)} open={open}>
+        <MusicPDFGenerator onClose={() => setOpen(false)} />
+      </Modal>
     </div>
   );
 };

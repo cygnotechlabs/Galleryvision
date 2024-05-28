@@ -87,7 +87,7 @@ const EditLicensor: React.FC<Props> = () => {
         if (response.status === 200) {
           console.log("Data updated successfully!");
           setTimeout(() => {
-            navigate("/licensor");
+            navigate("/home/licensor");
           }, 2000);
           notify();
         } else {

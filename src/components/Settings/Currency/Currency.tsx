@@ -79,13 +79,13 @@ const CurrencyComponent = ({}: Props) => {
             <span>INR - Indian rupees</span>
             <input
               type="text"
-              className="px-2 w-14 h-full"
+              className="px-2 w-14 h-full border-2"
               value={INRValue}
               onChange={handleINRChange}
             />
-            <button
+            <button 
               onClick={handleSubmit}
-              className="font-bold bg-black text-white p-2 rounded-lg"
+              className="font-bold bg-black  text-white p-2 rounded-lg"
             >
               ADD
             </button>

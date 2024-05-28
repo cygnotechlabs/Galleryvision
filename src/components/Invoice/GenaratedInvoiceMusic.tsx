@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import empty from "../../../public/empty.png";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { Eye } from "../icons/icon";
+import { Eye, Search } from "../icons/icon";
 
 type Props = {};
 
@@ -84,6 +84,10 @@ const GenataredMusicInvoice = ({}: Props) => {
           className="border px-4 py-3 w-[50%] rounded-lg"
           placeholder={`Search`}
         />
+        <i className="m-3" style={{ marginLeft: "-500px" }}>
+          <Search />
+        </i>
+
         <div className="flex gap-2">
           <MonthYearSelector
             date={selectedDate}

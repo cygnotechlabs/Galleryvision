@@ -1,10 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import { Back, Download, Emailsm, Invoice } from '../icons/icon';
-import API_ENDPOINTS from '../../config/apiConfig';
+import React, { useRef, useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import { Back, Download, Emailsm, Invoice } from "../icons/icon";
+import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import ChannelPDFGenerator from "./ChannelPDFGenerator";
 
 type Props = {};
 
@@ -35,6 +35,7 @@ type InvoiceData = {
 
 const ChannelViewInvoice: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
+  const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
 
@@ -42,31 +43,18 @@ const ChannelViewInvoice: React.FC<Props> = () => {
     const fetchData = async () => {
       try {
         if (id) {
-          const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id));
+          const response = await axios.get(
+            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id)
+          );
           setInvoiceData(response.data);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
   }, [id]);
-
-  const handleDownloadPdf = async () => {
-    const element = invoiceRef.current;
-    if (element) {
-      const canvas = await html2canvas(element, { scale: 2 }); // Adjust scale to reduce quality
-      const imgData = canvas.toDataURL('image/jpeg', 0.75); // Reduce quality
-
-      const pdf = new jsPDF('p', 'mm', 'a4', true);
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
-      pdf.save('invoice.pdf');
-    }
-  };
 
   if (!invoiceData) {
     return <div>Loading...</div>;
@@ -81,7 +69,10 @@ const ChannelViewInvoice: React.FC<Props> = () => {
         </div>
       </Link>
 
-      <div className="flex flex-col gap-6 bg-white w-[75%] p-8" ref={invoiceRef}>
+      <div
+        className="flex flex-col gap-6 bg-white w-[75%] p-8"
+        ref={invoiceRef}
+      >
         <p className="text-lg font-bold">Preview</p>
         <div className="flex flex-col gap-6 w-[94%] border-2 p-8 mx-8">
           <p className="text-lg font-bold">{invoiceData.invoiceNumber}</p>
@@ -160,9 +151,15 @@ const ChannelViewInvoice: React.FC<Props> = () => {
               <p className="text-sm font-bold">Payment to</p>
               <div className="flex gap-2">
                 <div className="flex-col">
-                  <p className="text-sm font-bold">Channel Name: {invoiceData.channelName}</p>
-                  <p className="text-sm">Licensor Name: {invoiceData.licensorName}</p>
-                  <p className="text-sm">Licensor Address: {invoiceData.licensorAddress}</p>
+                  <p className="text-sm font-bold">
+                    Channel Name: {invoiceData.channelName}
+                  </p>
+                  <p className="text-sm">
+                    Licensor Name: {invoiceData.licensorName}
+                  </p>
+                  <p className="text-sm">
+                    Licensor Address: {invoiceData.licensorAddress}
+                  </p>
                 </div>
               </div>
             </div>
@@ -174,7 +171,9 @@ const ChannelViewInvoice: React.FC<Props> = () => {
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Commission {invoiceData.commission}%</p>
-              <p className="font-bold text-sm">${invoiceData.commissionAmount}</p>
+              <p className="font-bold text-sm">
+                ${invoiceData.commissionAmount}
+              </p>
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Total Amount</p>
@@ -191,13 +190,16 @@ const ChannelViewInvoice: React.FC<Props> = () => {
             <Emailsm /> Email
           </button>
           <button
-            onClick={handleDownloadPdf}
+            onClick={() => setOpen(true)}
             className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"
           >
             <Download /> Download Pdf
           </button>
         </div>
       </div>
+      <Modal onClose={() => setOpen(false)} open={open}>
+        <ChannelPDFGenerator onClose={() => setOpen(false)} />
+      </Modal>
     </div>
   );
 };

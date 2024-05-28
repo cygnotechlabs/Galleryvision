@@ -137,14 +137,17 @@ function LicensorTable({}: Props) {
           <div className="flex flex-col w-1/3">
             <div className="flex">
 
-              <p className="ms-2 p-4"><Search/></p>
+         
               <input
-                type="text"
+              type="text"
                 placeholder="Search"
                 className="border border-gray-300 rounded-md px-4 w-full py-2"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
               />
+               <i className="m-3" style={{marginLeft:'-35px'}}><Search/></i> 
+            
+              
             </div>
             {searchTerm && (
               <ul className="border border-gray-300 rounded-b-md bg-white max-h-48 overflow-y-auto">

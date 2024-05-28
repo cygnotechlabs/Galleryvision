@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { Arrow, Back, Eye } from "../icons/icon";
+import { Arrow, Back, Eye, Search } from "../icons/icon";
 import Modal from "../../layouts/Modal";
 import PaymentModal from "../../UI/PaymentModal";
 
@@ -97,6 +97,9 @@ const ChannelPaymentList: React.FC<Props> = () => {
           placeholder={`Search`}
 
         />
+               <i className="m-3" style={{marginLeft:'-500px'}}><Search/></i> 
+
+
         <div className="flex gap-2">
           <MonthYearSelector date="" onDateChange={handleDateChange} />
           <button className="px-2 border bg-slate-200 rounded-lg">sort</button>

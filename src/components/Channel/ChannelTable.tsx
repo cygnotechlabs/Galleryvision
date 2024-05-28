@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { DeleteModal } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Trash } from "../icons/icon";
+import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import EditChannel from "./EditChannel";
 
 type Props = {};
@@ -90,10 +90,11 @@ function ChannelTable({}: Props) {
             <input
               type="text"
               placeholder="Search"
-              className="border border-gray-300 rounded-s-md px-4 w-[566px] h-[42px] pr-[40px]"
+              className="border border-gray-300 rounded-s-md px-4 w-[566px] h-[42px] pr-[40px] w-25"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
             />
+                <i className="m-3" style={{marginLeft:'-35px'}}><Search/></i> 
           </div>
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
             Filter

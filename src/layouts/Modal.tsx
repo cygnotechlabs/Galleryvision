@@ -29,13 +29,10 @@ const Modal = ({ onClose, open, children }: Props) => {
     <>
       {open && (
         <div
-          className="fixed inset-0 flex justify-center items-center bg-black/20"
+          className="fixed inset-0 z-20 flex justify-center items-center bg-black/20"
           onClick={onClose}
         >
-          <div
-            className="bg-white rounded-lg"
-            onClick={handleModalClick}
-          >
+          <div className="bg-white rounded-lg" onClick={handleModalClick}>
             {children}
           </div>
         </div>

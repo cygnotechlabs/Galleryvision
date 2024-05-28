@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Trash } from "../icons/icon";
+import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
 import EditMusic from "./EditMusic";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -95,6 +95,7 @@ function MusicTable({}: Props) {
             value={searchTerm}
             onChange={handleSearch}
           />
+          <i className="m-3" style={{marginLeft:'-745px'}}><Search/></i> 
           <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
             Filter
             <span>
