@@ -1,33 +1,26 @@
-import { useState } from "react";
-import MonthYearSelector from "../UI/MonthYear";
+import BarChart from "../components/Dashboard/Bar";
 import Cards from "../components/Dashboard/Cards";
-import LIneChart from "../components/Dashboard/LIneChart";
+import LineChart from "../components/Dashboard/LIneChart";
 
 type Props = {};
 
 const Dashboard = ({}: Props) => {
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const handleDateChange = (newDate: string) => {
-    setSelectedDate(newDate);
-  };
-
   return (
     <>
-      <div className="flex px-8 py-8 justify-between">
-        <div>
+      <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-4 lg:py-8 justify-between items-start lg:items-center">
+        <div className="mb-4 lg:mb-0">
           <p className="text-xl font-bold">Dashboard</p>
           <p className="text-sm text-gray-400">
-            Upload your youtube channel files & Music partner file in CSV format
+            Upload your YouTube channel files & Music partner file in CSV format
           </p>
         </div>
-        <MonthYearSelector
-              date={selectedDate}
-              onDateChange={handleDateChange}
-            />
       </div>
-      <div>
+      <div className="px-4 lg:px-8">
         <Cards />
-        <LIneChart />
+        <div className="bg-white px-3 py-6 flex gap-1 items-center rounded-xl justify-around mx-8 mt-8">
+          <LineChart />
+          <BarChart />
+        </div>
       </div>
     </>
   );

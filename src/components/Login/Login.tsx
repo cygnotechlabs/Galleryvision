@@ -13,7 +13,7 @@ function Login({}: Props) {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [stayLoggedIn, setStayLoggedIn] = useState(false); // New state for "stay logged in" option
+  const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [error, setError] = useState("");
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,39 +58,39 @@ function Login({}: Props) {
         setError("Login failed. Please check your credentials.");
       }
     } catch (error: any) {
-      setError("An error occurred during login. Please try again.");
+      setError(error.response.data);
     }
   };
 
   return (
-    <div className="flex w-screen h-screen">
-      <div className="w-1/2 relative">
+    <div className="flex flex-col lg:flex-row w-screen h-screen">
+      <div className="w-full lg:w-1/2 relative">
         <img
           src={image}
-          className="h-full w-full object-cover"
+          className="h-64 lg:h-full w-full object-cover"
           alt="Background"
         />
-        <div className="absolute top-40 left-56 w-[50%]">
+        <div className="absolute top-20 lg:top-40 left-10 lg:left-56 w-[80%] lg:w-[50%]">
           <p
-            className="text-white text-3xl font-medium"
-            style={{ lineHeight: "38.4px" }}
+            className="text-white text-lg lg:text-3xl font-medium"
+            style={{ lineHeight: "1.5" }}
           >
             Seamless Revenue Management & Payment Processing for YouTube & Music
           </p>
-          <div className="flex gap-4 mt-5">
-            <div className="bg-white rounded-full w-[18%] h-2"></div>
-            <div className="bg-white rounded-full w-[5%] h-2"></div>
+          <div className="flex gap-4 mt-2 lg:mt-5">
+            <div className="bg-white rounded-full w-[30%] lg:w-[18%] h-2"></div>
+            <div className="bg-white rounded-full w-[10%] lg:w-[5%] h-2"></div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col w-1/2 bg-white gap-40">
-        <div className="flex justify-end p-8">
-          <img src={logo} alt="Gallery Vision Logo" className="w-32" />
+      <div className="flex flex-col w-full lg:w-1/2 bg-white gap-10 lg:gap-40">
+        <div className="flex justify-center lg:justify-end p-4 lg:p-8">
+          <img src={logo} alt="Gallery Vision Logo" className="w-24 lg:w-32" />
         </div>
 
-        <div className="flex flex-col justify-center px-28">
-          <p className="text-4xl font-bold mb-8">Login</p>
+        <div className="flex flex-col justify-center px-8 lg:px-28">
+          <p className="text-2xl lg:text-4xl font-bold mb-4 lg:mb-8">Login</p>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="flex flex-col gap-2">
@@ -98,7 +98,7 @@ function Login({}: Props) {
                   htmlFor="email-address"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Email address
+                  Email Address
                 </label>
                 <input
                   id="email-address"
@@ -152,7 +152,7 @@ function Login({}: Props) {
               </div>
             </div>
 
-            {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+            {error && <div className="text-red-500 font-semibold text-sm mt-2">{error}</div>}
 
             <div>
               <button

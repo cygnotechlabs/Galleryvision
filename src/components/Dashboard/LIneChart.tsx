@@ -75,9 +75,9 @@ const LineChart = ({}: Props) => {
 
   return (
     <div>
-      <div className="mx-6 mt-6 rounded-2xl p-6 bg-white">
-        <p className="font-bold text-lg">Revenue Over Time</p>
-        <div style={{ height: "300px", width: "600px" }}>
+      <div>
+        <div style={{ height: "300px", width: "600px", padding: "10px" }}>
+          <p className="font-bold text-lg">Channels & Music</p>
           <Line data={data} options={options} />
         </div>
       </div>

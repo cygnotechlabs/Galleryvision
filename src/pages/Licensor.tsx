@@ -14,7 +14,7 @@ interface Licensor {
 function Licensor({}: Props) {
   return (
     <>
-      <div className=" bg-gray-100 px-8 pt-5 ">
+      <div className=" bg-gray-100 h-full px-8 pt-5 ">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold">Licensors</h1>

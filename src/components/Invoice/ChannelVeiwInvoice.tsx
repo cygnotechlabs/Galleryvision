@@ -1,9 +1,10 @@
-import { Link, useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { Back, Download, Emailsm, Invoice } from "../icons/icon";
-import API_ENDPOINTS from "../../config/apiConfig";
-import jsPDF from "jspdf";
+import React, { useRef, useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { Back, Download, Emailsm, Invoice } from '../icons/icon';
+import API_ENDPOINTS from '../../config/apiConfig';
 
 type Props = {};
 
@@ -41,51 +42,46 @@ const ChannelViewInvoice: React.FC<Props> = () => {
     const fetchData = async () => {
       try {
         if (id) {
-          const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id)
-          );
+          const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id));
           setInvoiceData(response.data);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
   }, [id]);
 
-  const handleDownloadPdf = () => {
-    const doc = new jsPDF();
+  const handleDownloadPdf = async () => {
     const element = invoiceRef.current;
-
     if (element) {
-      doc.html(element, {
-        callback: function (pdf) {
-          pdf.save("invoice.pdf");
-        },
-        // Adjust position as needed
-        x: 10,
-        y: 10,
-      });
+      const canvas = await html2canvas(element, { scale: 2 }); // Adjust scale to reduce quality
+      const imgData = canvas.toDataURL('image/jpeg', 0.75); // Reduce quality
+
+      const pdf = new jsPDF('p', 'mm', 'a4', true);
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+      pdf.save('invoice.pdf');
     }
   };
 
   if (!invoiceData) {
     return <div>Loading...</div>;
   }
+
   return (
     <div className="flex flex-col gap-4">
-      <Link to={"/home/invoice"}>
+      <Link to="/home/invoice">
         <div className="flex gap-1 justify-center items-center border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]">
           <Back />
           Back
         </div>
       </Link>
 
-      <div
-        className="flex flex-col gap-6 bg-white w-[75%] p-8"
-        ref={invoiceRef}
-      >
+      <div className="flex flex-col gap-6 bg-white w-[75%] p-8" ref={invoiceRef}>
         <p className="text-lg font-bold">Preview</p>
         <div className="flex flex-col gap-6 w-[94%] border-2 p-8 mx-8">
           <p className="text-lg font-bold">{invoiceData.invoiceNumber}</p>
@@ -163,37 +159,10 @@ const ChannelViewInvoice: React.FC<Props> = () => {
             <div className="flex flex-col gap-3">
               <p className="text-sm font-bold">Payment to</p>
               <div className="flex gap-2">
-                {/* Replace with actual logo */}
                 <div className="flex-col">
-                  <p className="text-sm font-bold">Channel Name : {invoiceData.channelName}</p>
-                  <p className="text-sm">Licensor Name : {invoiceData.licensorName}</p>
-                  <p className="text-sm">Licensor Address : {invoiceData.licensorAddress}</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {/* Replace with actual logo */}
-                {/* <div className="flex-col">
-                  <p className="text-sm font-bold">Asianet</p>
-                  <p className="text-sm">asianet@gmail.com</p>
-                </div> */}
-              </div>
-            </div>
-            <div className="flex flex-col gap-3">
-              {/* <p className="text-sm font-bold">Payment to</p> */}
-              <div className="flex gap-2">
-                {/* Replace with actual logo */}
-                <div className="flex-col">
-                  {/* <p className="text-sm font-bold">Gallery vision</p> */}
-                  {/* <p className="text-sm">vision@email.com</p> */}
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {/* Replace with actual logo */}
-                <div className="flex-col">
-                  {/* <p className="text-sm font-bold">**** **** **** 4455</p> */}
-                  <p className="text-sm">
-                    {/* 3891 Ranchview Dr. Richardson, California 62639 */}
-                  </p>
+                  <p className="text-sm font-bold">Channel Name: {invoiceData.channelName}</p>
+                  <p className="text-sm">Licensor Name: {invoiceData.licensorName}</p>
+                  <p className="text-sm">Licensor Address: {invoiceData.licensorAddress}</p>
                 </div>
               </div>
             </div>
@@ -203,7 +172,6 @@ const ChannelViewInvoice: React.FC<Props> = () => {
               <p className="text-sm">Total Payout(USD)</p>
               <p className="font-bold text-sm">${invoiceData.totalPayout}</p>
             </div>
-
             <div className="flex justify-between gap-2">
               <p className="text-sm">Commission {invoiceData.commission}%</p>
               <p className="font-bold text-sm">${invoiceData.commissionAmount}</p>

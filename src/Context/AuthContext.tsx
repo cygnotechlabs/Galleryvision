@@ -2,8 +2,8 @@ import {
   ReactNode,
   createContext,
   useContext,
-  useState,
   useEffect,
+  useState,
 } from "react";
 
 interface AuthContextType {
@@ -18,14 +18,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loggedInUsers, setLoggedInUsers] = useState<number>(0);
+  const [isAuthInitialized, setIsAuthInitialized] = useState<boolean>(false);
 
   useEffect(() => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) {
       setIsAuthenticated(true);
-      setLoggedInUsers((prevCount) => prevCount + 1); // Increment logged-in users count on init if token exists
+      setLoggedInUsers((prevCount) => prevCount + 1);
     }
+    setIsAuthInitialized(true); // Mark authentication check as complete
   }, []);
 
   const login = (token: string, stayLoggedIn: boolean) => {
@@ -46,8 +48,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
     localStorage.removeItem("authToken");
     sessionStorage.removeItem("authToken");
-    setLoggedInUsers((prevCount) => prevCount - 1);
+    setLoggedInUsers((prevCount) => (prevCount > 0 ? prevCount - 1 : 0)); // Ensure loggedInUsers does not go negative
   };
+
+  if (!isAuthInitialized) {
+    return null; // Render nothing or a loading spinner until auth state is initialized
+  }
 
   return (
     <AuthContext.Provider

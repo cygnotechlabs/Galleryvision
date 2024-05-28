@@ -129,17 +129,17 @@ function LicensorTable({}: Props) {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl  mt-6 h-[75svh] pr-9">
+    <div className="bg-white shadow-md rounded-xl my-6 px-4 py-2">
       {/* Search and Filter */}
-      <div className="relative pl-8 pb-5 pt-8 pr-8 ">
+      <div className="relative px-4 py-4 ">
         {/* Search Input */}
         <div className="flex justify-between text-sm">
-          <div className="flex flex-col w-[566px]">
+          <div className="flex flex-col w-1/3">
             <div className="flex">
               <input
                 type="text"
                 placeholder="Search"
-                className="border border-gray-300 rounded-s-md px-4 w-full h-[42px] pr-[40px]"
+                className="border border-gray-300 rounded-md px-4 w-full py-2"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
               />
@@ -159,7 +159,7 @@ function LicensorTable({}: Props) {
             )}
           </div>
           {/* Filter Button */}
-          <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
+          <button className="flex items-center px-4 gap-2  border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
             Filter
             <span>
               <Filter />
@@ -168,7 +168,7 @@ function LicensorTable({}: Props) {
         </div>
       </div>
       {/* Table */}
-      <div className="overflow-x-auto px-9 rounded-lg">
+      <div className="overflow-x-auto px-4 rounded-lg">
         <table className="w-full  table-auto ">
           <thead>
             <tr className="bg-gray-100">
