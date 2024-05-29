@@ -9,9 +9,11 @@ type Licensor = {
   _id: string;
   licensorName: string;
 };
+
 const CreateMusic: React.FC<Props> = () => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [musicData, setMusicData] = useState({
     _id: "",
     licensorId: "",
@@ -22,6 +24,7 @@ const CreateMusic: React.FC<Props> = () => {
     commission: "",
     musicLogo: "",
   });
+
   useEffect(() => {
     const getLicensorName = async () => {
       try {
@@ -56,32 +59,68 @@ const CreateMusic: React.FC<Props> = () => {
 
       return updatedFormData;
     });
+
+    // Clear error for the field being edited
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    let newErrors: { [key: string]: string } = {};
+
+    if (!musicData.licensorName) {
+      newErrors.licensorName = "Licensor is required.";
+      valid = false;
+    }
+    if (!musicData.musicId) {
+      newErrors.musicId = "Music ID is required.";
+      valid = false;
+    }
+    if (!musicData.musicName) {
+      newErrors.musicName = "Music Name is required.";
+      valid = false;
+    }
+    if (!musicData.commission || isNaN(Number(musicData.commission))) {
+      newErrors.commission = "Commission must be a number.";
+      valid = false;
+    } else if (
+      Number(musicData.commission) < 0 ||
+      Number(musicData.commission) > 100
+    ) {
+      newErrors.commission = "Commission must be between 0 and 100.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const createMusic = async () => {
-    try {
-      console.log(musicData);
+    if (validateForm()) {
+      try {
+        console.log(musicData);
 
-      const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData);
-      setMessage(response.data.message);
-      setMusicData({
-        _id: "",
-        licensorId: "",
-        musicId: "",
-        licensorName: "",
-        musicName: "",
-        musicEmail: "",
-        commission: "",
-        musicLogo: "",
-      });
-      setTimeout(() => {
-        history("home/music");
-      }, 1000);
-    } catch (error: any) {
-      if (error.response) {
-        setMessage(error.response.data.message);
-      } else {
-        console.error(error.message);
+        const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData);
+        setMessage(response.data.message);
+        setMusicData({
+          _id: "",
+          licensorId: "",
+          musicId: "",
+          licensorName: "",
+          musicName: "",
+          musicEmail: "",
+          commission: "",
+          musicLogo: "",
+        });
+        setTimeout(() => {
+          history("/home/music");
+        }, 1000);
+      } catch (error: any) {
+        if (error.response) {
+          setMessage(error.response.data.message);
+        } else {
+          console.error(error.message);
+        }
       }
     }
   };
@@ -103,6 +142,7 @@ const CreateMusic: React.FC<Props> = () => {
       reader.readAsDataURL(file);
     }
   };
+
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
       <div className="flex justify-between items-center pl-[34px]">
@@ -152,14 +192,14 @@ const CreateMusic: React.FC<Props> = () => {
               </div>
             </div>
           </div>
-          <div className=" py-6 flex justify-between">
+          <div className="py-6 flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Select licensor</label>
+              <label htmlFor="">Select Licensor</label>
               <select
                 name="licensorName"
                 value={musicData.licensorName}
                 onChange={handleChange}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               >
                 <option value="">Select Licensor</option>
@@ -169,6 +209,11 @@ const CreateMusic: React.FC<Props> = () => {
                   </option>
                 ))}
               </select>
+              {errors.licensorName && (
+                <div className="text-red-500 text-sm">
+                  {errors.licensorName}
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="">Music ID</label>
@@ -177,10 +222,13 @@ const CreateMusic: React.FC<Props> = () => {
                 name="musicId"
                 value={musicData.musicId}
                 onChange={handleChange}
-                placeholder={`Enter Licensor ID`}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                placeholder={`Enter Music ID`}
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
+              {errors.musicId && (
+                <div className="text-red-500 text-sm">{errors.musicId}</div>
+              )}
             </div>
           </div>
           <div className="flex justify-between">
@@ -191,10 +239,13 @@ const CreateMusic: React.FC<Props> = () => {
                 name="musicName"
                 value={musicData.musicName}
                 onChange={handleChange}
-                placeholder={`Enter Licenser name`}
+                placeholder={`Enter Music Name`}
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
+              {errors.musicName && (
+                <div className="text-red-500 text-sm">{errors.musicName}</div>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="">Commission (%)</label>
@@ -204,14 +255,17 @@ const CreateMusic: React.FC<Props> = () => {
                 onChange={handleChange}
                 value={musicData.commission}
                 placeholder={`Enter Commission`}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
-            </div>{" "}
+              {errors.commission && (
+                <div className="text-red-500 text-sm">{errors.commission}</div>
+              )}
+            </div>
           </div>
           <div className="flex justify-end pt-5">
             <button
-              className=" bg-black text-white font-bold px-3 py-3 rounded-lg"
+              className="bg-black text-white font-bold px-3 py-3 rounded-lg"
               onClick={createMusic}
             >
               Create Music

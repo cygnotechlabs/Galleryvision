@@ -55,10 +55,9 @@ function MusicTable({}: Props) {
   const handleDelete = async () => {
     try {
       await axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId));
+      fetchData();
     } catch (error) {
       console.error("Error deleting music:", error);
-    } finally {
-      fetchData();
     }
   };
 
