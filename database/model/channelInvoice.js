@@ -5,6 +5,7 @@ const channelInvoicesSchema = mongoose.Schema({
   licensorId: { type: String},
   licensorName: { type: String},
   licensorAddress: { type: String},
+  licensorEmail: { type: String},
 
   accNum: { type: String},
   ifsc: { type: String},

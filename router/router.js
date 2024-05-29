@@ -137,3 +137,6 @@ router.put('/music-invoice-status/:id',PaymentController.MusicInvoiceStatus)
 //DASHBOARD
 
 router.get('/view-count',dashboardController.getCount)
+
+// get dashboard
+router.get('/get-dashboard',dashboardController.getDashboard)

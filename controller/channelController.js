@@ -10,7 +10,7 @@ const { MongoClient } = require("mongodb");
 exports.addChannel = async (req, res) => {
   console.log("add channel :", req.body);
   try {
-    const { channelId, channelName, commission, channelEmail, channelLogo, licensorName ,licensorId } =
+    const { channelId, channelName, commission, channelLogo, licensorName ,licensorId } =
       req.body;
 
     const existingChannel = await channels.findOne({
@@ -26,7 +26,6 @@ exports.addChannel = async (req, res) => {
       channelId,
       channelName,
       commission,
-      channelEmail,
       channelLogo,
       licensorName,
       licensorId
@@ -52,7 +51,6 @@ exports.assignChannel = async (req, res) => {
       channelId,
       channelName,
       commission,
-      channelEmail,
       licensorId,
       licensorName,
       channelLogo,
@@ -78,7 +76,6 @@ exports.assignChannel = async (req, res) => {
       channelId,
       channelName,
       commission,
-      channelEmail,
       licensorId,
       licensorName,
       channelLogo,
@@ -237,7 +234,7 @@ exports.getInvoiceForChannel = async (req, res) => {
 
 
 exports.getOneChannel = async (req, res) => {
-  console.log("view channel", req.body);
+  console.log("View Channel", req.body);
   try {
     const { id } = req.params;
     const objectId = new ObjectId(id);
@@ -386,11 +383,11 @@ exports.updateChannel = async (req, res) => {
   try {
     const Id = req.params.id;
     const updatedData = req.body;
-    console.log("update channel",updatedData);
+    console.log("update channel",updatedData,Id);
     
 
     const objectid = new ObjectId(Id);
-    
+    console.log("edit reach here");
     // Find the channel to get the current licensorName
     const channel = await channels.findOne({ _id: objectid });
     if (!channel) {

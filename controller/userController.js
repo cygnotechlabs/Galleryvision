@@ -63,13 +63,14 @@ exports.login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).send('Send all data');
         }
+        
 
         // Find the user
         const user = await users.findOne({ email });
 
         // Check if user exists
         if (!user) {
-            return res.status(401).send('User not found');
+            return res.status(401).send('User not found!');   
         }
 
         // Match the password
@@ -106,7 +107,7 @@ exports.login = async (req, res) => {
             //redirectURL: '/home'
             //res.redirect('/'); // Adjust the path as necessary
         } else {
-            res.status(401).send('Invalid credentials');
+            res.status(401).send('Invalid Password!');
         }
     } catch (error) {
         console.log(error);

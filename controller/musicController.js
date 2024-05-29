@@ -65,7 +65,7 @@ exports.getOneRawMusic = async (req, res) => {
   //Adding Music Channel
   exports.addMusic = async (req, res) => {
       try {
-      const { musicId, musicName, musicEmail, licensorName, licensorId, commission, musicLogo } = req.body;
+      const { musicId, musicName, licensorName, licensorId, commission, musicLogo } = req.body;
           
           // Log the received data for debugging
           console.log("Received data:", req.body);
@@ -83,7 +83,6 @@ exports.getOneRawMusic = async (req, res) => {
           const newMusic = new musics({
               musicId,
               musicName,
-              musicEmail,
               licensorName,
               licensorId,
               commission,
@@ -113,41 +112,44 @@ exports.getOneRawMusic = async (req, res) => {
   //delete music channel
   exports.delmusic = async (req, res) => {
     try {
-      const { id } = req.params;
-      const objectId = new ObjectId(id);
-      const musicFind = await musics.findOne({ _id: objectId });
-  
-      if (!musicFind) {
-        return res.status(404).json({ error: 'Music Channel Not found' });
-      }
-  
-      const { musicId, licensorId } = musicFind;
-      const removeMusic = await musics.deleteOne({ _id: objectId });
-  
-      if (removeMusic) {
-        console.log("one record delete");
-  
-        // Update the licensor document to remove the channelId from the channels array
+        const { id } = req.params;
+        const objectId = new ObjectId(id);
+
+        const musicFind = await musics.findOne({ _id: objectId });
+
+        if (!musicFind) {
+            return res.status(404).json({ error: 'Music Channel Not found' });
+        }
+
+        const { musicId, licensorId } = musicFind;
+        const removeMusic = await musics.deleteOne({ _id: objectId });
+
+        if (removeMusic.deletedCount === 0) {
+            return res.status(500).json({ error: 'Failed to delete music' });
+        }
+
+        console.log("One record deleted");
+
+        // Update the licensor document to remove the musicId from the music array
         const licensorObject = new ObjectId(licensorId);
         const updateLicensor = await licensors.updateOne(
-          { _id: licensorObject },
-          { $pull: { music: musicId } }
+            { _id: licensorObject },
+            { $pull: { music: { musicId: musicId } } }
         );
-  
+
         if (updateLicensor.modifiedCount === 0) {
-          return res.status(500).json({ error: "Failed to update licensor" });
+            return res.status(500).json({ error: "Failed to update licensor" });
         }
-  
+
         const allMusic = await musics.find().toArray();
-        return res.status(200).json(allMusic); // Add return here
-      }
+        return res.status(200).json(allMusic);
     } catch (error) {
-      if (error.name === 'CastError') {
-        return res.status(400).json({ error: 'Invalid Music channel ID' });
-      }
-      return res.status(500).json({ error: 'Internal server error' });
+        if (error.name === 'CastError') {
+            return res.status(400).json({ error: 'Invalid Music channel ID' });
+        }
+        return res.status(500).json({ error: 'Internal server error' });
     }
-  };
+};
   
   //update music channel
   exports.updateMusic = async (req, res) => {
@@ -324,7 +326,6 @@ exports.getOneRawMusic = async (req, res) => {
         musicId,
         musicName,
         commission,
-        musicEmail,
         licensorId,
         licensorName,
         musicLogo,
@@ -338,7 +339,6 @@ exports.getOneRawMusic = async (req, res) => {
       if (existingmusic) {
         return res.status(409).json({ message: 'Music with the same ID already exists' });
       }
-      // const licensor = await licensors.findOne({ licensorId });
       
       // if (!licensor) {
       //   // Handle the case where the licensor is not found
@@ -358,7 +358,6 @@ exports.getOneRawMusic = async (req, res) => {
         musicId,
         musicName,
         commission,
-        musicEmail,
         licensorName,
         licensorId,
         musicLogo,

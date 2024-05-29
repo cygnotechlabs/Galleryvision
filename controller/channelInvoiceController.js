@@ -4,7 +4,8 @@ const Licensor = require("../database/model/licensor");
 const { ObjectId } = require("mongodb");
 const channelInvoices = require("../database/model/channelInvoice");
 const Currency = require("../database/model/currency");
-
+const Dashboard = require("../database/model/dashboard")
+const Music = require("../database/model/musics")
 
 
 
@@ -13,13 +14,16 @@ const Currency = require("../database/model/currency");
 exports.generateChannelInvoice = async (req, res) => {
   try {
     const { date } = req.body;
-    console.log("channel date:", date);
+    console.log("Channel Invoice Date:", date);
 
     // Parse the date from the request body (assuming the format is "Month Year")
     const [month, year] = date.split(" ");
     const targetDate = new Date(year, ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(month), 1);
 
     const channels = await Channel.find({
+      "assets.date": date
+    });
+    const music = await Music.find({
       "assets.date": date
     });
 
@@ -54,6 +58,9 @@ exports.generateChannelInvoice = async (req, res) => {
       return `${prefix}${paddedNum}`;
     };
 
+    let totalCommissionChannel = 0;
+    let totalTaxDeducted = 0;
+
     for (const channel of channels) {
       if (!channel) {
         console.warn('Channel is undefined');
@@ -81,6 +88,7 @@ exports.generateChannelInvoice = async (req, res) => {
       const partnerName = licensor.companyName;
       const licensorId = licensor._id;
       const licensorName = licensor.licensorName;
+      const licensorEmail = licensor.licensorEmail;
       const accNum = licensor.bankAccNum;
       const currency = licensor.currency;
       const channelId = channel.channelId;
@@ -115,6 +123,10 @@ exports.generateChannelInvoice = async (req, res) => {
       const commissionRate = parseFloat(channel.commission) / 100;
       const commissionAmount = (ptAfterTax * commissionRate).toFixed(2);
       const totalPayout = (ptAfterTax - parseFloat(commissionAmount)).toFixed(2);
+
+
+      totalCommissionChannel += parseFloat(commissionAmount);
+      totalTaxDeducted += parseFloat(tax);
       
       // Get the conversion rate based on the currency
       let conversionRate = 1.0; // default value if no conversion is needed
@@ -132,6 +144,7 @@ exports.generateChannelInvoice = async (req, res) => {
         partnerName,
         licensorId,
         licensorName,
+        licensorEmail,
         licensorAddress,
         accNum,
         ifsc,
@@ -160,6 +173,53 @@ exports.generateChannelInvoice = async (req, res) => {
       return res.status(404).json({ error: `invoices already generated for date: ${date}` });
     }
 
+
+    let existingDashboard = await Dashboard.findOne({ date: date });
+
+    if (existingDashboard) {
+      // Update existing dashboard data
+      existingDashboard.totalLicensor = licensors.length;
+      existingDashboard.totalChannel = channels.length;
+      existingDashboard.totalMusic = music.length;
+
+      // Handle empty or undefined channelCommission and channelTaxDeducted
+      const existingChannelCommission = parseFloat(existingDashboard.channelCommission) || 0;
+      const existingChannelTaxDeducted = parseFloat(existingDashboard.channelTaxDeducted) || 0;
+
+      const existingTotalCommission = parseFloat(existingDashboard.totalCommission) || 0;
+      const existingTotalTaxDeducted = parseFloat(existingDashboard.totalTaxDeducted) || 0;
+      
+      // Parse and add new values
+      const commissionToAdd = parseFloat(totalCommissionChannel) || 0;
+      const taxToAdd = parseFloat(totalTaxDeducted) || 0;
+
+      existingDashboard.channelCommission = commissionToAdd + existingChannelCommission; 
+      existingDashboard.channelTaxDeducted = taxToAdd + existingChannelTaxDeducted;
+
+      existingDashboard.totalCommission = existingTotalCommission + commissionToAdd;
+      existingDashboard.totalTaxDeducted = existingTotalTaxDeducted + taxToAdd;
+
+      // Format the results to ensure they are consistent
+      existingDashboard.channelCommission = parseFloat(existingDashboard.channelCommission);
+      existingDashboard.channelTaxDeducted = parseFloat(existingDashboard.channelTaxDeducted);
+
+    } else {
+      // Create new dashboard data
+      existingDashboard = new Dashboard({
+        date,
+        totalLicensor: licensors.length,
+        totalChannel: channels.length,
+        totalMusic: music.length,
+        channelCommission: totalCommissionChannel,
+        channelTaxDeducted: totalTaxDeducted,
+        totalCommission:totalCommissionChannel,
+        totalTaxDeducted: totalTaxDeducted,
+      });
+    }
+
+    // Save the updated or new dashboard data
+    await existingDashboard.save();
+
     // Return all generated invoices
     res.status(200).json({ message: `Channel invoices generated for ${date}`, invoices });
         console.log(`Channel invoices generated for ${date}`);
@@ -168,6 +228,9 @@ exports.generateChannelInvoice = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+
 
 // exports.generateChannelInvoice = async (req, res) => {
 //   try {
@@ -319,7 +382,7 @@ exports.generateChannelInvoice = async (req, res) => {
 exports.viewChannelInvoice = async (req, res) => {
     try {
       const { id } = req.params;
-      console.log("view channel invoice ",req.body);
+      // console.log("view channel invoice ",req.body);
       const objectId = new ObjectId(id);
       const invoiceDetails = await channelInvoices.findOne({ _id: objectId });
   
