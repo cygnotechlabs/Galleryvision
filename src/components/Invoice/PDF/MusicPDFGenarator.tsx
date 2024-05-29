@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import logo from "../../assets/logo/gv-logo.png";
-import { Download } from "../icons/icon";
+import logo from "../../../assets/logo/gv-logo.png";
+import { Download } from "../../icons/icon";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import API_ENDPOINTS from "../../config/apiConfig";
+import API_ENDPOINTS from "../../../config/apiConfig";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -15,15 +15,13 @@ type InvoiceData = {
   _id: string;
   partnerName: string;
   licensorId: string;
+  invoiceNumber: string;
   licensorName: string;
   accNum: string;
   ifsc: string;
   iban: string;
   currency: string;
-  date: string;
-  channelId: string;
-  channelName: string;
-  invoiceNumber: string;
+  musicId: string;
   ptRevenue: string;
   tax: string;
   ptAfterTax: string;
@@ -33,10 +31,12 @@ type InvoiceData = {
   payout: string;
   status: string;
   commissionAmount: string;
+  musicName: string;
   licensorAddress: string;
+  date: string;
 };
 
-const ChannelPDFGenerator = ({ onClose }: Props) => {
+const MusicPDFGenarator = ({ onClose }: Props) => {
   const { id } = useParams<{ id: string }>();
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
@@ -46,7 +46,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
       try {
         if (id) {
           const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id)
+            API_ENDPOINTS.VIEW_MUSIC_INVOICE(id)
           );
           setInvoiceData(response.data);
         }
@@ -59,9 +59,12 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
   }, [id]);
 
   const handleDownloadPdf = async () => {
+    console.log("Download PDF button clicked");
     const element = invoiceRef.current;
+    console.log("Element to convert:", element);
     if (element) {
       const canvas = await html2canvas(element, { scale: 2 });
+      console.log("Canvas generated:", canvas);
       const imgData = canvas.toDataURL("image/jpeg", 0.75);
       console.log("Image data:", imgData);
 
@@ -112,7 +115,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
             <p className="my-1 font-medium">Total Revenue</p>
             <div className="flex flex-col gap-4 border-y py-4 ">
               <div className="flex justify-between">
-                <p className="text-xs font-bold">Youtube Channel Revenue</p>
+                <p className="text-xs font-bold">Music Partner Revenue</p>
                 <p className="text-xs font-bold">{invoiceData?.ptRevenue}</p>
               </div>
               <div className="flex justify-between">
@@ -121,7 +124,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
               </div>
               <div className="flex justify-between">
                 <p className="text-xs font-bold">
-                  Youtube Channel Revenue (After tax)
+                  Music Partner Revenue (After tax)
                 </p>
                 <p className="text-xs font-bold">{invoiceData?.ptAfterTax}</p>
               </div>
@@ -141,7 +144,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
             <div className="flex flex-col gap-4 py-4 ">
               <div className="flex justify-between">
                 <p className="text-xs font-bold">
-                  Total Payout (in {invoiceData?.currency})
+                  Total Payout (in {invoiceData?.currency} )
                 </p>
                 <p className="text-xs font-bold">{invoiceData?.totalPayout}</p>
               </div>
@@ -155,7 +158,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
               </div>
               <div className="flex justify-between">
                 <p className="text-xs font-bold">
-                  Payout (April Payout in {invoiceData?.currency})
+                  Payout (Payout in {invoiceData?.currency})
                 </p>
                 <p className="text-xs font-bold">{invoiceData?.payout}</p>
               </div>
@@ -197,4 +200,4 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
   );
 };
 
-export default ChannelPDFGenerator;
+export default MusicPDFGenarator;

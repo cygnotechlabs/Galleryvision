@@ -4,7 +4,7 @@ import axios from "axios";
 import { Back, Download, Emailsm, Invoice } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import ChannelPDFGenerator from "./ChannelPDFGenerator";
+import ChannelPDFGenerator from "./PDF/ChannelPDFGenerator";
 
 type Props = {};
 
@@ -31,6 +31,8 @@ type InvoiceData = {
   status: string;
   commissionAmount: string;
   licensorAddress: string;
+  channelEmail: string;
+  licensorEmail: string;
 };
 
 const ChannelViewInvoice: React.FC<Props> = () => {
@@ -38,6 +40,15 @@ const ChannelViewInvoice: React.FC<Props> = () => {
   const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
+
+  const subject = `Invoice for ${invoiceData?.date} - ${invoiceData?.channelName}`;
+  const body = `Dear ${invoiceData?.licensorName},\n
+  Please find attached the invoice for the month of ${invoiceData?.date} for the channel ${invoiceData?.channelName}.\n
+  If you have any questions or require further clarification regarding the invoice, please do not hesitate to reach out. We are here to assist you and ensure all your queries are addressed promptly.\n
+  Thank you for your continued partnership and prompt payment. We look forward to continuing to work with you.\n
+  Best regards,\n
+  Gallery Vision`;
+  const encodedBody = encodeURIComponent(body);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,8 +187,11 @@ const ChannelViewInvoice: React.FC<Props> = () => {
               </p>
             </div>
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Total Amount</p>
-              <p className="font-bold text-sm">{invoiceData.payout}</p>
+              <p className="text-sm">Total Amount({invoiceData.currency})</p>
+              <p className="font-bold text-sm">
+                {invoiceData.currency == "USD" ? "$ " : "₹ "}
+                {invoiceData.payout}
+              </p>
             </div>
           </div>
         </div>
@@ -186,9 +200,14 @@ const ChannelViewInvoice: React.FC<Props> = () => {
             <Invoice />
             Print
           </button>
-          <button className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100">
+          <a
+            href={`mailto:${
+              invoiceData.licensorEmail
+            }?subject=${encodeURIComponent(subject)}&body=${encodedBody}`}
+            className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100"
+          >
             <Emailsm /> Email
-          </button>
+          </a>
           <button
             onClick={() => setOpen(true)}
             className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"

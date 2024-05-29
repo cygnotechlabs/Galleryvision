@@ -50,9 +50,9 @@ const UploadMusic: React.FC = () => {
 
   return (
     <div>
-      <div className="flex flex-col items-center m-8 rounded-2xl w-[368px] h-[307px] bg-white">
-        <h2 className="text-sm font-bold mb-4 pt-8">Upload Music XLXS File</h2>
-        <div className="relative bg-green-100 rounded-lg w-[304px] px-8 border-2 border-dashed border-gray-300 flex flex-col items-center">
+      <div className="flex flex-col items-center m-8 rounded-2xl px-7 py-4 bg-white">
+        <h2 className="text-sm font-bold mb-4 ">Upload Music XLXS File</h2>
+        <div className="relative bg-green-100 rounded-lg w-full px-8 border-2 border-dashed border-gray-300 flex flex-col items-center">
           <div className="flex flex-col items-center pt-4">
             <div className="text-red-500 rounded-full flex justify-center items-center mb-4">
               <svg

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Back, Block, Email, Rupee } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { Back, Block, Rupee } from "../icons/icon";
 
 type Props = {};
 
@@ -53,18 +53,11 @@ const ChannelView = ({}: Props) => {
             <div>
               <p className="font-bold text-lg">{channelData.channelName}</p>
               <div className="flex py-5 ">
-                <div className="pr-[52px] ">
+                <div className="pr-[52px] border-r-2">
                   <Block />
-                  <p className="text-sm text-gray-400 py-1">Licensor</p>
+                  <p className="text-sm text-gray-400  py-1">Licensor</p>
                   <p className="text-sm font-bold">
                     {channelData.licensorName}
-                  </p>
-                </div>
-                <div className="px-[52px] border-x border-gray-400">
-                  <Email />
-                  <p className="text-sm text-gray-400 py-1">Email</p>
-                  <p className="text-sm font-bold">
-                    {channelData.channelEmail}
                   </p>
                 </div>
                 <div className="px-[52px]">

@@ -18,6 +18,7 @@ type Props = {
   onClose: () => void;
   music: Music;
 };
+
 type Licensor = {
   _id: string;
   licensorName: string;
@@ -26,7 +27,7 @@ type Licensor = {
 const EditMusic = ({ onClose, music }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [formData, setFormData] = useState<Music>(music);
-  const [updatedData, setUpdatedData] = useState<Partial<Music>>({});
+
   useEffect(() => {
     const getLicensorName = async () => {
       try {
@@ -41,14 +42,13 @@ const EditMusic = ({ onClose, music }: Props) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setUpdatedData({ ...updatedData, [name]: value });
+    setFormData({ ...formData, [name]: value }); // Update formData with the new value
   };
-  console.log(music);
 
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        API_ENDPOINTS.UPDATE_MUSIC(formData._id),
+        API_ENDPOINTS.UPDATE_MUSIC(formData._id), // Ensure the API endpoint is correct
         formData
       );
       console.log(response.data); // Log the response if needed
@@ -57,6 +57,7 @@ const EditMusic = ({ onClose, music }: Props) => {
       console.error("Error updating music data:", error);
     }
   };
+
   const handleLicensorChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -71,6 +72,7 @@ const EditMusic = ({ onClose, music }: Props) => {
       }));
     }
   };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const reader = new FileReader();
@@ -78,7 +80,7 @@ const EditMusic = ({ onClose, music }: Props) => {
     reader.onloadend = () => {
       setFormData((prevData) => ({
         ...prevData,
-        channelLogo: reader.result ? reader.result.toString() : "",
+        musicLogo: reader.result ? reader.result.toString() : "",
       }));
     };
 
@@ -86,6 +88,7 @@ const EditMusic = ({ onClose, music }: Props) => {
       reader.readAsDataURL(file);
     }
   };
+
   return (
     <div className="px-8 py-8 w-[823px] h-[612px]">
       <div className="flex justify-between">
@@ -107,7 +110,7 @@ const EditMusic = ({ onClose, music }: Props) => {
                   <input
                     type="file"
                     accept="image/jpg, image/png"
-                    name="channelLogo"
+                    name="musicLogo" // Correct the name attribute
                     onChange={handleImageChange}
                     className="hidden"
                   />
@@ -130,10 +133,10 @@ const EditMusic = ({ onClose, music }: Props) => {
           <div className="flex flex-col gap-4">
             <label htmlFor="licensor">Select licensor</label>
             <select
-              name="licensorName"
+              name="licensorName" // Correct the name attribute
               onChange={handleLicensorChange}
-              className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
-              value={formData.licensorName || updatedData.licensorName}
+              className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+              value={formData.licensorName}
               required
             >
               <option value="">Select Licensor</option>
@@ -149,39 +152,27 @@ const EditMusic = ({ onClose, music }: Props) => {
             <label htmlFor="musicId">Music ID</label>
             <input
               type="text"
-              id="licensorId"
-              name="licensorId"
+              id="musicId" // Correct the id attribute
+              name="musicId" // Correct the name attribute
               onChange={handleChange}
               placeholder={music.musicId}
-              className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+              className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               required
             />
           </div>
           {/* Music name */}
-          <div className="flex flex-col gap-4">
-            <label htmlFor="musicName">Music name</label>
-            <input
-              type="text"
-              id="licensorName"
-              name="licensorName"
-              onChange={handleChange}
-              placeholder={`${music.musicName}`}
-              className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
-              required
-            />
-          </div>
         </div>
         {/* Email and Commission */}
         <div className="flex justify-between">
           {/* Email */}
           <div className="flex flex-col gap-4">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="musicName">Music name</label>
             <input
-              type="email"
-              id="licensorEmail"
-              name="licensorEmail"
+              type="text"
+              id="musicName" // Correct the id attribute
+              name="musicName" // Correct the name attribute
               onChange={handleChange}
-              placeholder={formData.musicEmail}
+              placeholder={`${music.musicName}`}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               required
             />
@@ -191,8 +182,8 @@ const EditMusic = ({ onClose, music }: Props) => {
             <label htmlFor="commission">Commission (%)</label>
             <input
               type="number"
-              id="commision"
-              name="commission"
+              id="commission" // Correct the id attribute
+              name="commission" // Correct the name attribute
               onChange={handleChange}
               placeholder={formData.commission}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"

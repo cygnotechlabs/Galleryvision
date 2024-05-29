@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Key, useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { DeleteModal } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
+import { Edit, Eye, Search, Trash } from "../icons/icon";
 import EditChannel from "./EditChannel";
 
 type Props = {};
@@ -16,12 +17,22 @@ interface ChannelType {
   channelEmail: string;
   licensorName: string;
   channelLogo: string;
+  licensorId: string;
 }
 
 function ChannelTable({}: Props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [editChannelId, setEditChannelId] = useState<string | undefined>();
+  const [channel, setChannel] = useState<ChannelType>({
+    _id: "",
+    licensorId: "",
+    channelId: "",
+    licensorName: "",
+    channelName: "",
+    channelEmail: "",
+    commission: "",
+    channelLogo: "",
+  });
   const [channelDeleteId, setChannelDeleteId] = useState<string | undefined>();
   const [channels, setChannels] = useState<ChannelType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,6 +64,7 @@ function ChannelTable({}: Props) {
       console.error("Error deleting channel:", error);
     }
     fetchChannels();
+    toast.success("Deleted Successfully");
   };
 
   const handleSearch = (term: string) => {
@@ -84,6 +96,7 @@ function ChannelTable({}: Props) {
 
   return (
     <div className="bg-white shadow-md rounded-xl mx-[34px] my-6  pr-9">
+      <Toaster />
       <div className="relative pb-5 pt-8 px-8 ">
         <div className="flex justify-between text-sm">
           <div className="flex">
@@ -94,14 +107,10 @@ function ChannelTable({}: Props) {
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
             />
-                <i className="m-3" style={{marginLeft:'-35px'}}><Search/></i> 
+            <i className="m-3" style={{ marginLeft: "-35px" }}>
+              <Search />
+            </i>
           </div>
-          <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
-            Filter
-            <span>
-              <Filter />
-            </span>
-          </button>
         </div>
       </div>
       <div className="overflow-x-auto px-9 rounded-lg">
@@ -111,7 +120,6 @@ function ChannelTable({}: Props) {
               <th className="px-4 py-1 text-left text-sm">Logo</th>
               <th className="px-4 py-1 text-left text-sm">Channel name</th>
               <th className="px-4 py-1 text-left text-sm">Licensor name</th>
-              <th className="px-4 py-1 text-left text-sm">Email</th>
               <th className="px-4 py-1 text-left text-sm">Commission</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
@@ -136,9 +144,6 @@ function ChannelTable({}: Props) {
                     {channel.licensorName}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
-                    {channel.channelEmail}
-                  </td>
-                  <td className="px-4 py-1 border-gray-200 text-sm">
                     {channel.commission}
                   </td>
                   <td className="px-4 py-1 border-gray-200">
@@ -152,7 +157,7 @@ function ChannelTable({}: Props) {
                       <button
                         onClick={() => {
                           setOpenEdit(true);
-                          setEditChannelId(channel._id);
+                          setChannel(channel);
                         }}
                         className="flex gap-2 bg-gray-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
                       >
@@ -214,10 +219,13 @@ function ChannelTable({}: Props) {
         open={openEdit}
       >
         <EditChannel
-          channelId={editChannelId}
+          onSave={() => {
+            fetchChannels();
+            toast.success("Edited Successfully");
+          }}
+          channel={channel}
           onClose={() => {
             setOpenEdit(false);
-            fetchChannels();
           }}
         />
       </Modal>

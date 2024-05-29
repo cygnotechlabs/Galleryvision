@@ -4,7 +4,7 @@ import axios from "axios";
 import { Back, Download, Emailsm, Invoice } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import MusicPDFGenerator from "./MusicPDFGenarator";
+import MusicPDFGenerator from "./PDF/MusicPDFGenarator";
 
 type Props = {};
 
@@ -30,12 +30,24 @@ type InvoiceData = {
   commissionAmount: string;
   musicName: string;
   licensorAddress: string;
+  MusicEmail: string;
+  date: string;
+  licensorEmail: string;
 };
 
 const MusicViewInvoice = ({}: Props) => {
   const { id } = useParams<{ id: string }>();
   const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+
+  const subject = `Invoice for ${invoiceData?.date} - ${invoiceData?.musicName}`;
+  const body = `Dear ${invoiceData?.licensorName},\n
+  Please find attached the invoice for the month of ${invoiceData?.date} for the channel ${invoiceData?.musicName}.\n
+  If you have any questions or require further clarification regarding the invoice, please do not hesitate to reach out. We are here to assist you and ensure all your queries are addressed promptly.\n
+  Thank you for your continued partnership and prompt payment. We look forward to continuing to work with you.\n
+  Best regards,\n
+  Gallery Vision`;
+  const encodedBody = encodeURIComponent(body);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -192,7 +204,10 @@ const MusicViewInvoice = ({}: Props) => {
             </div>
             <div className="flex justify-between gap-2">
               <p className="text-sm">Total Amount</p>
-              <p className="font-bold text-sm">${invoiceData.totalPayout}</p>
+              <p className="font-bold text-sm">
+                {invoiceData.currency == "USD" ? "$ " : "₹ "}
+                {invoiceData.totalPayout}
+              </p>
             </div>
           </div>
         </div>
@@ -201,9 +216,14 @@ const MusicViewInvoice = ({}: Props) => {
             <Invoice />
             Print
           </button>
-          <button className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100">
+          <a
+            href={`mailto:${
+              invoiceData.licensorEmail
+            }?subject=${encodeURIComponent(subject)}&body=${encodedBody}`}
+            className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100"
+          >
             <Emailsm /> Email
-          </button>
+          </a>
           <button
             onClick={() => setOpen(true)}
             className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"

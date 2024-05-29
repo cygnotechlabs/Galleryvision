@@ -5,6 +5,7 @@ import { Back, Edit, Filter } from "../icons/icon";
 import AssignChannel from "./AssignChannel";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import toast, { Toaster } from "react-hot-toast";
 
 type Channel = {
   _id: string;
@@ -52,6 +53,7 @@ function UnassignedChannel() {
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+      <Toaster />
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
@@ -166,7 +168,10 @@ function UnassignedChannel() {
             channel={selectedChannel}
             onClose={() => {
               setOpen(false);
+            }}
+            onSave={() => {
               fetchData();
+              toast.success("Channel Assigned Successfully");
             }}
           />
         </Modal>

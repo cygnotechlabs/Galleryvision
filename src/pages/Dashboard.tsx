@@ -10,9 +10,6 @@ const Dashboard = ({}: Props) => {
       <div className="flex flex-col lg:flex-row px-4 lg:px-8 py-4 lg:py-8 justify-between items-start lg:items-center">
         <div className="mb-4 lg:mb-0">
           <p className="text-xl font-bold">Dashboard</p>
-          <p className="text-sm text-gray-400">
-            Upload your YouTube channel files & Music partner file in CSV format
-          </p>
         </div>
       </div>
       <div className="px-4 lg:px-8">

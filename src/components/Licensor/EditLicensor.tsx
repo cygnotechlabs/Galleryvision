@@ -57,7 +57,9 @@ const EditLicensor: React.FC<Props> = () => {
     }
   }, [id]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -83,7 +85,10 @@ const EditLicensor: React.FC<Props> = () => {
     e.preventDefault();
     if (id) {
       try {
-        const response = await axios.put(API_ENDPOINTS.UPDATE_LICENSOR(id), formData);
+        const response = await axios.put(
+          API_ENDPOINTS.UPDATE_LICENSOR(id),
+          formData
+        );
         if (response.status === 200) {
           console.log("Data updated successfully!");
           setTimeout(() => {
@@ -121,7 +126,7 @@ const EditLicensor: React.FC<Props> = () => {
             <p className="flex items-center justify-center bg-red-700 w-[20px] h-[20px] text-xs px-2 rounded-full text-white">
               1
             </p>
-            <p className="font-bold">Licensor Details</p>
+            <p className="font-bold">Company Details</p>
           </div>
           <div className="flex gap-4 pt-[10px] pl-[32px]">
             <div className="bg-gray-100 px-[10px] py-[10px] rounded-xl">

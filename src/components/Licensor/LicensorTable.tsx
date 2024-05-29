@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { DeleteModalLicensor } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
+import { Edit, Eye, Search, Trash } from "../icons/icon";
 import LicensorView from "./LicensorView";
 
 type Props = {};
@@ -136,18 +136,16 @@ function LicensorTable({}: Props) {
         <div className="flex justify-between text-sm">
           <div className="flex flex-col w-1/3">
             <div className="flex">
-
-         
               <input
-              type="text"
+                type="text"
                 placeholder="Search"
                 className="border border-gray-300 rounded-md px-4 w-full py-2"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
               />
-               <i className="m-3" style={{marginLeft:'-35px'}}><Search/></i> 
-            
-              
+              <i className="m-3" style={{ marginLeft: "-35px" }}>
+                <Search />
+              </i>
             </div>
             {searchTerm && (
               <ul className="border border-gray-300 rounded-b-md bg-white max-h-48 overflow-y-auto">
@@ -163,13 +161,6 @@ function LicensorTable({}: Props) {
               </ul>
             )}
           </div>
-          {/* Filter Button */}
-          <button className="flex items-center px-4 gap-2  border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
-            Filter
-            <span>
-              <Filter />
-            </span>
-          </button>
         </div>
       </div>
       {/* Table */}

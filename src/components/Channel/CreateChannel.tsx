@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Back } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
+import toast from "react-hot-toast";
 
 type Props = {};
 type Licensor = {
@@ -13,6 +14,14 @@ type Licensor = {
 const CreateChannel = ({}: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({
+    channelId: "",
+    channelName: "",
+    commission: "",
+    channelEmail: "",
+    licensorName: "",
+    channelLogo: "",
+  });
   const [formData, setFormData] = useState({
     channelId: "",
     channelName: "",
@@ -42,6 +51,17 @@ const CreateChannel = ({}: Props) => {
   ) => {
     const { name, value } = e.target;
 
+    if (
+      name === "commission" &&
+      (isNaN(Number(value)) || Number(value) < 0 || Number(value) > 100)
+    ) {
+      setErrors({
+        ...errors,
+        [name]: "Commission must be a number between 0 and 100.",
+      });
+      return;
+    }
+
     setFormData((prevFormData) => {
       const updatedFormData = { ...prevFormData, [name]: value };
 
@@ -54,18 +74,50 @@ const CreateChannel = ({}: Props) => {
           : "";
       }
 
+      // Reset the specific field's error message when user starts correcting input
+      setErrors({ ...errors, [name]: "" });
+
       return updatedFormData;
     });
   };
 
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    if (!formData.channelId) newErrors.channelId = "Channel ID is required.";
+    if (!formData.channelName)
+      newErrors.channelName = "Channel name is required.";
+    if (!formData.channelEmail)
+      newErrors.channelEmail = "Channel email is required.";
+    if (!formData.licensorName)
+      newErrors.licensorName = "Licensor name is required.";
+    if (!formData.commission) {
+      newErrors.commission = "Commission is required.";
+    } else if (
+      isNaN(Number(formData.commission)) ||
+      Number(formData.commission) < 0 ||
+      Number(formData.commission) > 100
+    ) {
+      newErrors.commission = "Commission must be a number between 0 and 100.";
+    }
+    if (!formData.channelLogo)
+      newErrors.channelLogo = "Channel logo is required.";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const createChannel = async () => {
+    if (!validateForm()) return;
+
     try {
-      // POST request using Axios
       const response = await axios.post(API_ENDPOINTS.ADD_CHANNEL, formData);
 
       // Handle success
       console.log(response.data.message);
       setMessage(response.data.message);
+
       // Clear form after successful creation
       setFormData({
         channelId: "",
@@ -76,16 +128,17 @@ const CreateChannel = ({}: Props) => {
         licensorId: "",
         channelLogo: "",
       });
+      toast.success(response.data.message);
 
       // Redirect to "/channel" after 1 second
       setTimeout(() => {
         history("/home/channel");
       }, 1000);
     } catch (error: any) {
-      // Handle error
       if (error.response) {
         console.error(error.response.data.message);
         setMessage(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         console.error(error.message);
       }
@@ -97,15 +150,14 @@ const CreateChannel = ({}: Props) => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      // After reading the file, set the base64 data to state
       setFormData({
         ...formData,
         channelLogo: reader.result ? reader.result.toString() : "",
       });
+      setErrors({ ...errors, channelLogo: "" });
     };
 
     if (file) {
-      // Read the file as data URL (base64)
       reader.readAsDataURL(file);
     }
   };
@@ -147,6 +199,11 @@ const CreateChannel = ({}: Props) => {
                   </label>
                 </div>
                 <div className="text-xs">Supports, JPG, PNG</div>
+                {errors.channelLogo && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {errors.channelLogo}
+                  </div>
+                )}
                 {formData.channelLogo && (
                   <div className="w-16 h-16">
                     <img
@@ -166,7 +223,7 @@ const CreateChannel = ({}: Props) => {
                 name="licensorName"
                 value={formData.licensorName}
                 onChange={handleChange}
-                className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
               >
                 <option value="">Select Licensor</option>
                 {licensors.map((licensor, index) => (
@@ -175,6 +232,11 @@ const CreateChannel = ({}: Props) => {
                   </option>
                 ))}
               </select>
+              {errors.licensorName && (
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.licensorName}
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="">Channel ID</label>
@@ -183,11 +245,18 @@ const CreateChannel = ({}: Props) => {
                 name="channelId"
                 value={formData.channelId}
                 onChange={handleChange}
-                placeholder={`Enter Channel ID `}
-                className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                placeholder="Enter Channel ID"
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
-            </div>{" "}
+              {errors.channelId && (
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.channelId}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-between">
             <div className="flex flex-col gap-4">
               <label htmlFor="">Channel name</label>
               <input
@@ -195,24 +264,15 @@ const CreateChannel = ({}: Props) => {
                 name="channelName"
                 value={formData.channelName}
                 onChange={handleChange}
-                placeholder={`Enter Channel name `}
-                className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg"
+                placeholder="Enter Channel name"
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
-            </div>
-          </div>{" "}
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-4">
-              <label htmlFor="">Email</label>
-              <input
-                type="email"
-                name="channelEmail"
-                value={formData.channelEmail}
-                onChange={handleChange}
-                placeholder={`Enter email `}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
-                required
-              />
+              {errors.channelName && (
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.channelName}
+                </div>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="">Commission (%)</label>
@@ -221,15 +281,22 @@ const CreateChannel = ({}: Props) => {
                 name="commission"
                 value={formData.commission}
                 onChange={handleChange}
-                placeholder={`Enter Commission `}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                placeholder="Enter Commission"
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
+                min="0"
+                max="100"
                 required
               />
-            </div>{" "}
+              {errors.commission && (
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.commission}
+                </div>
+              )}
+            </div>
           </div>
           <div className="flex justify-end pt-5">
             <button
-              className=" bg-black text-white font-bold px-3 py-3 rounded-lg"
+              className="bg-black text-white font-bold px-3 py-3 rounded-lg"
               onClick={createChannel}
             >
               Create channel

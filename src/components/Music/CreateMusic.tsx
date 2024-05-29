@@ -4,7 +4,6 @@ import axios from "axios";
 import { Back } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 
-
 type Props = {};
 type Licensor = {
   _id: string;
@@ -63,10 +62,7 @@ const CreateMusic: React.FC<Props> = () => {
     try {
       console.log(musicData);
 
-      const response = await axios.post(
-        API_ENDPOINTS.ADD_MUSIC,
-        musicData
-      );
+      const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData);
       setMessage(response.data.message);
       setMusicData({
         _id: "",
@@ -163,7 +159,7 @@ const CreateMusic: React.FC<Props> = () => {
                 name="licensorName"
                 value={musicData.licensorName}
                 onChange={handleChange}
-                className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
                 required
               >
                 <option value="">Select Licensor</option>
@@ -182,10 +178,12 @@ const CreateMusic: React.FC<Props> = () => {
                 value={musicData.musicId}
                 onChange={handleChange}
                 placeholder={`Enter Licensor ID`}
-                className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
                 required
               />
-            </div>{" "}
+            </div>
+          </div>
+          <div className="flex justify-between">
             <div className="flex flex-col gap-4">
               <label htmlFor="">Music Name</label>
               <input
@@ -194,21 +192,7 @@ const CreateMusic: React.FC<Props> = () => {
                 value={musicData.musicName}
                 onChange={handleChange}
                 placeholder={`Enter Licenser name`}
-                className="px-3 py-3 w-[50svh] border border-gray-200 rounded-lg"
-                required
-              />
-            </div>
-          </div>{" "}
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-4">
-              <label htmlFor="">Email</label>
-              <input
-                type="email"
-                name="musicEmail"
-                value={musicData.musicEmail}
-                onChange={handleChange}
-                placeholder={`Enter email`}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
             </div>

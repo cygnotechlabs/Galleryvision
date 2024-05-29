@@ -52,10 +52,7 @@ const CreateLicensor: React.FC<Props> = () => {
     e.preventDefault();
     try {
       console.log("add licensor", formData);
-      const response = await axios.post(
-        API_ENDPOINTS.ADD_LICENSOR,
-        formData
-      );
+      const response = await axios.post(API_ENDPOINTS.ADD_LICENSOR, formData);
       if (response.status === 200) {
         console.log("Data submitted successfully!");
         notify();
@@ -119,7 +116,7 @@ const CreateLicensor: React.FC<Props> = () => {
             <p className="flex items-center justify-center bg-red-700 w-[20px] h-[20px] text-xs px-2 rounded-full text-white">
               1
             </p>
-            <p className="font-bold">Licensor Details</p>
+            <p className="font-bold">Company Details</p>
           </div>
           <div className="flex gap-4 pt-[10px] pl-[32px]">
             <div className="bg-gray-100 px-[10px] py-[10px] rounded-xl">

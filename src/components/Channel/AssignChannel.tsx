@@ -6,6 +6,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 type Props = {
   channel: Channel;
   onClose: () => void;
+  onSave: () => void;
 };
 
 type Channel = {
@@ -24,7 +25,7 @@ type Licensor = {
   licensorName: string;
 };
 
-const AssignChannel = ({ channel, onClose }: Props) => {
+const AssignChannel = ({ channel, onClose, onSave }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [updatedData, setUpdatedData] = useState<Channel>(channel);
 
@@ -49,6 +50,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
       );
       setUpdatedData(response.data);
       onClose();
+      onSave();
     } catch (err) {
       console.error(err);
     }
@@ -139,7 +141,7 @@ const AssignChannel = ({ channel, onClose }: Props) => {
               <select
                 name="licensorName"
                 onChange={handleLicensorChange}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={updatedData.licensorName}
                 required
               >
@@ -157,11 +159,13 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 type="text"
                 name="channelId"
                 placeholder="Channel ID"
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={updatedData.channelId}
                 required
               />
             </div>
+          </div>
+          <div className="flex justify-between">
             <div className="flex flex-col gap-4">
               <label htmlFor="channelName">Channel name</label>
               <input
@@ -169,22 +173,8 @@ const AssignChannel = ({ channel, onClose }: Props) => {
                 name="channelName"
                 placeholder="Channel name"
                 onChange={handleUpdate}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
-                value={updatedData.channelName}
-                required
-              />
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-4">
-              <label htmlFor="channelEmail">Email</label>
-              <input
-                type="email"
-                name="channelEmail"
-                placeholder="Email"
-                onChange={handleUpdate}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
-                value={updatedData.channelEmail}
+                value={updatedData.channelName}
                 required
               />
             </div>

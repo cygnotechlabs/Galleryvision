@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import Modal from "../../layouts/Modal";
-import { Edit, Eye, Filter, Search, Trash } from "../icons/icon";
-import EditMusic from "./EditMusic";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { DeleteModal } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import { Edit, Eye, Search, Trash } from "../icons/icon";
+import EditMusic from "./EditMusic";
 
 type Props = {};
 
@@ -55,9 +55,10 @@ function MusicTable({}: Props) {
   const handleDelete = async () => {
     try {
       await axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId));
-      fetchData();
     } catch (error) {
       console.error("Error deleting music:", error);
+    } finally {
+      fetchData();
     }
   };
 
@@ -95,13 +96,9 @@ function MusicTable({}: Props) {
             value={searchTerm}
             onChange={handleSearch}
           />
-          <i className="m-3" style={{marginLeft:'-745px'}}><Search/></i> 
-          <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
-            Filter
-            <span>
-              <Filter />
-            </span>
-          </button>
+          <i className="m-3" style={{ marginLeft: "-745px" }}>
+            <Search />
+          </i>
         </div>
       </div>
       <div className="overflow-x-auto px-9 rounded-lg">
@@ -111,7 +108,6 @@ function MusicTable({}: Props) {
               <th className="px-4 py-1 text-left text-sm">Logo</th>
               <th className="px-4 py-1 text-left text-sm">Music name</th>
               <th className="px-4 py-1 text-left text-sm">Licensor name</th>
-              <th className="px-4 py-1 text-left text-sm">Email</th>
               <th className="px-4 py-1 text-left text-sm">Commission</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
@@ -133,9 +129,6 @@ function MusicTable({}: Props) {
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
                   {music.licensorName}
-                </td>
-                <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.musicEmail}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
                   {music.commission}

@@ -4,6 +4,7 @@ import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 
 type ChannelData = {
+  _id: string;
   channelId: string;
   channelName: string;
   commission: string;
@@ -15,7 +16,8 @@ type ChannelData = {
 
 type Props = {
   onClose: () => void;
-  channelId?: string | undefined;
+  onSave: () => void;
+  channel: ChannelData;
 };
 
 type Licensor = {
@@ -23,18 +25,9 @@ type Licensor = {
   licensorName: string;
 };
 
-const EditChannel = ({ onClose, channelId }: Props) => {
+const EditChannel = ({ onClose, channel, onSave }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
-  const [channelData, setChannelData] = useState<ChannelData>({
-    channelId: "",
-    channelName: "",
-    commission: "",
-    channelEmail: "",
-    licensorName: "",
-    licensorId: "",
-    channelLogo: "",
-  });
-  const [updatedData, setUpdatedData] = useState<Partial<ChannelData>>({});
+  const [formData, setFormData] = useState<ChannelData>(channel);
 
   useEffect(() => {
     const getLicensorName = async () => {
@@ -48,40 +41,20 @@ const EditChannel = ({ onClose, channelId }: Props) => {
     getLicensorName();
   }, []);
 
-  useEffect(() => {
-    const fetchChannelData = async () => {
-      try {
-        if (channelId) {
-          const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL(channelId)
-          );
-          setChannelData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching channel data:", error);
-      }
-    };
-
-    if (channelId) {
-      fetchChannelData();
-    }
-  }, [channelId]);
-
-  const handleUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setUpdatedData({ ...updatedData, [name]: value });
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
     try {
-      if (channelId) {
-        await axios.put(API_ENDPOINTS.UPDATE_CHANNEL(channelId), {
-          ...channelData,
-          ...updatedData,
-        });
-        onClose();
-      }
+      const response = await axios.put(
+        API_ENDPOINTS.UPDATE_CHANNEL(formData._id),
+        formData
+      );
+      console.log(response.data); // Log the response if needed
+      onClose(); // Close the modal after successful submission
+      onSave();
     } catch (error) {
       console.error("Error updating channel data:", error);
     }
@@ -94,7 +67,7 @@ const EditChannel = ({ onClose, channelId }: Props) => {
       (licensor) => licensor.licensorName === event.target.value
     );
     if (selectedLicensor) {
-      setUpdatedData((prevData) => ({
+      setFormData((prevData) => ({
         ...prevData,
         licensorName: selectedLicensor.licensorName,
         licensorId: selectedLicensor._id,
@@ -107,7 +80,7 @@ const EditChannel = ({ onClose, channelId }: Props) => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      setUpdatedData((prevData) => ({
+      setFormData((prevData) => ({
         ...prevData,
         channelLogo: reader.result ? reader.result.toString() : "",
       }));
@@ -128,7 +101,7 @@ const EditChannel = ({ onClose, channelId }: Props) => {
       </div>
       <div className="mt-5">
         <div>
-          <p>Edit music logo</p>
+          <p>Edit channel logo</p>
           <div className="bg-slate-100 px-4 py-6 w-[723px] h-[184px] rounded-2xl">
             <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
               <div>logo</div>
@@ -145,12 +118,12 @@ const EditChannel = ({ onClose, channelId }: Props) => {
                   />
                 </label>
               </div>
-              <div className="text-xs">Supports, JPG, PNG</div>{" "}
-              {updatedData.channelLogo && (
+              <div className="text-xs">Supports, JPG, PNG</div>
+              {formData.channelLogo && (
                 <div className="w-16 h-16">
                   <img
-                    src={updatedData.channelLogo}
-                    alt="Company Logo"
+                    src={formData.channelLogo}
+                    alt="Channel Logo"
                     className="max-w-full h-auto rounded-lg"
                   />
                 </div>
@@ -158,14 +131,14 @@ const EditChannel = ({ onClose, channelId }: Props) => {
             </div>
           </div>
         </div>
-        <div className=" py-6 flex justify-between">
+        <div className="py-6 flex justify-between">
           <div className="flex flex-col gap-4">
             <label htmlFor="licensorName">Select licensor</label>
             <select
               name="licensorName"
               onChange={handleLicensorChange}
-              className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
-              value={updatedData.licensorName || channelData.licensorName}
+              className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
+              value={formData.licensorName}
             >
               <option value="">Select Licensor</option>
               {licensors.map((licensor, index) => (
@@ -178,51 +151,42 @@ const EditChannel = ({ onClose, channelId }: Props) => {
           <div className="flex flex-col gap-4">
             <label htmlFor="channelId">Channel ID</label>
             <input
-              type="text"
-              onChange={handleUpdate}
-              placeholder={channelData.channelId}
-              className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+              id="channelId"
               name="channelId"
+              type="text"
+              onChange={handleChange}
+              placeholder={formData.channelId}
+              className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
             />
           </div>
+        </div>
+        <div className="flex justify-between">
           <div className="flex flex-col gap-4">
             <label htmlFor="channelName">Channel name</label>
             <input
-              type="text"
-              onChange={handleUpdate}
-              placeholder={channelData.channelName}
-              className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+              id="channelName"
               name="channelName"
-            />
-          </div>
-        </div>{" "}
-        <div className="flex justify-between">
-          <div className="flex flex-col gap-4">
-            <label htmlFor="channelEmail">Email</label>
-            <input
-              type="email"
-              onChange={handleUpdate}
-              placeholder={channelData.channelEmail}
+              type="text"
+              onChange={handleChange}
+              placeholder={formData.channelName}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
-              name="channelEmail"
             />
           </div>
           <div className="flex flex-col gap-4">
             <label htmlFor="commission">Commission (%)</label>
             <input
               type="number"
-              onChange={handleUpdate}
-              placeholder={channelData.commission}
+              onChange={handleChange}
+              placeholder={formData.commission}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               name="commission"
+              id="commission"
             />
-          </div>{" "}
+          </div>
         </div>
         <div className="flex justify-end pt-5">
           <button
-            onClick={(event) => {
-              handleSubmit(event);
-            }}
+            onClick={handleSubmit}
             className="bg-black text-white font-bold px-2 py-2 rounded-lg"
           >
             Add & Save

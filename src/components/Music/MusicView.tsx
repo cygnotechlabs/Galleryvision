@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { Back, Block, Email, Rupee } from "../icons/icon";
+import { Back, Block, Rupee } from "../icons/icon";
 
 type Props = {};
 
@@ -57,11 +57,6 @@ const MusicView = ({}: Props) => {
                   <Block />
                   <p className="text-sm text-gray-400 py-1">Licensor</p>
                   <p className="text-sm font-bold">{musicData.licensorName}</p>
-                </div>
-                <div className="px-[52px] border-x border-gray-400">
-                  <Email />
-                  <p className="text-sm text-gray-400 py-1">Email</p>
-                  <p className="text-sm font-bold">{musicData.musicEmail}</p>
                 </div>
                 <div className="px-[52px]">
                   <Rupee />

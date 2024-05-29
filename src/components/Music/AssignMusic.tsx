@@ -50,10 +50,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        API_ENDPOINTS.ASSIGN_MUSIC,
-        musicData
-      );
+      const response = await axios.post(API_ENDPOINTS.ASSIGN_MUSIC, musicData);
       setMusicData(response.data);
       onClose();
     } catch (error: any) {
@@ -139,7 +136,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
               <select
                 name="licensorName"
                 onChange={handleLicensorChange}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={musicData.licensorName}
                 required
               >
@@ -158,10 +155,12 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 name="musicId"
                 onChange={handleChange}
                 value={musicData.musicId}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
+                className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 required
               />
             </div>
+          </div>
+          <div className="flex justify-between">
             <div className="flex flex-col gap-4">
               <label htmlFor="musicName">Music name</label>
               <input
@@ -170,20 +169,6 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 name="musicName"
                 onChange={handleChange}
                 value={musicData.musicName}
-                className="px-3 py-3 w-[225px] border border-gray-200 rounded-lg"
-                required
-              />
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div className="flex flex-col gap-4">
-              <label htmlFor="musicEmail">Email</label>
-              <input
-                type="email"
-                placeholder="Email"
-                name="musicEmail"
-                onChange={handleChange}
-                value={musicData.musicEmail}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 required
               />

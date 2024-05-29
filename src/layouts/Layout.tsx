@@ -42,7 +42,7 @@ const Layout = ({ children }: Props) => {
         <Sidebaritem
           to="/home/csv-upload"
           icon={<Upload />}
-          text="CSV Upload"
+          text="Upload Files"
           active={activeItem === "CSV Upload"}
           onClick={() => handleItemClick("CSV Upload")}
         />

@@ -33,7 +33,7 @@ const Settings = () => {
         </div>
         <div>
           {activeComponent === "currency" && <Currency />}
-          {activeComponent === "tax" && <Tax />}
+          {/* {activeComponent === "tax" && <Tax />} */}
         </div>
       </div>
       <div></div>

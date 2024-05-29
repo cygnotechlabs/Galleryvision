@@ -4,7 +4,6 @@ import React, { useRef, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 
-
 const UploadChannelCSV: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -34,15 +33,11 @@ const UploadChannelCSV: React.FC = () => {
     try {
       setUploading(true);
       // Change the URL to your backend server endpoint
-      await axios.post(
-        API_ENDPOINTS.UPLOADCHANNEL,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post(API_ENDPOINTS.UPLOADCHANNEL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log("File uploaded successfully!");
       notify();
     } catch (error) {
@@ -55,9 +50,9 @@ const UploadChannelCSV: React.FC = () => {
 
   return (
     <div>
-      <div className="flex flex-col items-center m-8 rounded-2xl w-[368px] h-[307px] bg-white">
-        <h2 className="text-sm font-bold mb-4 pt-8">Upload Channel CSV File</h2>
-        <div className="relative bg-red-100 rounded-lg w-[304px] px-8 border-2 border-dashed border-gray-300 flex flex-col items-center">
+      <div className="flex flex-col items-center m-8 rounded-2xl px-7 py-4 bg-white">
+        <h2 className="text-sm font-bold mb-4">Upload Channel CSV File</h2>
+        <div className="relative bg-red-100 rounded-lg w-full border-2 border-dashed border-gray-300 flex flex-col items-center">
           <div className="flex flex-col items-center pt-4">
             <div className="text-red-500 rounded-full flex justify-center items-center mb-4">
               <svg
