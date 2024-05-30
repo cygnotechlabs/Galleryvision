@@ -1,20 +1,21 @@
+import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 import image from "../../assets/Image/login-image.png";
 import logo from "../../assets/logo/gv-logo.png";
-import axios from "axios";
-import { useAuth } from "../../Context/AuthContext";
 import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import OtpModal from "./OTP";
 
 type Props = {};
 
 function Login({}: Props) {
-  const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -46,14 +47,17 @@ function Login({}: Props) {
     if (!validateForm()) {
       return;
     }
+    setTimeout(() => {
+      return <div> loading</div>;
+    }, 2000);
     try {
-      const response = await axios.post(API_ENDPOINTS.LOGIN, {
+      const response = await axios.post(API_ENDPOINTS.LOGIN_TEST, {
         email,
         password,
       });
       if (response.status === 200) {
         login(response.data.token, stayLoggedIn);
-        navigate("home");
+        setOpen(true);
       } else {
         setError("Login failed. Please check your credentials.");
       }
@@ -152,7 +156,11 @@ function Login({}: Props) {
               </div>
             </div>
 
-            {error && <div className="text-red-500 font-semibold text-sm mt-2">{error}</div>}
+            {error && (
+              <div className="text-red-500 font-semibold text-sm mt-2">
+                {error}
+              </div>
+            )}
 
             <div>
               <button
@@ -165,6 +173,9 @@ function Login({}: Props) {
           </form>
         </div>
       </div>
+      <Modal onClose={() => setOpen(false)} open={open}>
+        <OtpModal onClose={() => setOpen(false)} email={email} />
+      </Modal>
     </div>
   );
 }

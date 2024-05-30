@@ -35,24 +35,24 @@ type Invoice = {
 const GenataredChannelInvoice = ({}: Props) => {
   const [invoiceData, setInvoiceData] = useState<Invoice[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 7)
+    new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedDate]); // Fetch data whenever selectedDate changes
 
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_CHANNEL_INVOICE, {
         params: {
-          page: currentPage,
           date: selectedDate,
         },
       });
       setInvoiceData(response.data);
+      setCurrentPage(1); // Reset to first page after fetching new data
     } catch (error) {
       console.error("Error fetching invoices:", error);
     }
@@ -62,9 +62,14 @@ const GenataredChannelInvoice = ({}: Props) => {
     setSelectedDate(newDate);
   };
 
+  // Filter invoices based on selected date
+  const filteredInvoices = invoiceData.filter(
+    (invoice) => invoice.date === selectedDate
+  );
+
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
-  const currentInvoices = invoiceData.slice(
+  const currentInvoices = filteredInvoices.slice(
     indexOfFirstInvoice,
     indexOfLastInvoice
   );
@@ -84,9 +89,12 @@ const GenataredChannelInvoice = ({}: Props) => {
           type="text"
           className="border px-4 py-3 w-[50%] rounded-lg"
           placeholder={`Search`}
+          
         />
-                       <i className="m-3" style={{marginLeft:'-500px'}}><Search/></i> 
-
+        <i className="m-3" style={{ marginLeft: "-35px" }}>
+                <Search />
+              </i>
+        
 
         <div className="flex gap-2">
           <MonthYearSelector
@@ -96,7 +104,8 @@ const GenataredChannelInvoice = ({}: Props) => {
           <button className="px-2 border bg-slate-200 rounded-lg">sort</button>
         </div>
       </div>
-      {invoiceData.length === 0 ? (
+      
+      {filteredInvoices.length === 0 ? (
         <div className="flex gap-2 flex-col m-3">
           <img src={empty} alt="" className="w-[25%] mx-auto" />
           <p className="text-center text-lg text-gray-600">
@@ -118,7 +127,7 @@ const GenataredChannelInvoice = ({}: Props) => {
                 <th className="px-4 py-2 text-left text-sm">Channel</th>
                 <th className="px-4 py-2 text-left text-sm">Partner revenue</th>
                 <th className="px-4 py-2 text-left text-sm">Commission</th>
-                <th className="px-4 py-2 text-left text-sm">status</th>
+                <th className="px-4 py-2 text-left text-sm">Status</th>
                 <th className="px-4 py-2 text-left text-sm"></th>
                 <th className="px-4 py-2 text-left text-sm">Actions</th>
               </tr>
@@ -133,7 +142,7 @@ const GenataredChannelInvoice = ({}: Props) => {
                     {invoice.licensorName}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
-                    {invoice.partnerName}
+                    {invoice.channelName}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
                     {invoice.ptRevenue}
@@ -162,8 +171,8 @@ const GenataredChannelInvoice = ({}: Props) => {
             <nav className="flex items-center gap-96" aria-label="Pagination">
               <div>
                 Showing {indexOfFirstInvoice + 1} to{" "}
-                {Math.min(indexOfLastInvoice, invoiceData.length)} of{" "}
-                {invoiceData.length} entries
+                {Math.min(indexOfLastInvoice, filteredInvoices.length)} of{" "}
+                {filteredInvoices.length} entries
               </div>
               <ul className="flex list-style-none">
                 <li>
@@ -178,7 +187,7 @@ const GenataredChannelInvoice = ({}: Props) => {
                 <li>
                   <button
                     onClick={handleNextPage}
-                    disabled={indexOfLastInvoice >= invoiceData.length}
+                    disabled={indexOfLastInvoice >= filteredInvoices.length}
                     className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
                   >
                     Next

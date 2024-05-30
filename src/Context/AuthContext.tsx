@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (token: string, stayLoggedIn: boolean) => {
-    if (loggedInUsers < 5) {
+    if (loggedInUsers < 50) {
       setIsAuthenticated(true);
       if (stayLoggedIn) {
         localStorage.setItem("authToken", token);

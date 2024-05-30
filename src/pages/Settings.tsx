@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Currency from "../components/Settings/Currency/Currency";
-// import Tax from "../components/Settings/Tax/Tax";
 
 const Settings = () => {
   const [activeComponent, setActiveComponent] = useState("currency");

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../layouts/Modal";
-import { Back, Edit, Filter } from "../icons/icon";
+import { Back, Edit, Filter, Search } from "../icons/icon";
 import AssignChannel from "./AssignChannel";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
@@ -23,6 +23,7 @@ function UnassignedChannel() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
+  
   const [selectedChannel, setSelectedChannel] = useState<Channel>({
     _id: "",
     channelId: "",
@@ -33,18 +34,27 @@ function UnassignedChannel() {
     licensorId: "",
     channelLogo: "",
   });
+  
+  
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  
+
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_UNLINKED_CHANNEL); // Await the axios request
       setChannels(response.data); // Set the data in the state
+     
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+
+
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = channels.slice(indexOfFirstRow, indexOfLastRow);
@@ -78,7 +88,13 @@ function UnassignedChannel() {
               type="text"
               placeholder="             Search"
               className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
+              
+
             />
+             <i className="m-3" style={{ marginLeft: "-710px" }}>
+             <Search />
+             </i>
+            
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

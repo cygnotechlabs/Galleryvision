@@ -1,5 +1,5 @@
-// const BASE_URL = "http://localhost:5000";
-const BASE_URL = "http://13.200.171.128:5000";
+const BASE_URL = "http://localhost:5000";
+// const BASE_URL = "http://13.200.171.128:5000";
 
 const API_ENDPOINTS = {
   // Channel Routes
@@ -46,6 +46,8 @@ const API_ENDPOINTS = {
 
   // Login Route
   LOGIN: `${BASE_URL}/login`,
+  LOGIN_TEST: `${BASE_URL}/login-test`,
+  OPT_CHECKING: `${BASE_URL}/verify-otp`,
 
   // Upload CSV
   UPLOADCHANNEL: `${BASE_URL}/channel/importChannel`,

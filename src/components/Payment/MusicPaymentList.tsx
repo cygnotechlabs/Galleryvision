@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { Arrow, Back, Eye } from "../icons/icon";
+import { Arrow, Back, Eye, Search } from "../icons/icon";
 import Modal from "../../layouts/Modal";
 import PaymentModal from "../../UI/PaymentModal";
 
@@ -18,6 +18,7 @@ interface Invoice {
   ifsc: string;
   iban: string;
   currency: string;
+  date: string; // Added date property
   musicId: string;
   ptRevenue: string;
   tax: string;
@@ -32,34 +33,45 @@ interface Invoice {
 
 const MusicPaymentList: React.FC<Props> = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toLocaleString("default", { month: "long", year: "numeric" })
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [allChecked, setAllChecked] = useState(false);
   const rowsPerPage = 12;
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedDate]); // Fetch data whenever selectedDate changes
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_MUSIC_INVOICE);
+      const response = await axios.get(API_ENDPOINTS.GET_MUSIC_INVOICE, {
+        params: {
+          date: selectedDate,
+        },
+      });
       setInvoices(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleDateChange = () => {
-    // Implement date change handling logic here
+  const handleDateChange = (newDate: string) => {
+    setSelectedDate(newDate);
   };
 
   const handleToggleAll = () => {
     setAllChecked((prev) => !prev);
   };
 
+  const filteredInvoices = invoices.filter(
+    (invoice) => invoice.date === selectedDate
+  );
+
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
-  const currentInvoices = invoices.slice(
+  const currentInvoices = filteredInvoices.slice(
     indexOfFirstInvoice,
     indexOfLastInvoice
   );
@@ -71,6 +83,7 @@ const MusicPaymentList: React.FC<Props> = () => {
   const handlePrevPage = () => {
     setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
   };
+
   const handleStatusChange = async (invoiceId: string, newStatus: string) => {
     try {
       await axios.put(API_ENDPOINTS.CHANGE_CHANNEL_STATUS(invoiceId), {
@@ -96,8 +109,14 @@ const MusicPaymentList: React.FC<Props> = () => {
           className="border px-4 py-3 w-[50%] rounded-lg"
           placeholder={`Search`}
         />
+        <i className="m-3" style={{ marginLeft: "-500px" }}>
+          <Search />
+        </i>
         <div className="flex gap-2">
-          <MonthYearSelector date="" onDateChange={handleDateChange} />
+          <MonthYearSelector
+            date={selectedDate}
+            onDateChange={handleDateChange}
+          />
           <button className="px-2 border bg-slate-200 rounded-lg">sort</button>
         </div>
       </div>

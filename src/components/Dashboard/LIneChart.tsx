@@ -41,10 +41,7 @@ const LineChart = ({}: Props) => {
     datasets: [
       {
         label: "Channel",
-        data: [
-          6500, 5900, 8000, 8100, 5600, 5500, 4000, 6500, 5900, 8000, 8100,
-          5600,
-        ],
+        data: [2000,2500],
         fill: false,
         borderColor: "rgb(75, 192, 192)",
         tension: 0.1,
@@ -52,8 +49,8 @@ const LineChart = ({}: Props) => {
       {
         label: "Music",
         data: [
-          6500, 8900, 8000, 1060, 7600, 5670, 4000, 6500, 8900, 8000, 3100,
-          7600,
+           3100,
+          3600,
         ],
         fill: false,
         borderColor: "rgb(705, 192, 192)",

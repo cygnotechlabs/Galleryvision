@@ -28,30 +28,30 @@ type Invoice = {
   payout: string;
   status: string;
   commissionAmount: string;
+  date: string;
 };
 
 const GenataredMusicInvoice = ({}: Props) => {
   const [invoiceData, setInvoiceData] = useState<Invoice[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 7)
+    new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, selectedDate]); // Fetch data whenever the page or selectedDate changes
+  }, [selectedDate]); // Fetch data whenever selectedDate changes
 
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_MUSIC_INVOICE, {
         params: {
-          page: currentPage,
           date: selectedDate,
-          // You can add other parameters for filtering, sorting, etc.
         },
       });
       setInvoiceData(response.data);
+      setCurrentPage(1); // Reset to first page after fetching new data
     } catch (error) {
       console.error("Error fetching invoices:", error);
     }
@@ -61,9 +61,14 @@ const GenataredMusicInvoice = ({}: Props) => {
     setSelectedDate(newDate);
   };
 
+  // Filter invoices based on selected date
+  const filteredInvoices = invoiceData.filter(
+    (invoice) => invoice.date === selectedDate
+  );
+
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
-  const currentInvoices = invoiceData.slice(
+  const currentInvoices = filteredInvoices.slice(
     indexOfFirstInvoice,
     indexOfLastInvoice
   );
@@ -78,25 +83,26 @@ const GenataredMusicInvoice = ({}: Props) => {
 
   return (
     <div className="flex flex-col gap-4 p-8 bg-white rounded-lg">
-      <div className="flex items-center justify-between">
-        <input
-          type="text"
-          className="border px-4 py-3 w-[50%] rounded-lg"
-          placeholder={`Search`}
-        />
-        <i className="m-3" style={{ marginLeft: "-500px" }}>
-          <Search />
-        </i>
-
-        <div className="flex gap-2">
+      
+      <div className="flex">
+              <input
+                type="text"
+                placeholder={`Search`}
+                className="border  border-gray-300 rounded-md px-4 w-1/3 py-2"
+                
+              />
+              <i className="m-3" style={{ marginLeft: "-35px" }}>
+                <Search />
+              </i>
+              <div  className="flex gap-2">
           <MonthYearSelector
             date={selectedDate}
             onDateChange={handleDateChange}
           />
           <button className="px-2 border bg-slate-200 rounded-lg">sort</button>
         </div>
-      </div>
-      {invoiceData.length === 0 ? (
+            </div>
+      {filteredInvoices.length === 0 ? (
         <div className="flex gap-2 flex-col m-3">
           <img src={empty} alt="" className="w-[25%] mx-auto" />
           <p className="text-center text-lg text-gray-600">
@@ -162,8 +168,8 @@ const GenataredMusicInvoice = ({}: Props) => {
             <nav className="flex items-center gap-96" aria-label="Pagination">
               <div>
                 Showing {indexOfFirstInvoice + 1} to{" "}
-                {Math.min(indexOfLastInvoice, invoiceData.length)} of{" "}
-                {invoiceData.length} entries
+                {Math.min(indexOfLastInvoice, filteredInvoices.length)} of{" "}
+                {filteredInvoices.length} entries
               </div>
               <ul className="flex list-style-none">
                 <li>
@@ -178,7 +184,7 @@ const GenataredMusicInvoice = ({}: Props) => {
                 <li>
                   <button
                     onClick={handleNextPage}
-                    disabled={indexOfLastInvoice >= invoiceData.length}
+                    disabled={indexOfLastInvoice >= filteredInvoices.length}
                     className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
                   >
                     Next
