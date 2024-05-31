@@ -57,8 +57,7 @@ const API_ENDPOINTS = {
   CURRENCY_COVERSTION: `${BASE_URL}/add-currency`,
 
   // PAYMENT
-  CHANGE_CHANNEL_STATUS: (id: string) =>
-    `${BASE_URL}/channel-invoice-status/${id}`,
+  CHANGE_CHANNEL_STATUS: (id: string) => `${BASE_URL}/channel-invoice-status/${id}`,
   CHANGE_MUSIC_STATUS: (id: string) => `${BASE_URL}/music-invoice-status/${id}`,
 
   // DASHBOARD
