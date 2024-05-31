@@ -12,7 +12,9 @@ interface Currency {
 }
 
 const CurrencyComponent = ({}: Props) => {
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toLocaleString("default", { month: "long", year: "numeric" })
+  );
   const [INRValue, setINRValue] = useState<string>("");
   const [data, setData] = useState<Currency>({
     date: "",
@@ -43,7 +45,10 @@ const CurrencyComponent = ({}: Props) => {
 
     try {
       console.log("Sending payload:", data);
-      const response = await axios.post(API_ENDPOINTS.CURRENCY_COVERSTION, data);
+      const response = await axios.post(
+        API_ENDPOINTS.CURRENCY_COVERSTION,
+        data
+      );
       console.log("Response:", response.data);
       alert("Conversion rate added successfully!");
     } catch (error) {
@@ -66,7 +71,10 @@ const CurrencyComponent = ({}: Props) => {
       <div className="flex flex-col gap-3">
         <div className="flex flex-col items-start gap-2">
           <label htmlFor="">Select Month: {selectedDate}</label>
-          <MonthYearSelector date={selectedDate} onDateChange={handleDateChange} />
+          <MonthYearSelector
+            date={selectedDate}
+            onDateChange={handleDateChange}
+          />
         </div>
         <div className="flex gap-3">
           <div className="flex gap-1 items-center">
@@ -83,7 +91,7 @@ const CurrencyComponent = ({}: Props) => {
               value={INRValue}
               onChange={handleINRChange}
             />
-            <button 
+            <button
               onClick={handleSubmit}
               className="font-bold bg-black  text-white p-2 rounded-lg"
             >

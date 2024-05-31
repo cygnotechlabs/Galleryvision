@@ -63,6 +63,7 @@ const API_ENDPOINTS = {
 
   // DASHBOARD
   VIEW_COUNT: `${BASE_URL}/view-count`,
+  GET_DASHBOARD: `${BASE_URL}/get-dashboard`,
 };
 
 export default API_ENDPOINTS;

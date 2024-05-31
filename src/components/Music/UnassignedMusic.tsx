@@ -78,7 +78,7 @@ function UnassignedMusic() {
           <div className="flex justify-between text-sm">
             <input
               type="text"
-              placeholder="             Search"
+              placeholder="              Search"
               className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
             />
             <svg

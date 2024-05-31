@@ -1,10 +1,11 @@
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Back, Download, Emailsm, Invoice } from "../icons/icon";
+import { Back, Download, Emailsm } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import MusicPDFGenerator from "./PDF/MusicPDFGenarator";
+import PrintMusicInvoice from "./Print/PrintMusicInvoice";
 
 type Props = {};
 
@@ -157,35 +158,15 @@ const MusicViewInvoice = ({}: Props) => {
             <div className="flex flex-col gap-3">
               <p className="text-sm font-bold">Payment to</p>
               <div className="flex gap-2">
-                {/* Replace with actual logo */}
                 <div className="flex-col">
-                  <p className="text-sm font-bold">Asianet</p>
-                  <p className="text-sm">asianet@gmail.com</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {/* Replace with actual logo */}
-                <div className="flex-col">
-                  <p className="text-sm font-bold">Asianet</p>
-                  <p className="text-sm">asianet@gmail.com</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-3">
-              <p className="text-sm font-bold">Payment to</p>
-              <div className="flex gap-2">
-                {/* Replace with actual logo */}
-                <div className="flex-col">
-                  <p className="text-sm font-bold">Gallery vision</p>
-                  <p className="text-sm">vision@email.com</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {/* Replace with actual logo */}
-                <div className="flex-col">
-                  <p className="text-sm font-bold">**** **** **** 4455</p>
+                  <p className="text-sm font-bold">
+                    Music Partner Name: {invoiceData.licensorName}
+                  </p>
                   <p className="text-sm">
-                    3891 Ranchview Dr. Richardson, California 62639
+                    Licensor Name: {invoiceData.licensorName}
+                  </p>
+                  <p className="text-sm">
+                    Licensor Address: {invoiceData.licensorAddress}
                   </p>
                 </div>
               </div>
@@ -212,10 +193,7 @@ const MusicViewInvoice = ({}: Props) => {
           </div>
         </div>
         <div className="flex justify-end gap-4 mx-8">
-          <button className="flex items-center gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-gray-100">
-            <Invoice />
-            Print
-          </button>
+        <PrintMusicInvoice invoiceData={invoiceData} />
           <a
             href={`mailto:${
               invoiceData.licensorEmail

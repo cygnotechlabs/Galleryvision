@@ -134,7 +134,7 @@ const EditLicensor: React.FC<Props> = () => {
                 <div className="flex flex-col items-center mb-4 mx-[24px] my-[10px]">
                   <HomeXl />
                   <label className="text-black font-medium text-sm">
-                    Drop your logo here, or{" "}
+                  Select your logo here, or{" "}
                     <label className="cursor-pointer text-blue-500">
                       browse
                       <input

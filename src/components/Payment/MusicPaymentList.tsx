@@ -5,6 +5,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import { Arrow, Back, Eye, Search } from "../icons/icon";
 import Modal from "../../layouts/Modal";
 import PaymentModal from "../../UI/PaymentModal";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
@@ -36,6 +37,7 @@ const MusicPaymentList: React.FC<Props> = () => {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [allChecked, setAllChecked] = useState(false);
   const rowsPerPage = 12;
@@ -52,8 +54,9 @@ const MusicPaymentList: React.FC<Props> = () => {
         },
       });
       setInvoices(response.data);
+      setCurrentPage(1); // Reset to first page after fetching new data
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching invoices:", error);
     }
   };
 
@@ -61,12 +64,21 @@ const MusicPaymentList: React.FC<Props> = () => {
     setSelectedDate(newDate);
   };
 
+  const handleSearchTermChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+  };
+
   const handleToggleAll = () => {
     setAllChecked((prev) => !prev);
   };
 
   const filteredInvoices = invoices.filter(
-    (invoice) => invoice.date === selectedDate
+    (invoice) =>
+      invoice.date === selectedDate &&
+      (invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        invoice.partnerName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
@@ -86,7 +98,7 @@ const MusicPaymentList: React.FC<Props> = () => {
 
   const handleStatusChange = async (invoiceId: string, newStatus: string) => {
     try {
-      await axios.put(API_ENDPOINTS.CHANGE_CHANNEL_STATUS(invoiceId), {
+      await axios.put(API_ENDPOINTS.CHANGE_MUSIC_STATUS(invoiceId), {
         status: newStatus,
       });
       setInvoices((prevInvoices) =>
@@ -104,20 +116,23 @@ const MusicPaymentList: React.FC<Props> = () => {
   return (
     <div className="flex flex-col gap-5 bg-white py-4 rounded-lg">
       <div className="mx-8 flex items-center justify-between">
-        <input
-          type="text"
-          className="border px-4 py-3 w-[50%] rounded-lg"
-          placeholder={`Search`}
-        />
-        <i className="m-3" style={{ marginLeft: "-500px" }}>
-          <Search />
-        </i>
+        <div className="relative w-[50%]">
+          <input
+            type="text"
+            className="border px-4 py-3 w-full rounded-lg"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+          />
+          <i className="absolute right-3 top-3">
+            <Search />
+          </i>
+        </div>
         <div className="flex gap-2">
           <MonthYearSelector
             date={selectedDate}
             onDateChange={handleDateChange}
           />
-          <button className="px-2 border bg-slate-200 rounded-lg">sort</button>
         </div>
       </div>
       <table className="mx-8 bg-white">
@@ -132,9 +147,9 @@ const MusicPaymentList: React.FC<Props> = () => {
               />
             </th>
             <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
-            <th className="px-4 py-2 text-left text-sm">Licensor name</th>
+            <th className="px-4 py-2 text-left text-sm">Licensor Name</th>
             <th className="px-4 py-2 text-left text-sm">Music</th>
-            <th className="px-4 py-2 text-left text-sm">Partner revenue</th>
+            <th className="px-4 py-2 text-left text-sm">Partner Revenue</th>
             <th className="px-4 py-2 text-left text-sm">Currency</th>
             <th className="px-4 py-2 text-left text-sm">Commission</th>
             <th className="px-4 py-2 text-left text-sm">Status</th>
@@ -188,6 +203,12 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
   handleStatusChange,
 }) => {
   const [open, setOpen] = useState(false);
+
+  const handleConfirmPayment = () => {
+    handleStatusChange(invoice._id, "paid");
+    setOpen(false);
+  };
+
   return (
     <tr>
       <td className="px-4 py-1 text-left text-sm">
@@ -212,16 +233,16 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
         </button>
       </td>
       <td className="flex space-x-2">
-        <button className="p-2 bg-gray-200 rounded">
-          <Eye />
-        </button>
+        <Link to={`/home/view-invoices/${invoice._id}`}>
+          <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
+            <Eye />
+          </button>
+        </Link>
       </td>
       <Modal open={open} onClose={() => setOpen(false)}>
         <PaymentModal
-          onClose={() => {
-            setOpen(false);
-            handleStatusChange(invoice._id, "paid");
-          }}
+          onClose={() => setOpen(false)}
+          onConfirm={handleConfirmPayment}
         />
       </Modal>
     </tr>

@@ -87,27 +87,26 @@ function MusicTable({}: Props) {
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
-        
-         <div className="flex">
-              <input
-                type="text"
-                placeholder="Search"
-                className="border  border-gray-300 rounded-md px-4 w-1/3 py-2"
-                value={searchTerm}
+        <div className="flex">
+          <input
+            type="text"
+            placeholder="Search"
+            className="border  border-gray-300 rounded-md px-4 w-1/3 py-2"
+            value={searchTerm}
             onChange={handleSearch}
-              />
-              <i className="m-3" style={{ marginLeft: "-35px" }}>
-                <Search />
-              </i>
-            </div>
+          />
+          <i className="m-3" style={{ marginLeft: "-35px" }}>
+            <Search />
+          </i>
+        </div>
       </div>
       <div className="overflow-x-auto px-9 rounded-lg">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-200">
               <th className="px-4 py-1 text-left text-sm">Logo</th>
-              <th className="px-4 py-1 text-left text-sm">Music name</th>
-              <th className="px-4 py-1 text-left text-sm">Licensor name</th>
+              <th className="px-4 py-1 text-left text-sm">Music Name</th>
+              <th className="px-4 py-1 text-left text-sm">Licensor Name</th>
               <th className="px-4 py-1 text-left text-sm">Commission</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>

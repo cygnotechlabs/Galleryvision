@@ -1,8 +1,9 @@
 type Props = {
   onClose: () => void;
+  onConfirm: () => void;
 };
 
-const PaymentModal = ({ onClose }: Props) => {
+const PaymentModal: React.FC<Props> = ({ onClose, onConfirm }) => {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold px-3 py-3 mb-4">Confirm Payment</h2>
@@ -15,9 +16,7 @@ const PaymentModal = ({ onClose }: Props) => {
           Cancel
         </button>
         <button
-          onClick={() => {
-            onClose();
-          }}
+          onClick={onConfirm}
           className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
         >
           Confirm

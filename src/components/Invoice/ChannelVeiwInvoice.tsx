@@ -1,14 +1,16 @@
+// ChannelViewInvoice.tsx
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import { Back, Download, Emailsm, Invoice } from "../icons/icon";
+import { Back, Download, Emailsm } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import ChannelPDFGenerator from "./PDF/ChannelPDFGenerator";
+import PrintChannel from "./Print/PrintChannel";
 
 type Props = {};
 
-type InvoiceData = {
+export type InvoiceData = {
   _id: string;
   partnerName: string;
   licensorId: string;
@@ -163,7 +165,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
               <div className="flex gap-2">
                 <div className="flex-col">
                   <p className="text-sm font-bold">
-                    Channel Name: {invoiceData.channelName}
+                    Channel Name: {invoiceData.licensorName}
                   </p>
                   <p className="text-sm">
                     Licensor Name: {invoiceData.licensorName}
@@ -196,10 +198,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
           </div>
         </div>
         <div className="flex justify-end gap-4 mx-8">
-          <button className="flex items-center gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-gray-100">
-            <Invoice />
-            Print
-          </button>
+          <PrintChannel invoiceData={invoiceData} />
           <a
             href={`mailto:${
               invoiceData.licensorEmail

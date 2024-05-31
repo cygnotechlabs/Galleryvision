@@ -36,6 +36,7 @@ const GenataredMusicInvoice = ({}: Props) => {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
 
@@ -61,9 +62,18 @@ const GenataredMusicInvoice = ({}: Props) => {
     setSelectedDate(newDate);
   };
 
-  // Filter invoices based on selected date
+  const handleSearchTermChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Filter invoices based on selected date and search term
   const filteredInvoices = invoiceData.filter(
-    (invoice) => invoice.date === selectedDate
+    (invoice) =>
+      invoice.date === selectedDate &&
+      (invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        invoice.partnerName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
@@ -83,25 +93,26 @@ const GenataredMusicInvoice = ({}: Props) => {
 
   return (
     <div className="flex flex-col gap-4 p-8 bg-white rounded-lg">
-      
-      <div className="flex">
-              <input
-                type="text"
-                placeholder={`Search`}
-                className="border  border-gray-300 rounded-md px-4 w-1/3 py-2"
-                
-              />
-              <i className="m-3" style={{ marginLeft: "-35px" }}>
-                <Search />
-              </i>
-              <div  className="flex gap-2">
+      <div className="flex items-center justify-between">
+        <div className="relative w-[50%]">
+          <input
+            type="text"
+            className="border px-4 py-3 w-full rounded-lg"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+          />
+          <i className="absolute right-3 top-3">
+            <Search />
+          </i>
+        </div>
+        <div className="flex gap-2">
           <MonthYearSelector
             date={selectedDate}
             onDateChange={handleDateChange}
           />
-          <button className="px-2 border bg-slate-200 rounded-lg">sort</button>
         </div>
-            </div>
+      </div>
       {filteredInvoices.length === 0 ? (
         <div className="flex gap-2 flex-col m-3">
           <img src={empty} alt="" className="w-[25%] mx-auto" />

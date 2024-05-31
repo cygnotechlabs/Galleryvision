@@ -43,8 +43,8 @@ const Layout = ({ children }: Props) => {
           to="/home/csv-upload"
           icon={<Upload />}
           text="Upload Files"
-          active={activeItem === "CSV Upload"}
-          onClick={() => handleItemClick("CSV Upload")}
+          active={activeItem === "Upload File"}
+          onClick={() => handleItemClick("Upload File")}
         />
         <Sidebaritem
           to="/home/licensor"

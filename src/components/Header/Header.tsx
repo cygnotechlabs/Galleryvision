@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import logo from "../../assets/logo/gv-logo.png";
-import { Search, Setting } from "../icons/icon";
-import { useAuth } from "../../Context/AuthContext";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+import logo from "../../assets/logo/userlogo.png";
+import { Setting } from "../icons/icon";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -25,14 +25,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       >
         ☰
       </button>
-      <input
-        type="text"
-        className="px-10 py-2 w-30 lg:w-[30%] rounded-lg bg-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder="Search"
-      />
-                     <i className="m-3" style={{marginLeft:'-950px'}}><Search/></i> 
 
-      <div className="flex items-center gap-3">
+      <div className="flex justify-between w-full items-center gap-3">
         <Link to={"/home/settings"}>
           <button
             className="text-black pr-4 focus:outline-none"
@@ -52,8 +46,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
               src={logo}
               alt="Profile"
             />
-            <div className="hidden lg:block px-5">
-              <div className="font-semibold">Aman</div>
+            <div className="lg:block px-5">
+              <div className="font-semibold">Admin</div>
               <div className="text-sm">admin</div>
             </div>
           </button>

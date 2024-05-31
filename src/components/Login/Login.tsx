@@ -47,9 +47,7 @@ function Login({}: Props) {
     if (!validateForm()) {
       return;
     }
-    setTimeout(() => {
-      return <div> loading</div>;
-    }, 2000);
+    setOpen(true);
     try {
       const response = await axios.post(API_ENDPOINTS.LOGIN_TEST, {
         email,
@@ -57,7 +55,6 @@ function Login({}: Props) {
       });
       if (response.status === 200) {
         login(response.data.token, stayLoggedIn);
-        setOpen(true);
       } else {
         setError("Login failed. Please check your credentials.");
       }

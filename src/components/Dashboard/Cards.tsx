@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { UpArrow } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 
@@ -9,15 +8,21 @@ type Count = {
   channelCount: number;
   musicCount: number;
   licensorCount: number;
+  totalCommission: number;
+  totalchannelCommission: number;
+  totalMusicCommission: number;
 };
 
-const card = "flex flex-col gap-4 pl-10 pr-36 py-6 rounded-2xl bg-white";
+const card = "flex flex-col py-5 gap-3 px-5 w-[150%] rounded-2xl bg-white";
 
 const Cards: React.FC<Props> = ({}: Props) => {
   const [count, setCount] = useState<Count>({
     channelCount: 0,
     musicCount: 0,
     licensorCount: 0,
+    totalCommission: 0,
+    totalchannelCommission: 0,
+    totalMusicCommission: 0,
   });
 
   useEffect(() => {
@@ -34,80 +39,74 @@ const Cards: React.FC<Props> = ({}: Props) => {
   }, []);
 
   return (
-    <div className="flex gap-10 mx-8">
-      <TotalRevenue />
+    <div className="flex gap-24 mx-8">
+      <TotalRevenue totalCommision={count.totalCommission} />
       <TotalLicensor licensorCount={count.licensorCount} />
-      <TotalChannel channelCount={count.channelCount} />
-      <TotalMusic musicCount={count.musicCount} />
+      <TotalChannel
+        channelCount={count.channelCount}
+        totalchannelCommission={count.totalchannelCommission}
+      />
+      <TotalMusic
+        musicCount={count.musicCount}
+        totalMusicCommission={count.totalMusicCommission}
+      />
     </div>
   );
 };
 
 export default Cards;
 
-function TotalRevenue() {
+function TotalRevenue({ totalCommision }: { totalCommision: number }) {
   return (
-    <div>
-      <div className={`${card}`}>
-        <p className="text-sm font-bold  text-gray-600">Total Revenue</p>
-        <p className="text-2xl font-bold">$ 13,000,00</p>
-        <div className="text-sm font-bold flex items-center gap-2">
-          <div className="bg-green-500 text-white rounded-full p-1">
-            <UpArrow />
-          </div>
-          3,6% this month
-        </div>
-      </div>
+    <div className={`${card}`}>
+      <p className="text-sm font-bold  text-gray-600">Total Revenue</p>
+      <p className="text-2xl font-bold">$ {totalCommision}</p>
     </div>
   );
 }
 
 function TotalLicensor({ licensorCount }: { licensorCount: number }) {
   return (
-    <div>
-      <div className={`${card}`}>
-        <p className="text-sm font-bold text-gray-600">Total Licensor</p>
-        <p className="text-2xl font-bold">{licensorCount}</p>
-        <div className="text-sm font-bold flex items-center gap-2">
-          <div className="bg-green-500 text-white rounded-full p-1">
-            <UpArrow />
-          </div>
-          3,6% this month
-        </div>
+    <div className={`${card}`}>
+      <p className="text-sm font-bold text-gray-600">Total Licensor</p>
+      <p className="text-2xl font-bold">{licensorCount}</p>
+    </div>
+  );
+}
+
+function TotalChannel({
+  channelCount,
+  totalchannelCommission,
+}: {
+  channelCount: number;
+  totalchannelCommission: number;
+}) {
+  return (
+    <div className={`${card}`}>
+      <p className="text-sm font-bold text-gray-600">Total Channel</p>
+      <p className="text-2xl font-bold">{channelCount}</p>
+      <div className="text-sm font-bold flex items-center gap-2">
+        <p className="text-sm font-bold text-gray-600">Total Commission</p>
+        <p className="text-xl font-bold">$ {totalchannelCommission}</p>
       </div>
     </div>
   );
 }
 
-function TotalChannel({ channelCount }: { channelCount: number }) {
+function TotalMusic({
+  musicCount,
+  totalMusicCommission,
+}: {
+  musicCount: number;
+  totalMusicCommission: number;
+}) {
   return (
-    <div>
-      <div className={`${card}`}>
-        <p className="text-sm font-bold text-gray-600">Total Channel</p>
-        <p className="text-2xl font-bold">{channelCount}</p>
-        <div className="text-sm font-bold flex items-center gap-2">
-          <div className="bg-green-500 text-white rounded-full p-1">
-            <UpArrow />
-          </div>
-          3,6% this month
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TotalMusic({ musicCount }: { musicCount: number }) {
-  return (
-    <div>
-      <div className={`${card}`}>
-        <p className="text-sm font-bold text-gray-600">Total Music</p>
-        <p className="text-2xl font-bold">{musicCount}</p>
-        <div className="text-sm font-bold flex items-center gap-2">
-          <div className="bg-green-500 text-white rounded-full p-1">
-            <UpArrow />
-          </div>
-          3,6% this month
-        </div>
+    <div className={`${card}`}>
+      <p className="text-sm font-bold text-gray-600">Total Music</p>
+      <p className="text-2xl font-bold">{musicCount}</p>
+      <div className="text-sm font-bold flex items-center gap-2">
+        <p className="text-sm font-bold text-gray-600">Total Commission</p>
+        <p className="text-xl font-bold">$ {totalMusicCommission}</p>
       </div>
     </div>
   );

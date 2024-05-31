@@ -1,98 +1,42 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import { Invoice } from '../../icons/icon';
 import logo from "../../../assets/logo/gv-logo.png";
-import { Download } from "../../icons/icon";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import API_ENDPOINTS from "../../../config/apiConfig";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+interface Props {
+  invoiceData: any;
+}
 
-type Props = {
-  onClose: () => void;
-};
-
-type InvoiceData = {
-  _id: string;
-  partnerName: string;
-  licensorId: string;
-  invoiceNumber: string;
-  licensorName: string;
-  accNum: string;
-  ifsc: string;
-  iban: string;
-  currency: string;
-  musicId: string;
-  ptRevenue: string;
-  tax: string;
-  ptAfterTax: string;
-  commission: string;
-  totalPayout: string;
-  conversionRate: string;
-  payout: string;
-  status: string;
-  commissionAmount: string;
-  musicName: string;
-  licensorAddress: string;
-  date: string;
-};
-
-const MusicPDFGenarator = ({ onClose }: Props) => {
-  const { id } = useParams<{ id: string }>();
-  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
-  const invoiceRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (id) {
-          const response = await axios.get(
-            API_ENDPOINTS.VIEW_MUSIC_INVOICE(id)
-          );
-          setInvoiceData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
-  const handleDownloadPdf = async () => {
-    console.log("Download PDF button clicked");
-    const element = invoiceRef.current;
-    console.log("Element to convert:", element);
-    if (element) {
-      const canvas = await html2canvas(element, { scale: 2 });
-      console.log("Canvas generated:", canvas);
-      const imgData = canvas.toDataURL("image/jpeg", 0.75);
-      console.log("Image data:", imgData);
-
-      const pdf = new jsPDF("p", "mm", "a4", true);
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(
-        imgData,
-        "JPEG",
-        0,
-        0,
-        imgWidth,
-        imgHeight,
-        undefined,
-        "FAST"
-      );
-      pdf.save("invoice.pdf");
-      onClose();
-    }
-  };
-
+const PrintMusicInvoice: React.FC<Props> = ({ invoiceData }) => {
+    const printRef = useRef<HTMLDivElement>(null);
+    const handlePrint = useReactToPrint({
+        content: () => printRef.current,
+      });
   return (
-    <div className="flex bg-slate-700 w h-screen justify-between p-4">
-        <div
-  className="flex flex-col w-[210mm] h-[297mm] m-2 bg-gray-100 px-4 gap-14 py-8"
-  ref={invoiceRef}
->
+    <>
+    <style>
+        {`
+          .print-section {
+            display: none;
+          }
+          
+          @media print {
+            .print-section {
+              display: block;
+            }
+          }
+        `}
+      </style>
+      <button
+        className="flex items-center gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-gray-100"
+        onClick={handlePrint}
+      >
+        <Invoice />
+        Print
+      </button>
+      <div
+        className="print-section flex flex-col w-[210mm] h-[297mm] m-2 bg-gray-100 px-4 gap-14 py-8"
+        ref={printRef}
+      >
         <div className="flex justify-between">
           <img src={logo} className="w-1/6" alt="" />
           <div>
@@ -100,8 +44,8 @@ const MusicPDFGenarator = ({ onClose }: Props) => {
             <p className="text-sm">{invoiceData?.date}</p>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-        <div className="flex justify-between pb-8 px-6 mb-3 py-5 bg-white rounded-lg">
+        <div className="flex flex-col gap-3 mt-5">
+          <div className="flex justify-between pb-8 px-6 mb-3 py-5 bg-white rounded-lg">
             <div>
               <p className="text-sm font-bold">Partner name:</p>
               <p className="text-sm font-bold">{invoiceData?.partnerName}</p>
@@ -173,7 +117,7 @@ const MusicPDFGenarator = ({ onClose }: Props) => {
               dicta, blanditiis a. Qui earum reiciendis recusandae!
             </p>
           </div>
-          <div className="flex justify-between items-center pt-4 pb-5 px-5 mt-28 py-3 bg-white rounded-lg">
+          <div className="flex justify-between items-center pt-4 pb-5 px-5 mt-36 py-3 bg-white rounded-lg">
             <img src={logo} alt="" className="w-[10%]" />
             <div className="flex gap-3">
               <p className="text-sm">+0 (000) 123-4567</p>
@@ -182,22 +126,8 @@ const MusicPDFGenarator = ({ onClose }: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-3 items-end">
-        <button
-          onClick={handleDownloadPdf}
-          className="flex bg-black px-3 py-1 text-white items-center gap-1 rounded-lg"
-        >
-          <Download /> Download
-        </button>
-        <button
-          onClick={onClose}
-          className="flex bg-black px-3 py-1 text-white items-center gap-1 rounded-lg"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    </>
   );
 };
 
-export default MusicPDFGenarator;
+export default PrintMusicInvoice;

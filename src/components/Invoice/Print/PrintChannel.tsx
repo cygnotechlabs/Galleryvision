@@ -1,95 +1,46 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import { InvoiceData } from '../ChannelVeiwInvoice'; 
+import { Invoice } from '../../icons/icon';
 import logo from "../../../assets/logo/gv-logo.png";
-import { Download } from "../../icons/icon";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import API_ENDPOINTS from "../../../config/apiConfig";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 
-type Props = {
-  onClose: () => void;
+type PrintProps = {
+  invoiceData: InvoiceData;
 };
 
-type InvoiceData = {
-  _id: string;
-  partnerName: string;
-  licensorId: string;
-  licensorName: string;
-  accNum: string;
-  ifsc: string;
-  iban: string;
-  currency: string;
-  date: string;
-  channelId: string;
-  channelName: string;
-  invoiceNumber: string;
-  ptRevenue: string;
-  tax: string;
-  ptAfterTax: string;
-  commission: string;
-  totalPayout: string;
-  conversionRate: string;
-  payout: string;
-  status: string;
-  commissionAmount: string;
-  licensorAddress: string;
-};
+const PrintChannel: React.FC<PrintProps> = ({ invoiceData }) => {
+  const printRef = useRef<HTMLDivElement>(null);
 
-const ChannelPDFGenerator = ({ onClose }: Props) => {
-  const { id } = useParams<{ id: string }>();
-  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
-  const invoiceRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (id) {
-          const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id)
-          );
-          setInvoiceData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
-  const handleDownloadPdf = async () => {
-    const element = invoiceRef.current;
-    if (element) {
-      const canvas = await html2canvas(element, { scale: 2 });
-      const imgData = canvas.toDataURL("image/jpeg", 0.75);
-      console.log("Image data:", imgData);
-
-      const pdf = new jsPDF("p", "mm", "a4", true);
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(
-        imgData,
-        "JPEG",
-        0,
-        0,
-        imgWidth,
-        imgHeight,
-        undefined,
-        "FAST"
-      );
-      pdf.save("invoice.pdf");
-      onClose();
-    }
-  };
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   return (
-    <div className="flex bg-slate-700 w h-screen justify-between p-4">
+    <>
+  <style>
+        {`
+          .print-section {
+            display: none;
+          }
+          
+          @media print {
+            .print-section {
+              display: block;
+            }
+          }
+        `}
+      </style>
+      <button
+        className="flex items-center gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-gray-100"
+        onClick={handlePrint}
+      >
+        <Invoice />
+        Print
+      </button>
       <div
-  className="flex flex-col w-[210mm] h-[297mm] m-2 bg-gray-100 px-4 gap-14 py-8"
-  ref={invoiceRef}
->
+        className="print-section flex flex-col w-[210mm] h-[297mm] m-2 bg-gray-100 px-4 gap-14 py-8"
+        ref={printRef}
+      >
         <div className="flex justify-between">
           <img src={logo} className="w-1/6" alt="" />
           <div>
@@ -97,7 +48,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
             <p className="text-sm">{invoiceData?.date}</p>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 mt-5">
           <div className="flex justify-between pb-8 px-6 mb-3 py-5 bg-white rounded-lg">
             <div>
               <p className="text-sm font-bold">Partner name:</p>
@@ -108,7 +59,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
               <p className="text-sm font-bold">{invoiceData?.licensorName}</p>
             </div>
           </div>
-          <div className="flex-col mt-3 justify-between px-6 py-3  pb-8 pt-8  bg-white rounded-lg">
+          <div className="flex-col mt-3 justify-between px-6 py-3 pb-8 pt-8 bg-white rounded-lg">
             <p className="my-1 font-medium mb-3">Total Revenue</p>
             <div className="flex flex-col gap-4 border-y py-4 mt-4 mb-3">
               <div className="flex justify-between">
@@ -159,7 +110,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col mt-3 justify-between px-4 py-3 pt-5 pb-6  bg-white rounded-lg">
+          <div className="flex flex-col mt-3 justify-between px-4 py-3 pt-5 pb-6 bg-white rounded-lg">
             <p className="text-sm font-medium">Note :</p>
             <p className="text-sm py-3">
               Lorem ipsum, dolor sit amet consectetur adipisicing elit.
@@ -168,7 +119,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
               dicta, blanditiis a. Qui earum reiciendis recusandae!
             </p>
           </div>
-          <div className="flex justify-between items-center pt-4 pb-5 px-5 mt-28 py-3 bg-white rounded-lg">
+          <div className="flex justify-between items-center pt-4 pb-5 px-5 mt-36 py-3 bg-white rounded-lg">
             <img src={logo} alt="" className="w-[10%]" />
             <div className="flex gap-3">
               <p className="text-sm">+0 (000) 123-4567</p>
@@ -177,22 +128,8 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-3 items-end">
-        <button
-          onClick={handleDownloadPdf}
-          className="flex bg-black px-3 py-1 text-white items-center gap-1 rounded-lg"
-        >
-          <Download /> Download
-        </button>
-        <button
-          onClick={onClose}
-          className="flex bg-black px-3 py-1 text-white items-center gap-1 rounded-lg"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+    </>
   );
 };
 
-export default ChannelPDFGenerator;
+export default PrintChannel;

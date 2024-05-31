@@ -31,13 +31,13 @@ export const DeleteModal = ({ onClose, handleDelete }: Props) => {
   );
 };
 
-
 export const DeleteModalLicensor = ({ onClose, handleDelete }: Props) => {
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
       <p className="text-gray-600 mb-4 px-3 py-3 font-semibold">
-        Are you sure want to delete this item? Deleting a Licensor will also delete All Channels and Music Partner 
+        Are you sure you want to delete this item? Deleting a Licensor will also
+        delete All Channels and Music Partner
       </p>
       <div className="flex justify-end">
         <button

@@ -72,7 +72,7 @@ const UploadMusic: React.FC = () => {
             </div>
             <div className="flex">
               <p className="text-black font-medium text-sm mb-">
-                Drag & drop files or
+              Select your File here,
               </p>
               <a
                 onClick={handleBrowseClick}
