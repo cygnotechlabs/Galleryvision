@@ -4,6 +4,11 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
+//const speakeasy = require('speakeasy');
+const nodemailer = require('nodemailer');
+const NodeCache = require('node-cache');
+
+const otpCache = new NodeCache({ stdTTL: 180 }); //180 seconds
 
 const app = express();
 app.use(cookieParser())
@@ -32,15 +37,15 @@ exports.register = async (req, res) => {
 
          //generate a token for user and send it
 
-         const token = jwt.sign(
-            {id: user._id,password},
-            'abcd', //jwt secret
-            {
-                expiresIn: "12h"
-            }
-         );
+        //  const token = jwt.sign(
+        //     {id: user._id,password},
+        //     'abcd', //jwt secret
+        //     {
+        //         expiresIn: "12h"
+        //     }
+        //  );
 
-         user.token = token
+        //  user.token = token
          user.password = undefined
 
          res.status(201).json(user)
@@ -76,16 +81,16 @@ exports.login = async (req, res) => {
         // Match the password
         if (user && (await bcrypt.compare(password, user.password))) {
             // Create JWT token
-            const token = jwt.sign(
-                { id: user._id },
-                'abcd', // JWT secret
-                {
-                    expiresIn: "12h"
-                }
-            );
+            // const token = jwt.sign(
+            //     { id: user._id },
+            //     'abcd', // JWT secret
+            //     {
+            //         expiresIn: "12h"
+            //     }
+            // );
 
             // Set token and remove password from response
-            user.token = token;
+            // user.token = token;
             user.password = undefined;
 
             // Cookie options
@@ -96,10 +101,10 @@ exports.login = async (req, res) => {
 
             // Send response with cookie
             res.status(200)
-                .cookie("token", token, options)
+                // .cookie("token", token, options)
                 .json({
                     success: true,
-                    token,
+                    // token,
                     user
                 });
 
@@ -113,4 +118,133 @@ exports.login = async (req, res) => {
         console.log(error);
         res.status(500).send('Internal Server Error');
     }
+};
+
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: 'galleryvision24@gmail.com',
+      pass: 'cles pbrx btua qvbc'
+      
+  }
+});
+
+// Function to send OTP email
+const sendOtpEmail = (email, otp) => {
+  const mailOptions = {
+      from: 'galleryvision24@gmail.com',
+      to: email,
+      subject: 'Your OTP Code',
+      text: `Your One-Time Password (OTP) code is: ${otp}
+
+    This code is valid for only 2 minutes, so use it promptly to ensure secure access.`
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+
+exports.loginTest = async (req, res) => {
+  try {
+      // Get all data
+      const { email, password } = req.body;
+
+      // Validate input
+      if (!email || !password) {
+          return res.status(400).send('Send all data');
+      }
+
+      // Find the user
+      const user = await users.findOne({ email });
+
+      // Check if user exists
+      if (!user) {
+          return res.status(401).send('User not found!');
+      }
+
+      // Match the password
+      if (user && (await bcrypt.compare(password, user.password))) {
+          // Generate OTP
+          const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+          // Store OTP in cache with the email as the key
+          otpCache.set(email, otp);
+        
+          // Send OTP email
+          await sendOtpEmail(user.email, otp);
+
+          res.status(200).json({
+              success: true,
+              message: 'OTP sent to email'
+          });
+      } else {
+          res.status(401).send('Invalid Password!');
+      }
+  } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal Server Error');
+  }
+};
+
+exports.verifyOtp = async (req, res) => {
+  try {
+      const { email, otp } = req.body;
+    console.log(email,otp);
+      // Validate input
+      if (!otp) {
+          return res.status(400).send('Send all data');
+      }
+
+      // Find the user
+      const user = await users.findOne({ email });
+
+      // Check if user exists
+      if (!user) {
+          return res.status(401).send('User not found!');
+      }
+
+      // Get OTP from cache
+      const cachedOtp = otpCache.get(email);
+      // const cachedOtp = otpCache
+      console.log(` cashed otp : ${cachedOtp}, typed otp : ${otp}`);
+      // Check if OTP matches and is not expired
+      if (cachedOtp && cachedOtp === otp) {
+          // Create JWT token
+        //   const token = jwt.sign(
+        //       { id: user._id },
+        //       'abcd', // JWT secret
+        //       {
+        //           expiresIn: "12h"
+        //       }
+        //   );
+
+          // Remove sensitive data from response
+        //   user.token = token;
+          user.password = undefined;
+
+          // Cookie options
+          const options = {
+              expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+              httpOnly: true
+          };
+
+          // Send response with cookie
+          res.status(200)
+            //   .cookie("token", token, options)
+              .json({
+                  success: true,
+                //   token,
+                  user
+              });
+
+          // Invalidate the OTP after successful verification
+          otpCache.del(email);
+      } else {
+          res.status(401).send('Invalid or expired OTP!');
+      }
+  } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal Server Error');
+  }
 };

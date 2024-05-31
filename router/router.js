@@ -25,6 +25,10 @@ router.post('/register',userController.register)
 //login
 router.post('/login',userController.login)
 
+router.post('/login-test',userController.loginTest)
+
+router.post('/verify-otp',userController.verifyOtp)
+
 
 // channel routes
 router.post('/add-channel',channelController.addChannel)

@@ -111,6 +111,8 @@ exports.generateMusicInvoice = async (req, res) => {
       totalCommissionMusic += parseFloat(commissionAmount);
       musicTaxDeducted += parseFloat(tax);
 
+      
+
       // Get the conversion rate based on the currency
       let conversionRate = 1.0; // default value if no conversion is needed
       if (currency === "INR") {
