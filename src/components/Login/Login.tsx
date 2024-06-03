@@ -53,17 +53,19 @@ function Login({}: Props) {
         email,
         password,
       });
+
       if (response.status === 200) {
-        login(response.data.token, stayLoggedIn);
+        login(response.data, stayLoggedIn);
         setOpen(true); // Open the OTP modal only if the login is successful
       } else {
         setError("Login failed. Please check your credentials.");
       }
     } catch (error: any) {
       setError(error.response?.data || "An error occurred during login.");
+      // Make sure to handle the case where error.response is undefined
+      // or error.response.data is undefined to prevent unexpected errors.
     }
   };
-
   return (
     <div className="flex flex-col lg:flex-row w-screen h-screen">
       <div className="w-full lg:w-1/2 relative">
