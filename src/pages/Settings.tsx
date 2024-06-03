@@ -21,14 +21,6 @@ const Settings = () => {
           >
             Currency Rate
           </div>
-          <div
-            className={`flex text-sm font-bold items-center p-6 w-[330px] h-[56px] rounded-2xl cursor-pointer ${
-              activeComponent === "tax" ? "bg-red-100" : "hover:bg-red-100"
-            }`}
-            onClick={() => handleComponentClick("tax")}
-          >
-            Tax
-          </div>
         </div>
         <div>
           {activeComponent === "currency" && <Currency />}

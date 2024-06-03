@@ -1,15 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import * as XLSX from "xlsx";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { Arrow, Back, Eye, Search } from "../icons/icon";
-import Modal from "../../layouts/Modal";
-import PaymentModal from "../../UI/PaymentModal";
-import { Link } from "react-router-dom";
+import { Arrow, Back, Download, Eye, Search } from "../icons/icon";
 
 interface Props {}
 
-interface Invoice {
+interface InrPayment {
   _id: string;
   partnerName: string;
   licensorId: string;
@@ -19,8 +18,9 @@ interface Invoice {
   ifsc: string;
   iban: string;
   currency: string;
-  date: string; // Added date property
-  ChannelId: string;
+  date: string;
+  channelName?: string; // Channel ID is optional
+  musicName?: string; // Music ID is optional
   ptRevenue: string;
   tax: string;
   ptAfterTax: string;
@@ -32,28 +32,29 @@ interface Invoice {
   commissionAmount: string;
 }
 
-const ChannelPaymentList: React.FC<Props> = () => {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+const INRPaymentList: React.FC<Props> = () => {
+  const [invoices, setInvoices] = useState<InrPayment[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [allChecked, setAllChecked] = useState(false);
+  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]); // State to track selected invoices
   const rowsPerPage = 12;
 
   useEffect(() => {
     fetchData();
-  }, [selectedDate]); // Fetch data whenever selectedDate changes
+  }, [selectedDate]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_CHANNEL_INVOICE, {
+      const response = await axios.get(API_ENDPOINTS.GET_PAYMENT, {
         params: {
           date: selectedDate,
         },
       });
-      setInvoices(response.data);
+      const inrPayments = response.data.inrPayments;
+      setInvoices(inrPayments);
       setCurrentPage(1); // Reset to first page after fetching new data
     } catch (error) {
       console.error("Error fetching invoices:", error);
@@ -70,15 +71,10 @@ const ChannelPaymentList: React.FC<Props> = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handleToggleAll = () => {
-    setAllChecked((prev) => !prev);
-  };
-
   const filteredInvoices = invoices.filter(
-    (invoice) =>
-      invoice.date === selectedDate &&
-      (invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.partnerName.toLowerCase().includes(searchTerm.toLowerCase()))
+    (payment) =>
+      payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
@@ -102,15 +98,41 @@ const ChannelPaymentList: React.FC<Props> = () => {
         status: newStatus,
       });
       setInvoices((prevInvoices) =>
-        prevInvoices.map((invoice) =>
-          invoice._id === invoiceId
-            ? { ...invoice, status: newStatus }
-            : invoice
+        prevInvoices.map((payment) =>
+          payment._id === invoiceId
+            ? { ...payment, status: newStatus }
+            : payment
         )
       );
     } catch (error) {
       console.error("Error updating status:", error);
     }
+  };
+
+  // Function to handle checkbox selection
+  const handleCheckboxChange = (invoiceId: string) => {
+    setSelectedInvoices((prevSelected) =>
+      prevSelected.includes(invoiceId)
+        ? prevSelected.filter((id) => id !== invoiceId)
+        : [...prevSelected, invoiceId]
+    );
+  };
+
+  // Function to process selected data
+  const handleExportSelected = () => {
+    const selectedData = invoices.filter((invoice) =>
+      selectedInvoices.includes(invoice._id)
+    );
+
+    // Convert selected data to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(selectedData);
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, worksheet, "Selected Data");
+
+    // Export the workbook to XLSX file
+    XLSX.writeFile(wb, "selected_data.xlsx");
   };
 
   return (
@@ -128,41 +150,43 @@ const ChannelPaymentList: React.FC<Props> = () => {
             <Search />
           </i>
         </div>
-        <div className="flex gap-2">
-          <MonthYearSelector
-            date={selectedDate}
-            onDateChange={handleDateChange}
-          />
+        <div className="flex gap-3">
+          <button
+            onClick={handleExportSelected}
+            className="flex items-center gap-3 p-2 border rounded-lg font-semibold hover:bg-gray-200 cursor-pointer"
+          >
+            <Download />
+            Export
+          </button>
+          <div className="flex gap-2">
+            <MonthYearSelector
+              date={selectedDate}
+              onDateChange={handleDateChange}
+            />
+          </div>
         </div>
       </div>
       <table className="mx-8 bg-white">
         <thead>
           <tr className="bg-gray-200">
-            <th className="px-4 py-2 text-left text-sm">
-              <input
-                type="checkbox"
-                checked={allChecked}
-                onChange={handleToggleAll}
-                className="bg-red-100"
-              />
-            </th>
+            <th className="px-4 py-2 text-left text-sm"></th>
             <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
             <th className="px-4 py-2 text-left text-sm">Licensor Name</th>
-            <th className="px-4 py-2 text-left text-sm">Channel</th>
+            <th className="px-4 py-2 text-left text-sm">Channel/Music</th>
             <th className="px-4 py-2 text-left text-sm">Partner Revenue</th>
-            <th className="px-4 py-2 text-left text-sm">Currency</th>
             <th className="px-4 py-2 text-left text-sm">Commission</th>
             <th className="px-4 py-2 text-left text-sm">Status</th>
             <th className="px-4 py-2 text-left text-sm">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {currentInvoices.map((invoice) => (
+          {currentInvoices.map((payment) => (
             <InvoiceRow
-              key={invoice._id}
-              invoice={invoice}
-              allChecked={allChecked}
+              key={payment._id}
+              payment={payment}
               handleStatusChange={handleStatusChange}
+              handleCheckboxChange={handleCheckboxChange} // Pass checkbox handler to InvoiceRow component
+              isChecked={selectedInvoices.includes(payment._id)} // Pass checked state to InvoiceRow component
             />
           ))}
         </tbody>
@@ -189,62 +213,54 @@ const ChannelPaymentList: React.FC<Props> = () => {
   );
 };
 
-export default ChannelPaymentList;
+export default INRPaymentList;
 
 interface InvoiceRowProps {
-  invoice: Invoice;
-  allChecked: boolean;
+  payment: InrPayment;
   handleStatusChange: (invoiceId: string, newStatus: string) => Promise<void>;
+  handleCheckboxChange: (invoiceId: string) => void; // Pass checkbox handler as prop
+  isChecked: boolean; // Pass checked state as prop
 }
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
-  invoice,
-  allChecked,
-  handleStatusChange,
+  payment,
+  handleCheckboxChange,
+  isChecked,
 }) => {
-  const [open, setOpen] = useState(false);
-
-  const handleConfirmPayment = () => {
-    handleStatusChange(invoice._id, "paid");
-    setOpen(false);
-  };
-
   return (
     <tr>
       <td className="px-4 py-1 text-left text-sm">
-        <input type="checkbox" checked={allChecked} />
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={() => handleCheckboxChange(payment._id)}
+        />
       </td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.invoiceNumber}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.licensorName}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.partnerName}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.ptAfterTax}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.currency}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.commission}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.invoiceNumber}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.licensorName}</td>
+      <td className="px-4 py-1 text-left text-sm">
+        {payment.channelName ? payment.channelName : payment.musicName}
+      </td>
+      <td className="px-4 py-1 text-left text-sm">{payment.ptAfterTax}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
       <td className="px-4 py-1 text-left text-sm">
         <button
           className={
-            invoice.status === "paid"
+            payment.status === "paid"
               ? "bg-green-200 py-1 rounded-lg px-2"
               : "bg-red-200 px-2 rounded-lg py-1"
           }
-          onClick={() => setOpen(true)}
         >
-          {invoice.status}
+          {payment.status}
         </button>
       </td>
       <td className="flex space-x-2">
-        <Link to={`/home/view-invoices/${invoice._id}`}>
+        <Link to={`/home/view-invoices/${payment._id}`}>
           <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
             <Eye />
           </button>
         </Link>
       </td>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <PaymentModal
-          onClose={() => setOpen(false)}
-          onConfirm={handleConfirmPayment}
-        />
-      </Modal>
     </tr>
   );
 };

@@ -6,6 +6,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import { Edit, Eye, Search, Trash } from "../icons/icon";
 import EditMusic from "./EditMusic";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {};
 
@@ -59,6 +60,8 @@ function MusicTable({}: Props) {
     } catch (error) {
       console.error("Error deleting music:", error);
     }
+    fetchData();
+    toast.success("Deleted Successfully");
   };
 
   const indexOfLastMusic = currentPage * rowsPerPage;
@@ -87,6 +90,7 @@ function MusicTable({}: Props) {
   return (
     <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
+        <Toaster />
         <div className="flex">
           <input
             type="text"

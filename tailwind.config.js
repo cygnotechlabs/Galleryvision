@@ -9,6 +9,9 @@ export default {
       fontFamily: {
         'custom': ['Satoshi', 'sans-serif'],
       },
+      backgroundImage: {
+        'report-bg': "url('/src/assets/Image/report-bg.png')"
+      }
     },
   },
   plugins: [],

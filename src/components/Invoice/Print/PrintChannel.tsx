@@ -113,10 +113,7 @@ const PrintChannel: React.FC<PrintProps> = ({ invoiceData }) => {
           <div className="flex flex-col mt-3 justify-between px-4 py-3 pt-5 pb-6 bg-white rounded-lg">
             <p className="text-sm font-medium">Note :</p>
             <p className="text-sm py-3">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Asperiores, commodi distinctio. Suscipit, veritatis. Numquam at
-              asperiores officia nulla autem cum placeat, tempora, commodi
-              dicta, blanditiis a. Qui earum reiciendis recusandae!
+            This is a system-generated report. Any discrepancy in the report must be notified in writing within 60 days from the date of the statement. Otherwise, this report will be considered correct
             </p>
           </div>
           <div className="flex justify-between items-center pt-4 pb-5 px-5 mt-36 py-3 bg-white rounded-lg">

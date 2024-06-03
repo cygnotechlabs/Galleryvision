@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import ChannelPaymentList from "../components/Payment/ChannelPaymentList";
-import MusicPaymentList from "../components/Payment/MusicPaymentList";
+import INRPaymentList from "../components/Payment/INRPayment";
+import USDPaymentlist from "../components/Payment/USDPayment";
 
 const Payment: React.FC = () => {
-  const [isClicked, setIsClicked] = useState<string>("channels");
+  const [isClicked, setIsClicked] = useState<string>("INR");
 
   const handleClick = (button: string) => {
     setIsClicked(button);
@@ -22,26 +22,26 @@ const Payment: React.FC = () => {
       <div className="flex my-4 py-4 bg-white gap-4 rounded-lg px-4">
         <div
           className={`py-2 w-[50%] text-center font-bold rounded-lg hover:bg-red-100 cursor-pointer ${
-            isClicked === "channels"
+            isClicked === "INR"
               ? "text-red-700 border-red-300 border bg-red-100"
               : "border text-black "
           }`}
-          onClick={() => handleClick("channels")}
+          onClick={() => handleClick("INR")}
         >
-          Channels
+          INR
         </div>
         <div
           className={`py-2 w-[50%] text-center font-bold rounded-lg hover:bg-red-100 cursor-pointer ${
-            isClicked === "music"
+            isClicked === "USD"
               ? "text-red-700 border-red-300 border bg-red-100"
               : "border text-black"
           }`}
-          onClick={() => handleClick("music")}
+          onClick={() => handleClick("USD")}
         >
-          Music Partner
+          USD
         </div>
       </div>
-      {isClicked === "channels" ? <ChannelPaymentList /> : <MusicPaymentList />}
+      {isClicked === "INR" ? <INRPaymentList /> : <USDPaymentlist />}
     </div>
   );
 };

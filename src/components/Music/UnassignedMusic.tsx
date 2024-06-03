@@ -1,10 +1,10 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Modal from "../../layouts/Modal";
-import { Back, Edit, Filter } from "../icons/icon";
-import AssignMusic from "./AssignMusic";
-import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import Modal from "../../layouts/Modal";
+import { Back, Edit } from "../icons/icon";
+import AssignMusic from "./AssignMusic";
 
 type Music = {
   _id: string;
@@ -34,25 +34,35 @@ function UnassignedMusic() {
     musicLogo: "",
   });
   const [musics, setMusics] = useState<Music[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_RAWMUSIC);
       setMusics(response.data);
-      console.log(currentMusicData);
     } catch (error) {
       console.error("Error fetching music data:", error);
     }
   };
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // Calculate the current music data for the active page
+  const filteredMusicData = musics.filter(
+    (music) =>
+      music.musicName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      music.musicId.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const indexOfLastMusic = currentPage * rowsPerPage;
   const indexOfFirstMusic = indexOfLastMusic - rowsPerPage;
-  const currentMusicData = musics.slice(indexOfFirstMusic, indexOfLastMusic);
+  const currentMusicData = filteredMusicData.slice(
+    indexOfFirstMusic,
+    indexOfLastMusic
+  );
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
@@ -78,8 +88,10 @@ function UnassignedMusic() {
           <div className="flex justify-between text-sm">
             <input
               type="text"
-              placeholder="              Search"
-              className="border border-gray-300 rounded-md w-[566px] h-[42px] pr-[40px]"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border border-gray-300 rounded-md w-[40%] h-[42px] px-10"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +99,7 @@ function UnassignedMusic() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="absolute left-12 top-[53px] transform -translate-y-1/2 w-6 h-6"
+              className="absolute left-12 top-[53px] transform -translate-y-1/2 w-5 h-5"
             >
               <path
                 strokeLinecap="round"
@@ -95,12 +107,6 @@ function UnassignedMusic() {
                 d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
               />
             </svg>
-            <button className="flex items-center px-4 gap-2 w-[93px] h-[34px] border border-gray-400 text-black font-medium bg-gray-100 rounded-lg">
-              Filter
-              <span>
-                <Filter />
-              </span>
-            </button>
           </div>
         </div>
         <div className="px-9 rounded-lg">
@@ -151,14 +157,13 @@ function UnassignedMusic() {
                 {"< Prev"}
               </button>
             </li>
-            {/* Map through each page number and render a button */}
-
             <li>
               <button
                 className="px-3 py-1 ml-1 border border-gray-300 rounded-md hover:bg-gray-200"
                 onClick={() => paginate(currentPage + 1)}
                 disabled={
-                  currentPage === Math.ceil(musics.length / rowsPerPage)
+                  currentPage ===
+                  Math.ceil(filteredMusicData.length / rowsPerPage)
                 }
               >
                 {"Next >"}

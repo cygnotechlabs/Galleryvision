@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 interface Props {}
 
-interface Invoice {
+interface UsdPayment {
   _id: string;
   partnerName: string;
   licensorId: string;
@@ -19,8 +19,9 @@ interface Invoice {
   ifsc: string;
   iban: string;
   currency: string;
-  date: string; // Added date property
-  musicId: string;
+  date: string;
+  channelName?: string; // Channel Name is optional
+  musicName?: string; // Music Name is optional
   ptRevenue: string;
   tax: string;
   ptAfterTax: string;
@@ -32,8 +33,8 @@ interface Invoice {
   commissionAmount: string;
 }
 
-const MusicPaymentList: React.FC<Props> = () => {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+const USDPaymentList: React.FC<Props> = () => {
+  const [invoices, setInvoices] = useState<UsdPayment[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
@@ -48,12 +49,12 @@ const MusicPaymentList: React.FC<Props> = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_MUSIC_INVOICE, {
+      const response = await axios.get(API_ENDPOINTS.GET_PAYMENT, {
         params: {
           date: selectedDate,
         },
       });
-      setInvoices(response.data);
+      setInvoices(response.data.usdPayments);
       setCurrentPage(1); // Reset to first page after fetching new data
     } catch (error) {
       console.error("Error fetching invoices:", error);
@@ -75,10 +76,9 @@ const MusicPaymentList: React.FC<Props> = () => {
   };
 
   const filteredInvoices = invoices.filter(
-    (invoice) =>
-      invoice.date === selectedDate &&
-      (invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        invoice.partnerName.toLowerCase().includes(searchTerm.toLowerCase()))
+    (payment) =>
+      payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
@@ -102,10 +102,10 @@ const MusicPaymentList: React.FC<Props> = () => {
         status: newStatus,
       });
       setInvoices((prevInvoices) =>
-        prevInvoices.map((invoice) =>
-          invoice._id === invoiceId
-            ? { ...invoice, status: newStatus }
-            : invoice
+        prevInvoices.map((payment) =>
+          payment._id === invoiceId
+            ? { ...payment, status: newStatus }
+            : payment
         )
       );
     } catch (error) {
@@ -148,19 +148,18 @@ const MusicPaymentList: React.FC<Props> = () => {
             </th>
             <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
             <th className="px-4 py-2 text-left text-sm">Licensor Name</th>
-            <th className="px-4 py-2 text-left text-sm">Music</th>
+            <th className="px-4 py-2 text-left text-sm">Channel/Music</th>
             <th className="px-4 py-2 text-left text-sm">Partner Revenue</th>
-            <th className="px-4 py-2 text-left text-sm">Currency</th>
             <th className="px-4 py-2 text-left text-sm">Commission</th>
             <th className="px-4 py-2 text-left text-sm">Status</th>
             <th className="px-4 py-2 text-left text-sm">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {currentInvoices.map((invoice) => (
+          {currentInvoices.map((payment) => (
             <InvoiceRow
-              key={invoice._id}
-              invoice={invoice}
+              key={payment._id}
+              payment={payment}
               allChecked={allChecked}
               handleStatusChange={handleStatusChange}
             />
@@ -189,23 +188,23 @@ const MusicPaymentList: React.FC<Props> = () => {
   );
 };
 
-export default MusicPaymentList;
+export default USDPaymentList;
 
 interface InvoiceRowProps {
-  invoice: Invoice;
+  payment: UsdPayment;
   allChecked: boolean;
   handleStatusChange: (invoiceId: string, newStatus: string) => Promise<void>;
 }
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
-  invoice,
+  payment,
   allChecked,
   handleStatusChange,
 }) => {
   const [open, setOpen] = useState(false);
 
   const handleConfirmPayment = () => {
-    handleStatusChange(invoice._id, "paid");
+    handleStatusChange(payment._id, "paid");
     setOpen(false);
   };
 
@@ -214,26 +213,27 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
       <td className="px-4 py-1 text-left text-sm">
         <input type="checkbox" checked={allChecked} />
       </td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.invoiceNumber}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.licensorName}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.partnerName}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.ptAfterTax}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.currency}</td>
-      <td className="px-4 py-1 text-left text-sm">{invoice.commission}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.invoiceNumber}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.licensorName}</td>
+      <td className="px-4 py-1 text-left text-sm">
+        {payment.channelName ? payment.channelName : payment.musicName}
+      </td>
+      <td className="px-4 py-1 text-left text-sm">{payment.ptAfterTax}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
       <td className="px-4 py-1 text-left text-sm">
         <button
           className={
-            invoice.status === "paid"
+            payment.status === "paid"
               ? "bg-green-200 py-1 rounded-lg px-2"
               : "bg-red-200 px-2 rounded-lg py-1"
           }
           onClick={() => setOpen(true)}
         >
-          {invoice.status}
+          {payment.status}
         </button>
       </td>
       <td className="flex space-x-2">
-        <Link to={`/home/view-invoices/${invoice._id}`}>
+        <Link to={`/home/view-invoices/${payment._id}`}>
           <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
             <Eye />
           </button>

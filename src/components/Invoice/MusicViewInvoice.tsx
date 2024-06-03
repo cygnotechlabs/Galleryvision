@@ -187,7 +187,7 @@ const MusicViewInvoice = ({}: Props) => {
               <p className="text-sm">Total Amount</p>
               <p className="font-bold text-sm">
                 {invoiceData.currency == "USD" ? "$ " : "₹ "}
-                {invoiceData.totalPayout}
+                {invoiceData.payout}
               </p>
             </div>
           </div>
