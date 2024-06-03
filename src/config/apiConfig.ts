@@ -1,6 +1,13 @@
-// const BASE_URL = "http://localhost:5000";
-// const BASE_URL = "http://13.200.171.128:5000";
-const BASE_URL = "https://13.200.171.128:5000";
+const ENV = "production"; // Change this to "development" or "staging" as needed
+
+const URLS = {
+  development: "http://localhost:5000",
+  staging: "http://13.200.171.128:5000",
+  production: "https://13.200.171.128:5000"
+};
+
+const BASE_URL = URLS[ENV];
+
 const API_ENDPOINTS = {
   // Channel Routes
   ADD_CHANNEL: `${BASE_URL}/add-channel`,
@@ -15,7 +22,6 @@ const API_ENDPOINTS = {
   GET_CHANNEL_INVOICE_ID: `${BASE_URL}/get-channel-invoice-for-channel`,
 
   // Licensor Routes
-
   ADD_LICENSOR: `${BASE_URL}/add-licensor`,
   GET_LICENSOR: `${BASE_URL}/get-licensor`,
   VIEW_LICENSOR: (id: string) => `${BASE_URL}/view-licensor/${id}`,
@@ -33,16 +39,14 @@ const API_ENDPOINTS = {
   ASSIGN_MUSIC: `${BASE_URL}/assign-music`,
 
   // Music Invoice Routes
-  GENERATE_MUSIC_INVOICE: `${BASE_URL}/generate-music-Invoice`,
-  GET_MUSIC_INVOICE: `${BASE_URL}/get-music-Invoice`,
-  VIEW_MUSIC_INVOICE: (id: string) => `${BASE_URL}/view-music-Invoice/${id}`,
+  GENERATE_MUSIC_INVOICE: `${BASE_URL}/generate-music-invoice`,
+  GET_MUSIC_INVOICE: `${BASE_URL}/get-music-invoice`,
+  VIEW_MUSIC_INVOICE: (id: string) => `${BASE_URL}/view-music-invoice/${id}`,
 
-  // Channel invoice Routes
-
-  GENERATE_CHANNEL_INVOICE: `${BASE_URL}/generate-channel-Invoice`,
-  GET_CHANNEL_INVOICE: `${BASE_URL}/get-channel-Invoice`,
-  VIEW_CHANNEL_INVOICE: (id: string) =>
-    `${BASE_URL}/view-channel-Invoice/${id}`,
+  // Channel Invoice Routes
+  GENERATE_CHANNEL_INVOICE: `${BASE_URL}/generate-channel-invoice`,
+  GET_CHANNEL_INVOICE: `${BASE_URL}/get-channel-invoice`,
+  VIEW_CHANNEL_INVOICE: (id: string) => `${BASE_URL}/view-channel-invoice/${id}`,
 
   // Login Route
   LOGIN: `${BASE_URL}/login`,
@@ -53,16 +57,15 @@ const API_ENDPOINTS = {
   UPLOADCHANNEL: `${BASE_URL}/channel/importChannel`,
   UPLOADMUSIC: `${BASE_URL}/music/importMusic`,
 
-  // Currency Convertion
-  CURRENCY_COVERSTION: `${BASE_URL}/add-currency`,
+  // Currency Conversion
+  CURRENCY_CONVERSION: `${BASE_URL}/add-currency`,
 
-  // PAYMENT
+  // Payment
   GET_PAYMENT: `${BASE_URL}/get-payment`,
-  CHANGE_CHANNEL_STATUS: (id: string) =>
-    `${BASE_URL}/channel-invoice-status/${id}`,
+  CHANGE_CHANNEL_STATUS: (id: string) => `${BASE_URL}/channel-invoice-status/${id}`,
   CHANGE_MUSIC_STATUS: (id: string) => `${BASE_URL}/music-invoice-status/${id}`,
 
-  // DASHBOARD
+  // Dashboard
   VIEW_COUNT: `${BASE_URL}/view-count`,
   GET_DASHBOARD: `${BASE_URL}/get-dashboard`,
 };
