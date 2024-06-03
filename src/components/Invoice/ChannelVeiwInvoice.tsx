@@ -76,7 +76,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
   return (
     <div className="flex flex-col gap-4">
       <Link to="/home/invoice">
-        <div className="flex gap-1 justify-center items-center border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]">
+        <div className="flex gap-1 justify-center items-center border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]  hover:bg-gray-200 cursor-pointer">
           <Back />
           Back
         </div>

@@ -171,7 +171,7 @@ const ChannelPaymentList: React.FC<Props> = () => {
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className="flex items-center gap-1 p-2 border rounded-lg font-semibold"
+          className="flex items-center gap-1 p-2 border rounded-lg font-semibold hover:bg-gray-200 cursor-pointer"
         >
           <Back />
           Previous
@@ -179,7 +179,7 @@ const ChannelPaymentList: React.FC<Props> = () => {
         <button
           onClick={handleNextPage}
           disabled={indexOfLastInvoice >= invoices.length}
-          className="flex items-center gap-1 p-2 border rounded-lg font-semibold"
+          className="flex items-center gap-1 p-2 border rounded-lg font-semibold hover:bg-gray-200 cursor-pointer"
         >
           Next
           <Arrow />

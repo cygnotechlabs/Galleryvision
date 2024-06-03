@@ -234,7 +234,7 @@ function LicensorTable({}: Props) {
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1"
+                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1 hover:bg-gray-200 cursor-pointer"
               >
                 Previous
               </button>
@@ -243,7 +243,7 @@ function LicensorTable({}: Props) {
               <button
                 onClick={handleNextPage}
                 disabled={indexOfLastLicensor >= licensors.length}
-                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
+                className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
               >
                 Next
               </button>

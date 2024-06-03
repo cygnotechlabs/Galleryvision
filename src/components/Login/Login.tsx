@@ -47,7 +47,7 @@ function Login({}: Props) {
     if (!validateForm()) {
       return;
     }
-    setOpen(true);
+
     try {
       const response = await axios.post(API_ENDPOINTS.LOGIN_TEST, {
         email,
@@ -55,11 +55,12 @@ function Login({}: Props) {
       });
       if (response.status === 200) {
         login(response.data.token, stayLoggedIn);
+        setOpen(true); // Open the OTP modal only if the login is successful
       } else {
         setError("Login failed. Please check your credentials.");
       }
     } catch (error: any) {
-      setError(error.response.data);
+      setError(error.response?.data || "An error occurred during login.");
     }
   };
 

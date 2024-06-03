@@ -189,7 +189,7 @@ const GenataredChannelInvoice = ({}: Props) => {
                   <button
                     onClick={handlePrevPage}
                     disabled={currentPage === 1}
-                    className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1"
+                    className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg mr-1  hover:bg-gray-200 cursor-pointer"
                   >
                     Previous
                   </button>
@@ -198,7 +198,7 @@ const GenataredChannelInvoice = ({}: Props) => {
                   <button
                     onClick={handleNextPage}
                     disabled={indexOfLastInvoice >= filteredInvoices.length}
-                    className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg"
+                    className="px-3 py-1 border border-gray-400 bg-gray-100 rounded-lg  hover:bg-gray-200 cursor-pointer"
                   >
                     Next
                   </button>

@@ -1,6 +1,6 @@
 const BASE_URL = "http://localhost:5000";
 // const BASE_URL = "http://13.200.171.128:5000";
-
+// const BASE_URL = "https://13.200.171.128:5000";
 const API_ENDPOINTS = {
   // Channel Routes
   ADD_CHANNEL: `${BASE_URL}/add-channel`,
@@ -57,7 +57,8 @@ const API_ENDPOINTS = {
   CURRENCY_COVERSTION: `${BASE_URL}/add-currency`,
 
   // PAYMENT
-  CHANGE_CHANNEL_STATUS: (id: string) => `${BASE_URL}/channel-invoice-status/${id}`,
+  CHANGE_CHANNEL_STATUS: (id: string) =>
+    `${BASE_URL}/channel-invoice-status/${id}`,
   CHANGE_MUSIC_STATUS: (id: string) => `${BASE_URL}/music-invoice-status/${id}`,
 
   // DASHBOARD

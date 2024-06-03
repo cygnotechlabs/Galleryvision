@@ -29,7 +29,8 @@ const Cards: React.FC<Props> = ({}: Props) => {
     const fetchData = async () => {
       try {
         const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT);
-        setCount(response.data);
+        const formattedData = formatCountData(response.data);
+        setCount(formattedData);
       } catch (error) {
         console.error(error);
       }
@@ -37,6 +38,17 @@ const Cards: React.FC<Props> = ({}: Props) => {
 
     fetchData();
   }, []);
+
+  const formatCountData = (data: Count): Count => {
+    return {
+      channelCount: parseFloat(data.channelCount.toFixed(2)),
+      musicCount: parseFloat(data.musicCount.toFixed(2)),
+      licensorCount: parseFloat(data.licensorCount.toFixed(2)),
+      totalCommission: parseFloat(data.totalCommission.toFixed(2)),
+      totalchannelCommission: parseFloat(data.totalchannelCommission.toFixed(2)),
+      totalMusicCommission: parseFloat(data.totalMusicCommission.toFixed(2)),
+    };
+  };
 
   return (
     <div className="flex gap-24 mx-8">
@@ -60,7 +72,7 @@ function TotalRevenue({ totalCommision }: { totalCommision: number }) {
   return (
     <div className={`${card}`}>
       <p className="text-sm font-bold  text-gray-600">Total Revenue</p>
-      <p className="text-2xl font-bold">$ {totalCommision}</p>
+      <p className="text-2xl font-bold">$ {totalCommision.toFixed(2)}</p>
     </div>
   );
 }
@@ -69,7 +81,7 @@ function TotalLicensor({ licensorCount }: { licensorCount: number }) {
   return (
     <div className={`${card}`}>
       <p className="text-sm font-bold text-gray-600">Total Licensor</p>
-      <p className="text-2xl font-bold">{licensorCount}</p>
+      <p className="text-2xl font-bold">{licensorCount.toFixed()}</p>
     </div>
   );
 }
@@ -84,10 +96,10 @@ function TotalChannel({
   return (
     <div className={`${card}`}>
       <p className="text-sm font-bold text-gray-600">Total Channel</p>
-      <p className="text-2xl font-bold">{channelCount}</p>
+      <p className="text-2xl font-bold">{channelCount.toFixed()}</p>
       <div className="text-sm font-bold flex items-center gap-2">
         <p className="text-sm font-bold text-gray-600">Total Commission</p>
-        <p className="text-xl font-bold">$ {totalchannelCommission}</p>
+        <p className="text-xl font-bold">$ {totalchannelCommission.toFixed(2)}</p>
       </div>
     </div>
   );
@@ -103,10 +115,10 @@ function TotalMusic({
   return (
     <div className={`${card}`}>
       <p className="text-sm font-bold text-gray-600">Total Music</p>
-      <p className="text-2xl font-bold">{musicCount}</p>
+      <p className="text-2xl font-bold">{musicCount.toFixed()}</p>
       <div className="text-sm font-bold flex items-center gap-2">
         <p className="text-sm font-bold text-gray-600">Total Commission</p>
-        <p className="text-xl font-bold">$ {totalMusicCommission}</p>
+        <p className="text-xl font-bold">$ {totalMusicCommission.toFixed(2)}</p>
       </div>
     </div>
   );
