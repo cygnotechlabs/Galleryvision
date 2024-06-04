@@ -100,12 +100,6 @@ const importReport = async (req, res) => {
         console.log("Starting importReport process...");
 
         let userData = [];
-        const currentDate = new Date();
-        const month = currentDate.toLocaleString('en-US', { month: 'long' });
-        const year = currentDate.getFullYear();
-        const formattedDate = `${month} ${year}`;
-        console.log("Formatted date:", formattedDate);
-
         try {
             // Read and parse the CSV file
             const response = await csv({
@@ -135,11 +129,12 @@ const importReport = async (req, res) => {
             }).fromFile(req.file.path);
             console.log("CSV parsed successfully.");
 
-            // Extract account numbers
+            // Extract account numbers and amounts
             for (const record of response) {
                 const debitAccNo = record['DEBIT_ACC_NO'];
-                if (debitAccNo) {
-                    userData.push({ accNum: debitAccNo });
+                const amount = record['AMOUNT'];
+                if (debitAccNo && !isNaN(amount)) {
+                    userData.push({ accNum: debitAccNo, amount });
                 }
             }
             console.log("Report Data Extracted");
@@ -149,22 +144,25 @@ const importReport = async (req, res) => {
             const musicInvoices = await musicInvoiceModel.find();
 
             for (const user of userData) {
-                const { accNum } = user;
+                const { accNum, amount } = user;
 
                 // Update channel invoices
-                const matchingChannelInvoice = channelInvoices.find(invoice => invoice.accountNumber === accNum);
+                
+                const matchingChannelInvoice = channelInvoices.find(invoice => 
+                    invoice.accNum === accNum && invoice.payout === amount);
                 if (matchingChannelInvoice && matchingChannelInvoice.status !== 'paid') {
                     matchingChannelInvoice.status = 'paid';
                     await matchingChannelInvoice.save();
-                    console.log(`Updated channel invoice for account ${accNum} to paid.`);
+                    console.log(`Updated channel invoice for account ${accNum} and amount ${amount} to paid.`);
                 }
 
                 // Update music invoices
-                const matchingMusicInvoice = musicInvoices.find(invoice => invoice.accountNumber === accNum);
+                const matchingMusicInvoice = musicInvoices.find(invoice => 
+                    invoice.accNum === accNum && invoice.payout === amount);
                 if (matchingMusicInvoice && matchingMusicInvoice.status !== 'paid') {
                     matchingMusicInvoice.status = 'paid';
                     await matchingMusicInvoice.save();
-                    console.log(`Updated music invoice for account ${accNum} to paid.`);
+                    console.log(`Updated music invoice for account ${accNum} and amount ${amount} to paid.`);
                 }
             }
 
@@ -176,7 +174,7 @@ const importReport = async (req, res) => {
         }
     } catch (error) {
         console.error("Error during importReport process:", error);
-        res.status(500).send({ success: false, msg: error.message }); // Changed to 500 for internal server error
+        res.status(500).send({ success: false, msg: error.message });
     }
 }
 

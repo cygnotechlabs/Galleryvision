@@ -9,10 +9,14 @@ const nodemailer = require('nodemailer');
 const NodeCache = require('node-cache');
 require('dotenv').config();
 
-const otpCache = new NodeCache({ stdTTL: 120 }); //120 seconds
+const otpCache = new NodeCache({ stdTTL: 180 }); //180 seconds
 
 const app = express();
 app.use(cookieParser())
+
+global.myGlobalVar = 'Hello';
+
+console.log(global.myGlobalVar);
 
 exports.register = async (req, res) => {
     try {
@@ -242,7 +246,7 @@ exports.verifyOtp = async (req, res) => {
           res.status(200)
           .json({
               success: true,
-              token: "Bearer " + token, // Prepend "Bearer " to the token
+              token: "Bearer" + token, // Prepend "Bearer " to the token
               user: user
           });
 

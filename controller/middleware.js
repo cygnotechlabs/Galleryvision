@@ -7,6 +7,8 @@ function verifyToken(req, res, next) {
     if (typeof bearerHeader !== 'undefined') {
         // Split the header into parts
         const bearerToken = bearerHeader.split(' ')[1];
+        console.log(bearerToken)
+        
         req.token = bearerToken; // Set the token in the request object
         next();
     } else {
