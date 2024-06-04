@@ -142,13 +142,13 @@ const INRPaymentList: React.FC<Props> = () => {
     // Map selected data to required format
     const formattedData = selectedData.map((invoice) => ({
       PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
-      PYMT_MODE: "IMPS",
-      DEBIT_ACC_NO: "5659535613",
+      PYMT_MODE: "NEFT",
+      DEBIT_ACC_NO: "777705031300",
       BNF_NAME: invoice.licensorName,
       BENE_ACC_NO: invoice.accNum,
       BENE_IFSC: invoice.ifsc,
       AMOUNT: invoice.payout,
-      PYMT_DATE: new Date().toLocaleDateString(), // Generate current date
+      PYMT_DATE: new Date().toLocaleDateString(), 
     }));
 
     // Convert formatted data to worksheet

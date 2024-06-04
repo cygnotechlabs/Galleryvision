@@ -1,9 +1,9 @@
-const ENV = "staging"; // Change this to "development", "production" or "staging" as needed
+const ENV = "development"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: "http://localhost:5000",
   staging: "http://13.200.171.128:5000",
-  production: "https://13.200.171.128:5000",
+  production: "",
 };
 
 const BASE_URL = URLS[ENV];

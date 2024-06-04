@@ -1,15 +1,15 @@
-import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import image from "../../assets/Image/login-image.png";
 import logo from "../../assets/logo/gv-logo.png";
+import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import OtpModal from "./OTP";
 
-type Props = {};
-
-function Login({}: Props) {
+const Login = () => {
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -17,17 +17,12 @@ function Login({}: Props) {
   const [error, setError] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
-  };
-
-  const handleStayLoggedInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleStayLoggedInChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setStayLoggedIn(e.target.checked);
-  };
 
   const validateForm = (): boolean => {
     if (!email || !password) {
@@ -56,16 +51,13 @@ function Login({}: Props) {
 
       if (response && response.status === 200 && response.data) {
         login(response.data, stayLoggedIn);
-        setOpen(true); // Open the OTP modal only if the login is successful
+        // Redirect to "/home" upon successful login
+        navigate("/home");
       } else {
         setError("Login failed. Please check your credentials.");
       }
-    } catch (error: any) {
-      if (error.response && error.response.data) {
-        setError(error.response.data || "An error occurred during login.");
-      } else {
-        setError("An error occurred during login.");
-      }
+    } catch (error) {
+      setError("An error occurred during login.");
     }
   };
 
@@ -181,6 +173,6 @@ function Login({}: Props) {
       </Modal>
     </div>
   );
-}
+};
 
 export default Login;
