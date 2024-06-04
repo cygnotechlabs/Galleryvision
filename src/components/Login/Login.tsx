@@ -1,3 +1,5 @@
+// Login.tsx
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
@@ -15,7 +17,7 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const [stayLoggedIn, setStayLoggedIn] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [open, setOpen] = useState<boolean>(false);
+  const [openOtpModal, setOpenOtpModal] = useState<boolean>(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setEmail(e.target.value);
@@ -48,17 +50,21 @@ const Login = () => {
         email,
         password,
       });
-
       if (response && response.status === 200 && response.data) {
-        login(response.data, stayLoggedIn);
-        // Redirect to "/home" upon successful login
-        navigate("/home");
+        // Store the login response data temporarily for OTP verification
+        localStorage.setItem("tempToken", response.data);
+        setOpenOtpModal(true);
       } else {
         setError("Login failed. Please check your credentials.");
       }
     } catch (error) {
       setError("An error occurred during login.");
     }
+  };
+
+  const handleOtpVerified = (token: string) => {
+    login(token, stayLoggedIn);
+    navigate("/home");
   };
 
   return (
@@ -168,8 +174,13 @@ const Login = () => {
           </form>
         </div>
       </div>
-      <Modal onClose={() => setOpen(false)} open={open}>
-        <OtpModal onClose={() => setOpen(false)} email={email} />
+
+      <Modal onClose={() => setOpenOtpModal(false)} open={openOtpModal}>
+        <OtpModal
+          onClose={() => setOpenOtpModal(false)}
+          email={email}
+          onOtpVerified={handleOtpVerified}
+        />
       </Modal>
     </div>
   );

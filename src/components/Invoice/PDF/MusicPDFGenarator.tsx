@@ -89,19 +89,27 @@ const MusicPDFGenarator = ({ onClose }: Props) => {
 
   return (
     <div className="flex bg-slate-700 w h-screen justify-between p-4">
-        <div
-  className="flex flex-col w-[210mm] h-[297mm] m-2 bg-gray-100 px-4 gap-14 py-8"
-  ref={invoiceRef}
->
+      <div
+        className="flex flex-col w-[210mm] h-[297mm] m-2 bg-gray-100 px-4 gap-14 py-8"
+        ref={invoiceRef}
+      >
         <div className="flex justify-between">
           <img src={logo} className="w-1/6" alt="" />
           <div>
             <p className="font-bold">Partner Revenue Report</p>
             <p className="text-sm">{invoiceData?.date}</p>
           </div>
+          <div></div>
         </div>
+        <p
+          className={`absolute right-[40rem] font-bold rotate-[30deg] w-[240px] pb-3  text-center ${
+            invoiceData?.status === "paid" ? "bg-green-400" : "bg-red-400"
+          }`}
+        >
+          {invoiceData?.status}
+        </p>
         <div className="flex flex-col gap-3">
-        <div className="flex justify-between pb-8 px-6 mb-3 py-5 bg-white rounded-lg">
+          <div className="flex justify-between pb-8 px-6 mb-3 py-5 bg-white rounded-lg">
             <div>
               <p className="text-sm font-bold">Partner name:</p>
               <p className="text-sm font-bold">{invoiceData?.partnerName}</p>
@@ -167,7 +175,9 @@ const MusicPDFGenarator = ({ onClose }: Props) => {
           <div className="flex flex-col mt-3 justify-between px-4 py-3 pt-5 pb-6  bg-white rounded-lg">
             <p className="text-sm font-medium">Note :</p>
             <p className="text-sm py-3">
-            This is a system-generated report. Any discrepancy in the report must be notified in writing within 60 days from the date of the statement. Otherwise, this report will be considered correct!
+              This is a system-generated report. Any discrepancy in the report
+              must be notified in writing within 60 days from the date of the
+              statement. Otherwise, this report will be considered correct!
             </p>
           </div>
           <div className="flex justify-between items-center pt-4 pb-5 px-5 mt-28 py-3 bg-white rounded-lg">

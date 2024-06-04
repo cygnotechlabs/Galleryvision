@@ -1,5 +1,3 @@
-// AuthContext.tsx
-
 import {
   ReactNode,
   createContext,
@@ -23,8 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthInitialized, setIsAuthInitialized] = useState<boolean>(false);
 
   useEffect(() => {
-    const token =
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) {
       setIsAuthenticated(true);
       setLoggedInUsers((prevCount) => prevCount + 1);

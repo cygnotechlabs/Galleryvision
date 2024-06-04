@@ -54,9 +54,10 @@ const API_ENDPOINTS = {
   LOGIN_TEST: `${BASE_URL}/login-test`,
   OPT_CHECKING: `${BASE_URL}/verify-otp`,
 
-  // Upload CSV
+  // Upload File
   UPLOADCHANNEL: `${BASE_URL}/channel/importChannel`,
   UPLOADMUSIC: `${BASE_URL}/music/importMusic`,
+  UPLOADREPORT: `${BASE_URL}/report/importReport`,
 
   // Currency Conversion
   CURRENCY_CONVERSION: `${BASE_URL}/add-currency`,
