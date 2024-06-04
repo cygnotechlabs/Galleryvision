@@ -1,9 +1,9 @@
-const ENV = "production"; // Change this to "development" or "staging" as needed
+const ENV = "staging"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: "http://localhost:5000",
   staging: "http://13.200.171.128:5000",
-  production: "https://13.200.171.128:5000"
+  production: "https://13.200.171.128:5000",
 };
 
 const BASE_URL = URLS[ENV];
@@ -46,7 +46,8 @@ const API_ENDPOINTS = {
   // Channel Invoice Routes
   GENERATE_CHANNEL_INVOICE: `${BASE_URL}/generate-channel-invoice`,
   GET_CHANNEL_INVOICE: `${BASE_URL}/get-channel-invoice`,
-  VIEW_CHANNEL_INVOICE: (id: string) => `${BASE_URL}/view-channel-invoice/${id}`,
+  VIEW_CHANNEL_INVOICE: (id: string) =>
+    `${BASE_URL}/view-channel-invoice/${id}`,
 
   // Login Route
   LOGIN: `${BASE_URL}/login`,
@@ -62,7 +63,8 @@ const API_ENDPOINTS = {
 
   // Payment
   GET_PAYMENT: `${BASE_URL}/get-payment`,
-  CHANGE_CHANNEL_STATUS: (id: string) => `${BASE_URL}/channel-invoice-status/${id}`,
+  CHANGE_CHANNEL_STATUS: (id: string) =>
+    `${BASE_URL}/channel-invoice-status/${id}`,
   CHANGE_MUSIC_STATUS: (id: string) => `${BASE_URL}/music-invoice-status/${id}`,
 
   // Dashboard

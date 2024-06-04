@@ -119,13 +119,40 @@ const INRPaymentList: React.FC<Props> = () => {
   };
 
   // Function to process selected data
+  // const handleExportSelected = () => {
+  //   const selectedData = invoices.filter((invoice) =>
+  //     selectedInvoices.includes(invoice._id)
+  //   );
+
+  //   // Convert selected data to worksheet
+  //   const worksheet = XLSX.utils.json_to_sheet(selectedData);
+
+  //   // Create workbook
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, worksheet, "Selected Data");
+
+  //   // Export the workbook to XLSX file
+  //   XLSX.writeFile(wb, "selected_data.xlsx");
+  // };
   const handleExportSelected = () => {
     const selectedData = invoices.filter((invoice) =>
       selectedInvoices.includes(invoice._id)
     );
 
-    // Convert selected data to worksheet
-    const worksheet = XLSX.utils.json_to_sheet(selectedData);
+    // Map selected data to required format
+    const formattedData = selectedData.map((invoice) => ({
+      PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
+      PYMT_MODE: "IMPS",
+      DEBIT_ACC_NO: "5659535613",
+      BNF_NAME: invoice.licensorName,
+      BENE_ACC_NO: invoice.accNum,
+      BENE_IFSC: invoice.ifsc,
+      AMOUNT: invoice.payout,
+      PYMT_DATE: new Date().toLocaleDateString(), // Generate current date
+    }));
+
+    // Convert formatted data to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
 
     // Create workbook
     const wb = XLSX.utils.book_new();
