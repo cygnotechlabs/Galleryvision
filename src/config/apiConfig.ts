@@ -3,7 +3,7 @@ const ENV = "development"; // Change this to "development", "production" or "sta
 const URLS = {
   development: "http://localhost:5000",
   staging: "http://13.200.171.128:5000",
-  production: "",
+  production: "https://galleryvison.cloud",
 };
 
 const BASE_URL = URLS[ENV];

@@ -19,8 +19,8 @@ interface InrPayment {
   iban: string;
   currency: string;
   date: string;
-  channelName?: string; // Channel ID is optional
-  musicName?: string; // Music ID is optional
+  channelName?: string;
+  musicName?: string;
   ptRevenue: string;
   tax: string;
   ptAfterTax: string;
@@ -30,6 +30,7 @@ interface InrPayment {
   payout: string;
   status: string;
   commissionAmount: string;
+  payMode: string; // Add payMode property
 }
 
 const INRPaymentList: React.FC<Props> = () => {
@@ -39,7 +40,7 @@ const INRPaymentList: React.FC<Props> = () => {
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]); // State to track selected invoices
+  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
   const rowsPerPage = 12;
 
   useEffect(() => {
@@ -53,9 +54,14 @@ const INRPaymentList: React.FC<Props> = () => {
           date: selectedDate,
         },
       });
-      const inrPayments = response.data.inrPayments;
+      const inrPayments = response.data.inrPayments.map(
+        (payment: InrPayment) => ({
+          ...payment,
+          payMode: "NEFT", // Initialize payMode to NEFT
+        })
+      );
       setInvoices(inrPayments);
-      setCurrentPage(1); // Reset to first page after fetching new data
+      setCurrentPage(1);
     } catch (error) {
       console.error("Error fetching invoices:", error);
     }
@@ -109,7 +115,6 @@ const INRPaymentList: React.FC<Props> = () => {
     }
   };
 
-  // Function to handle checkbox selection
   const handleCheckboxChange = (invoiceId: string) => {
     setSelectedInvoices((prevSelected) =>
       prevSelected.includes(invoiceId)
@@ -118,48 +123,37 @@ const INRPaymentList: React.FC<Props> = () => {
     );
   };
 
-  // Function to process selected data
-  // const handleExportSelected = () => {
-  //   const selectedData = invoices.filter((invoice) =>
-  //     selectedInvoices.includes(invoice._id)
-  //   );
-
-  //   // Convert selected data to worksheet
-  //   const worksheet = XLSX.utils.json_to_sheet(selectedData);
-
-  //   // Create workbook
-  //   const wb = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(wb, worksheet, "Selected Data");
-
-  //   // Export the workbook to XLSX file
-  //   XLSX.writeFile(wb, "selected_data.xlsx");
-  // };
   const handleExportSelected = () => {
     const selectedData = invoices.filter((invoice) =>
       selectedInvoices.includes(invoice._id)
     );
 
-    // Map selected data to required format
     const formattedData = selectedData.map((invoice) => ({
       PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
-      PYMT_MODE: "NEFT",
+      PYMT_MODE: invoice.payMode, // Use individual payMode
       DEBIT_ACC_NO: "777705031300",
       BNF_NAME: invoice.licensorName,
       BENE_ACC_NO: invoice.accNum,
       BENE_IFSC: invoice.ifsc,
       AMOUNT: invoice.payout,
-      PYMT_DATE: new Date().toLocaleDateString(), 
+      PYMT_DATE: new Date().toLocaleDateString(),
     }));
 
-    // Convert formatted data to worksheet
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
-
-    // Create workbook
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, worksheet, "Selected Data");
 
-    // Export the workbook to XLSX file
     XLSX.writeFile(wb, "selected_data.xlsx");
+  };
+
+  const handlePayModeChange = (invoiceId: string, newPayMode: string) => {
+    setInvoices((prevInvoices) =>
+      prevInvoices.map((payment) =>
+        payment._id === invoiceId
+          ? { ...payment, payMode: newPayMode }
+          : payment
+      )
+    );
   };
 
   return (
@@ -212,8 +206,9 @@ const INRPaymentList: React.FC<Props> = () => {
               key={payment._id}
               payment={payment}
               handleStatusChange={handleStatusChange}
-              handleCheckboxChange={handleCheckboxChange} // Pass checkbox handler to InvoiceRow component
-              isChecked={selectedInvoices.includes(payment._id)} // Pass checked state to InvoiceRow component
+              handleCheckboxChange={handleCheckboxChange}
+              isChecked={selectedInvoices.includes(payment._id)}
+              handlePayModeChange={handlePayModeChange} // Pass handlePayModeChange
             />
           ))}
         </tbody>
@@ -245,14 +240,16 @@ export default INRPaymentList;
 interface InvoiceRowProps {
   payment: InrPayment;
   handleStatusChange: (invoiceId: string, newStatus: string) => Promise<void>;
-  handleCheckboxChange: (invoiceId: string) => void; // Pass checkbox handler as prop
-  isChecked: boolean; // Pass checked state as prop
+  handleCheckboxChange: (invoiceId: string) => void;
+  isChecked: boolean;
+  handlePayModeChange: (invoiceId: string, newPayMode: string) => void; // Add handlePayModeChange prop
 }
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
   payment,
   handleCheckboxChange,
   isChecked,
+  handlePayModeChange,
 }) => {
   return (
     <tr>
@@ -282,6 +279,14 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
         </button>
       </td>
       <td className="flex space-x-2">
+        <select
+          name="payMode"
+          value={payment.payMode}
+          onChange={(e) => handlePayModeChange(payment._id, e.target.value)}
+        >
+          <option value="NEFT">NEFT</option>
+          <option value="IMPS">IMPS</option>
+        </select>
         <Link to={`/home/view-invoices/${payment._id}`}>
           <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
             <Eye />
