@@ -1,4 +1,4 @@
-const ENV = "development"; // Change this to "development", "production" or "staging" as needed
+const ENV = "production"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: "http://localhost:5000",
