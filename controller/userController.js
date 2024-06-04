@@ -7,8 +7,9 @@ const cookieParser = require('cookie-parser')
 //const speakeasy = require('speakeasy');
 const nodemailer = require('nodemailer');
 const NodeCache = require('node-cache');
+require('dotenv').config();
 
-const otpCache = new NodeCache({ stdTTL: 180 }); //180 seconds
+const otpCache = new NodeCache({ stdTTL: 120 }); //120 seconds
 
 const app = express();
 app.use(cookieParser())
@@ -37,15 +38,15 @@ exports.register = async (req, res) => {
 
          //generate a token for user and send it
 
-        //  const token = jwt.sign(
-        //     {id: user._id,password},
-        //     'abcd', //jwt secret
-        //     {
-        //         expiresIn: "12h"
-        //     }
-        //  );
+         const token = jwt.sign(
+            {id: user._id,password},
+            'abcd', //jwt secret
+            {
+                expiresIn: "12h"
+            }
+         );
 
-        //  user.token = token
+         user.token = token
          user.password = undefined
 
          res.status(201).json(user)
@@ -121,27 +122,35 @@ exports.login = async (req, res) => {
 };
 
 
+// Nodemailer transporter setup using environment variables
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-      user: 'galleryvision24@gmail.com',
-      pass: 'cles pbrx btua qvbc'
-      
-  }
+    service: 'gmail',
+    auth: {
+        user: process.env.GALLERYVISION_EMAIL,
+        pass: process.env.GALLERYVISION_PASSWORD
+    }
 });
 
 // Function to send OTP email
 const sendOtpEmail = (email, otp) => {
-  const mailOptions = {
-      from: 'galleryvision24@gmail.com',
-      to: email,
-      subject: 'Your OTP Code',
-      text: `Your One-Time Password (OTP) code is: ${otp}
+    const mailOptions = {
+        from: process.env.GALLERYVISION_EMAIL,
+        to: email,
+        subject: 'Your OTP Code',
+        text: `Your One-Time Password (OTP) code is: ${otp}
 
-    This code is valid for only 2 minutes, so use it promptly to ensure secure access.`
-  };
+        This code is valid for only 2 minutes, so use it promptly to ensure secure access.`
+    };
 
-  return transporter.sendMail(mailOptions);
+    return transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log('Error occurred:', error);
+            return false;
+        } else {
+            console.log('Email sent:', info.response);
+            return true;
+        }
+    });
 };
 
 
@@ -211,32 +220,31 @@ exports.verifyOtp = async (req, res) => {
       // Check if OTP matches and is not expired
       if (cachedOtp && cachedOtp === otp) {
           // Create JWT token
-        //   const token = jwt.sign(
-        //       { id: user._id },
-        //       'abcd', // JWT secret
-        //       {
-        //           expiresIn: "12h"
-        //       }
-        //   );
+          const token = jwt.sign(
+              { id: user._id },
+              'abcd', // JWT secret
+              {
+                  expiresIn: "12h"
+              }
+          );
 
           // Remove sensitive data from response
-        //   user.token = token;
+          user.token = token;
           user.password = undefined;
 
           // Cookie options
           const options = {
-              expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+              expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), //3 days
               httpOnly: true
           };
 
           // Send response with cookie
           res.status(200)
-            //   .cookie("token", token, options)
-              .json({
-                  success: true,
-                //   token,
-                  user
-              });
+          .json({
+              success: true,
+              token: "Bearer " + token, // Prepend "Bearer " to the token
+              user: user
+          });
 
           // Invalidate the OTP after successful verification
           otpCache.del(email);
@@ -244,7 +252,7 @@ exports.verifyOtp = async (req, res) => {
           res.status(401).send('Invalid or expired OTP!');
       }
   } catch (error) {
-      console.log(error);
+      console.log('Error in verifyOtp:', error);
       res.status(500).send('Internal Server Error');
   }
-};
+};  

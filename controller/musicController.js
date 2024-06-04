@@ -4,21 +4,54 @@ const rawMusic = require('../database/model/rawmusic')
 const licensors = require('../database/model/licensor');
 const musicInvoices = require('../database/model/musicInvoice');
 
+const jwt = require('jsonwebtoken');
+const secretKey = 'abcd'; 
+
 // get rawMusic
-exports.getRawMusic = async (req, res) => {
-    try {
-        const allRawMusic = await rawMusic.find();
-        // console.log(allRawMusic);
+// exports.getRawMusic = async (req, res) => {
+//     try {
+//         const allRawMusic = await rawMusic.find();
+//         // console.log(allRawMusic);
         
-        if (allRawMusic) {
-            res.status(200).json(allRawMusic);
-        } else {
-            res.status(404).json("Raw music not found");
-        }
-    } catch (error) {
-        console.error(error); 
-        res.status(500).json("Internal server error"); 
-    }
+//         if (allRawMusic) {
+//             res.status(200).json(allRawMusic);
+//         } else {
+//             res.status(404).json("Raw music not found");
+//         }
+//     } catch (error) {
+//         console.error(error); 
+//         res.status(500).json("Internal server error"); 
+//     }
+// };
+
+
+exports.getRawMusic = async (req, res) => {
+  try {
+      // Verify and decode the token
+      jwt.verify(req.token, secretKey, async (err, authData) => {
+          if (err) {
+              // If token is invalid, return a 403 Forbidden response
+              res.sendStatus(403);
+          } else {
+              // If token is valid, proceed with fetching raw music data
+              try {
+                  const allRawMusic = await rawMusic.find();
+                  
+                  if (allRawMusic.length > 0) {
+                      res.status(200).json(allRawMusic);
+                  } else {
+                      res.status(404).json("Raw music not found");
+                  }
+              } catch (error) {
+                  console.error(error); 
+                  res.status(500).json("Internal server error"); 
+              }
+          }
+      });
+  } catch (error) {
+      console.error(error); 
+      res.status(500).json("Internal server error"); 
+  }
 };
 
 

@@ -12,6 +12,8 @@ const rawMusicRoute = require('./router/rawMusicRoute')
 
 const rawChannelRoute = require('./router/rawChannelRoute')
 
+const reportRoute = require('./router/report')
+
 require('./database/connection/connection')
 
 server.use(cors())
@@ -19,6 +21,8 @@ server.use(cors())
 server.use('/music',rawMusicRoute)
 
 server.use('/channel',rawChannelRoute)
+
+server.use('/report',reportRoute)
 
 server.use(express.json())
 

@@ -11,6 +11,7 @@ const channelInvoiceController = require('../controller/channelInvoiceController
 const SettingsController = require('../controller/settingController')
 const PaymentController = require('../controller/paymentController')
 const dashboardController = require('../controller/dashboardController')
+const middleware = require('../controller/middleware'); 
 
 
 // collection to collection
@@ -71,7 +72,7 @@ module.exports = router
 
 // Music Route
 
-router.get('/get-rawmusic',musicController.getRawMusic)
+router.get('/get-rawmusic',middleware.verifyToken,musicController.getRawMusic)
 
 router.get('/view-rawmusic/:id',musicController.getOneRawMusic)
 
@@ -144,3 +145,6 @@ router.get('/view-count',dashboardController.getCount)
 
 // get dashboard
 router.get('/get-dashboard',dashboardController.getDashboard)
+
+// payment
+router.get('/get-payment',PaymentController.getPayments)
