@@ -1,9 +1,9 @@
-const channelInvoiceModel = require('../database/model/channelInvoice');
-const musicInvoiceModel = require('../database/model/musicInvoice');
-const csv = require('csvtojson');
-const fs = require('fs');
-const PDFDocument = require('pdfkit');
-const nodemailer = require('nodemailer');
+// const channelInvoiceModel = require('../database/model/channelInvoice');
+// const musicInvoiceModel = require('../database/model/musicInvoice');
+// const csv = require('csvtojson');
+// const fs = require('fs');
+// const PDFDocument = require('pdfkit');
+// const nodemailer = require('nodemailer');
 
 // exports.processInvoicesAndSendEmails = async (req, res) => {
 //     try {
@@ -174,26 +174,260 @@ const nodemailer = require('nodemailer');
 // };
 
 
-// // new html design amal
+// // // new html design amal
+// // const channelInvoiceModel = require('../database/model/channelInvoice');
+// // const musicInvoiceModel = require('../database/model/musicInvoice');
+// // const nodemailer = require('nodemailer');
+// // const fs = require('fs');
+// // const puppeteer = require('puppeteer');
+
+// // const path = require('path');
+
+// // const readFile = (filePath) => {
+// //     return new Promise((resolve, reject) => {
+// //         fs.readFile(filePath, 'utf8', (err, data) => {
+// //             if (err) {
+// //                 reject(err);
+// //             } else {
+// //                 resolve(data);
+// //             }
+// //         });
+// //     });
+// // };
+
+// // exports.processInvoicesAndSendEmails = async (req, res) => {
+// //     try {
+// //         const paidChannelInvoices = await channelInvoiceModel.find({ status: 'paid' });
+// //         const paidMusicInvoices = await musicInvoiceModel.find({ status: 'paid' });
+
+// //         const transporter = nodemailer.createTransport({
+// //             service: 'gmail',
+// //             auth: {
+// //                 user: 'galleryvision24@gmail.com',
+// //                 pass: 'cles pbrx btua qvbc',
+// //             },
+// //         });
+
+// //         const createPDF = async (invoice, type) => {
+// //             const htmlTemplatePath = path.join(__dirname, 'invoiceTemplate.html');
+// //             let htmlContent = await readFile(htmlTemplatePath);
+
+// //             htmlContent = htmlContent
+// //                 .replace('{{partnerName}}', invoice.partnerName)
+// //                 .replace('{{licensorName}}', invoice.licensorName)
+// //                 .replace('{{ptRevenue}}', invoice.ptRevenue)
+// //                 .replace('{{tax}}', invoice.tax)
+// //                 .replace('{{ptAfterTax}}', invoice.ptAfterTax)
+// //                 .replace('{{commissionAmount}}', invoice.commissionAmount)
+// //                 .replace('{{totalPayout}}', invoice.totalPayout)
+// //                 .replace('{{payout}}', invoice.payout);
+
+// //                 htmlContent += `
+// //         <style>
+// //             /* Additional styling */
+// //             .content {
+// //                 background-color: aquamarine;
+// //                 padding: 20px;
+// //             }
+// //             .content p {
+// //                 color: #333;
+// //             }
+// //             .content-section1{
+// //                 display: flex;
+// //                 justify-content: space-between;
+// //                 border-radius: 20px;
+// //                 background-color: aquamarine !important;
+// //                 padding: 5px 10px;
+// //             }
+// //         </style>
+// //     `;
+                
+// //             const browser = await puppeteer.launch();
+// //             const page = await browser.newPage();
+// //             await page.setContent(htmlContent);
+// //             const fileName = `${type}_invoice_${invoice._id}.pdf`;
+// //             const filePath = path.join(__dirname, fileName);
+// //             await page.pdf({ path: filePath, format: 'A4' });
+// //             await browser.close();
+
+// //             return filePath;
+// //         };
+
+// //         const sendEmailWithPDF = async (invoice, type) => {
+// //             const pdfPath = await createPDF(invoice, type);
+
+// //             const mailOptions = {
+// //                 from: 'galleryvision24@gmail.com',
+// //                 to: invoice.licensorEmail,
+// //                 subject: `Paid ${type.charAt(0).toUpperCase() + type.slice(1)} Invoice`,
+// //                 text: `Please find the attached paid ${type} invoice.`,
+// //                 attachments: [
+// //                     {
+// //                         filename: `${type}_invoice_${invoice._id}.pdf`,
+// //                         path: pdfPath,
+// //                     },
+// //                 ],
+// //             };
+
+// //             await transporter.sendMail(mailOptions);
+
+// //             // Delete the PDF file after sending the email
+// //             fs.unlink(pdfPath, (err) => {
+// //                 if (err) {
+// //                     console.error(`Failed to delete file: ${pdfPath}`, err);
+// //                 } else {
+// //                     console.log(`File deleted: ${pdfPath}`);
+// //                 }
+// //             });
+// //         };
+
+// //         for (const invoice of paidChannelInvoices) {
+// //             await sendEmailWithPDF(invoice, 'channel');
+// //         }
+
+// //         for (const invoice of paidMusicInvoices) {
+// //             await sendEmailWithPDF(invoice, 'music');
+// //         }
+
+// //         console.log('Invoices processed and emails sent successfully.');
+// //         res.status(200).json({ success: true, message: 'Invoices processed and emails sent successfully.' });
+// //     } catch (error) {
+// //         console.error('Error processing invoices and sending emails:', error);
+// //         res.status(500).json({ success: false, message: 'Internal Server Error' });
+// //     }
+// // };
+
+// // // new html design amal
+
+// // latest
+
+
+
+
+
+// // latest
+
+
+
+
 // const channelInvoiceModel = require('../database/model/channelInvoice');
 // const musicInvoiceModel = require('../database/model/musicInvoice');
 // const nodemailer = require('nodemailer');
 // const fs = require('fs');
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
+// const path = require('path');
 
+// const readFile = (filePath) => {
+//     return new Promise((resolve, reject) => {
+//         fs.readFile(filePath, 'utf8', (err, data) => {
+//             if (err) {
+//                 reject(err);
+//             } else {
+//                 resolve(data);
+//             }
+//         });
+//     });
+// };
+
+// exports.processInvoicesAndSendEmails = async (req, res) => {
+//     try {
+//         const paidChannelInvoices = await channelInvoiceModel.find({ status: 'paid' });
+//         const paidMusicInvoices = await musicInvoiceModel.find({ status: 'paid' });
+
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             auth: {
+//                 user: 'galleryvision24@gmail.com',
+//                 pass: 'cles pbrx btua qvbc',
+//             },
+//         });
+
+//         const createPDF = async (invoice, type) => {
+//             const htmlTemplatePath = path.join(__dirname, 'invoiceTemplate.html');
+//             let htmlContent = await readFile(htmlTemplatePath);
+
+//             // Replace placeholders in HTML template with actual invoice data
+//             htmlContent = htmlContent
+//                 .replace('{{partnerName}}', invoice.partnerName)
+//                 .replace('{{licensorName}}', invoice.licensorName)
+//                 .replace('{{ptRevenue}}', invoice.ptRevenue)
+//                 .replace('{{tax}}', invoice.tax)
+//                 .replace('{{ptAfterTax}}', invoice.ptAfterTax)
+//                 .replace('{{commissionAmount}}', invoice.commissionAmount)
+//                 .replace('{{totalPayout}}', invoice.totalPayout)
+//                 .replace('{{conversionRate}}', invoice.conversionRate)
+//                 .replace('{{payout}}', invoice.payout);
+
+//             const browser = await puppeteer.launch();
+//             const page = await browser.newPage();
+//             await page.setContent(htmlContent);
+//             const fileName = `${type}_invoice_${invoice._id}.pdf`;
+//             const filePath = path.join(__dirname, fileName);
+//             await page.pdf({ path: filePath, format: 'A4' });
+//             await browser.close();
+
+//             return filePath;
+//         };
+
+//         const sendEmailWithPDF = async (invoice, type) => {
+//             const pdfPath = await createPDF(invoice, type);
+
+//             const mailOptions = {
+//                 from: 'galleryvision24@gmail.com',
+//                 to: invoice.licensorEmail,
+//                 subject: `Paid ${type.charAt(0).toUpperCase() + type.slice(1)} Invoice`,
+//                 text: `Please find the attached paid ${type} invoice.`,
+//                 attachments: [
+//                     {
+//                         filename: `${type}_invoice_${invoice._id}.pdf`,
+//                         path: pdfPath,
+//                     },
+//                 ],
+//             };
+
+//             await transporter.sendMail(mailOptions);
+
+//             // Delete the PDF file after sending the email
+//             fs.unlink(pdfPath, (err) => {
+//                 if (err) {
+//                     console.error(`Failed to delete file: ${pdfPath}`, err);
+//                 } else {
+//                     console.log(`File deleted: ${pdfPath}`);
+//                 }
+//             });
+//         };
+
+//         for (const invoice of paidChannelInvoices) {
+//             await sendEmailWithPDF(invoice, 'channel');
+//         }
+
+//         for (const invoice of paidMusicInvoices) {
+//             await sendEmailWithPDF(invoice, 'music');
+//         }
+
+//         console.log('Invoices processed and emails sent successfully.');
+//         res.status(200).json({ success: true, message: 'Invoices processed and emails sent successfully.' });
+//     } catch (error) {
+//         console.error('Error processing invoices and sending emails:', error);
+//         res.status(500).json({ success: false, message: 'Internal Server Error' });
+//     }
+// };
+
+// HTML template (invoiceTemplate.html) should include placeholders like {{partnerName}}, {{licensorName}}, etc.
+
+
+
+
+
+
+
+// test thaha
+const channelInvoiceModel = require('../database/model/channelInvoice');
+const musicInvoiceModel = require('../database/model/musicInvoice');
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 const path = require('path');
-
-const readFile = (filePath) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        });
-    });
-};
 
 exports.processInvoicesAndSendEmails = async (req, res) => {
     try {
@@ -208,53 +442,59 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
             },
         });
 
-        const createPDF = async (invoice, type) => {
-            const htmlTemplatePath = path.join(__dirname, 'invoiceTemplate.html');
-            let htmlContent = await readFile(htmlTemplatePath);
-
-            htmlContent = htmlContent
-                .replace('{{partnerName}}', invoice.partnerName)
-                .replace('{{licensorName}}', invoice.licensorName)
-                .replace('{{ptRevenue}}', invoice.ptRevenue)
-                .replace('{{tax}}', invoice.tax)
-                .replace('{{ptAfterTax}}', invoice.ptAfterTax)
-                .replace('{{commissionAmount}}', invoice.commissionAmount)
-                .replace('{{totalPayout}}', invoice.totalPayout)
-                .replace('{{payout}}', invoice.payout);
-
-                htmlContent += `
-        <style>
-            /* Additional styling */
-            .content {
-                background-color: aquamarine;
-                padding: 20px;
-            }
-            .content p {
-                color: #333;
-            }
-            .content-section1{
-                display: flex;
-                justify-content: space-between;
-                border-radius: 20px;
-                background-color: aquamarine !important;
-                padding: 5px 10px;
-            }
-        </style>
-    `;
-                
-            const browser = await puppeteer.launch();
-            const page = await browser.newPage();
-            await page.setContent(htmlContent);
+        const createPDF = (invoice, type) => {
+            const doc = new PDFDocument({ size: 'A4', margin: 50 , padding: 50 });
             const fileName = `${type}_invoice_${invoice._id}.pdf`;
             const filePath = path.join(__dirname, fileName);
-            await page.pdf({ path: filePath, format: 'A4' });
-            await browser.close();
 
+            doc.pipe(fs.createWriteStream(filePath));
+
+            // Add header with ghost image
+            doc.image('public/upload/ghost.png', 0, 0, { width: 595.28, height: 841.89 });
+
+            // Insert invoice details
+            doc
+                .fontSize(12)
+                .text(` ${invoice.partnerName}`, 110, 149)
+                .text(` ${invoice.licensorName}`, 500, 149)
+                .moveDown()
+                .fontSize(12)
+                .text('', 50, 150)
+                .fontSize(10)
+                .text(`${invoice.ptRevenue}`, 500, 278.5)
+                .text(`${invoice.tax}`, 500, 312)
+                .text(`${invoice.ptAfterTax}`, 500, 347)
+                .moveDown()
+                .fontSize(12)
+                .text('', 50, 250)
+                .fontSize(10)
+                .text(`${invoice.commission}`, 500, 448)
+                .text(`${invoice.commissionAmount}`, 500, 483)
+                .moveDown()
+                .fontSize(12)
+                .text('', 50, 310)
+                .fontSize(10)
+                .text(`${invoice.totalPayout}`, 500, 578)
+                .text(`${invoice.conversionRate}`, 500, 619)
+                .moveDown()
+                .fontSize(12)
+                .text('', 50, 350)
+                .fontSize(10)
+                .text(` ${invoice.payout}`, 495, 655)
+                .moveDown()
+                .fontSize(10)
+                
+                .moveDown()
+                .fontSize(10)
+                // .text('Gallery Vision', 100, 670)
+                // .text('+0 (000) 123-4567 | hello@email.com', 200, 670);
+
+            doc.end();
             return filePath;
         };
 
         const sendEmailWithPDF = async (invoice, type) => {
-            const pdfPath = await createPDF(invoice, type);
+            const pdfPath = createPDF(invoice, type);
 
             const mailOptions = {
                 from: 'galleryvision24@gmail.com',
@@ -297,4 +537,4 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
     }
 };
 
-// // new html design amal
+// test thaha
