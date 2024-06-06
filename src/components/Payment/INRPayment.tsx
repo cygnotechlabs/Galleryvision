@@ -15,6 +15,7 @@ interface InrPayment {
   licensorId: string;
   invoiceNumber: string;
   licensorName: string;
+  licensorEmail: string;
   accNum: string;
   ifsc: string;
   iban: string;
@@ -142,7 +143,7 @@ const INRPaymentList: React.FC<Props> = () => {
       DEBIT_NARR :"",
       CREDIT_NARR :"",
       MOBILE_NUM :"",
-      EMAIL_ID :"",
+      EMAIL_ID :invoice.licensorEmail,
       REMARK :"",
       PYMT_DATE: new Date().toLocaleDateString(),
       REF_NO :"",

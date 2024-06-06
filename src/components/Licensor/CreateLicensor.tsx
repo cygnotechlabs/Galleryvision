@@ -330,6 +330,7 @@ const CreateLicensor: React.FC<Props> = () => {
                     required
                   >
                     <option value="INR">INR</option>
+                    <option value="INR0">INR0</option>
                     <option value="USD">USD</option>
                   </select>
                 </div>

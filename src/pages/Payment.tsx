@@ -38,7 +38,7 @@ const Payment: React.FC = () => {
           }`}
           onClick={() => handleClick("USD")}
         >
-          USD
+          USD/INRO
         </div>
       </div>
       {isClicked === "INR" ? <INRPaymentList /> : <USDPaymentlist />}

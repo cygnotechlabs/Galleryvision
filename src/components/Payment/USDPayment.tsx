@@ -54,7 +54,7 @@ const USDPaymentList: React.FC<Props> = () => {
         params: {
           date: selectedDate,
         },
-        headers:authInstance()
+        headers: authInstance(),
       });
       setInvoices(response.data.usdPayments);
       setCurrentPage(1); // Reset to first page after fetching new data
@@ -100,11 +100,13 @@ const USDPaymentList: React.FC<Props> = () => {
 
   const handleStatusChange = async (invoiceId: string, newStatus: string) => {
     try {
-      await axios.put(API_ENDPOINTS.CHANGE_MUSIC_STATUS(invoiceId), {
-        status: newStatus,
-        
-      },
-    {headers:authInstance()});
+      await axios.put(
+        API_ENDPOINTS.CHANGE_MUSIC_STATUS(invoiceId),
+        {
+          status: newStatus,
+        },
+        { headers: authInstance() }
+      );
       setInvoices((prevInvoices) =>
         prevInvoices.map((payment) =>
           payment._id === invoiceId
@@ -154,6 +156,7 @@ const USDPaymentList: React.FC<Props> = () => {
             <th className="px-4 py-2 text-left text-sm">Licensor Name</th>
             <th className="px-4 py-2 text-left text-sm">Channel/Music</th>
             <th className="px-4 py-2 text-left text-sm">Partner Revenue</th>
+            <th className="px-4 py-2 text-left text-sm">Currency</th>
             <th className="px-4 py-2 text-left text-sm">Commission</th>
             <th className="px-4 py-2 text-left text-sm">Status</th>
             <th className="px-4 py-2 text-left text-sm">Actions</th>
@@ -223,6 +226,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
         {payment.channelName ? payment.channelName : payment.musicName}
       </td>
       <td className="px-4 py-1 text-left text-sm">{payment.ptAfterTax}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.currency}</td>
       <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
       <td className="px-4 py-1 text-left text-sm">
         <button
