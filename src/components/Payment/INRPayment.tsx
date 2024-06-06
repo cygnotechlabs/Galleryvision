@@ -133,13 +133,24 @@ const INRPaymentList: React.FC<Props> = () => {
 
     const formattedData = selectedData.map((invoice) => ({
       PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
-      PYMT_MODE: invoice.payMode, // Use individual payMode
+      PYMT_MODE: invoice.payMode, 
       DEBIT_ACC_NO: "777705031300",
       BNF_NAME: invoice.licensorName,
       BENE_ACC_NO: invoice.accNum,
       BENE_IFSC: invoice.ifsc,
       AMOUNT: invoice.payout,
+      DEBIT_NARR :"",
+      CREDIT_NARR :"",
+      MOBILE_NUM :"",
+      EMAIL_ID :"",
+      REMARK :"",
       PYMT_DATE: new Date().toLocaleDateString(),
+      REF_NO :"",
+      ADDL_INFO1 :"",
+      ADDL_INFO2 :"",
+      ADDL_INFO3 :"",
+      ADDL_INFO4 :"",
+      ADDL_INFO5 :"",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);

@@ -43,11 +43,11 @@ const CurrencyComponent = ({}: Props) => {
       alert("Please provide both the date and INR value.");
       return;
     }
-
+  
     try {
       console.log("Sending payload:", data);
       const response = await axios.post(
-        API_ENDPOINTS.CURRENCY_CONVERSION,
+        API_ENDPOINTS.CURRENCY_CONVERSION, // Correct endpoint
         data,
         { headers: authInstance() }
       );

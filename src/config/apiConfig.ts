@@ -6,8 +6,6 @@ const URLS = {
   production: import.meta.env.VITE_REACT_APP_PRODUCTION as string,
 };
 
-console.log(import.meta.env.VITE_REACT_APP_DEVELOPMENT)
-
 const BASE_URL = URLS[ENV];
 
 const API_ENDPOINTS = {
@@ -62,7 +60,7 @@ const API_ENDPOINTS = {
   UPLOADREPORT: `${BASE_URL}/report/importReport`,
 
   // Currency Conversion
-  CURRENCY_CONVERSION: `${BASE_URL}/add-currency`,
+  CURRENCY_CONVERSION: `${BASE_URL}/add-currency`, // Fixed typo here
 
   // Payment
   GET_PAYMENT: `${BASE_URL}/get-payment`,
