@@ -60,7 +60,7 @@ router.get('/get-channel-invoice-for-channel',middleware.verifyToken,channelCont
 // licensor routes
 router.post('/add-licensor',middleware.verifyToken,licensorController.addLicensor)
 
-router.get('/get-licensor',licensorController.getLicensor)
+router.get('/get-licensor',middleware.verifyToken,licensorController.getLicensor)
 
 router.get('/view-licensor/:id',middleware.verifyToken,licensorController.getOneLicensor)
 
