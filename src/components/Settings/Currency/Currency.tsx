@@ -3,6 +3,7 @@ import MonthYearSelector from "../../../UI/MonthYear";
 import { Arrow, India, USA } from "../../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../../config/apiConfig";
+import { authInstance } from "../../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -47,7 +48,8 @@ const CurrencyComponent = ({}: Props) => {
       console.log("Sending payload:", data);
       const response = await axios.post(
         API_ENDPOINTS.CURRENCY_CONVERSION,
-        data
+        data,
+        { headers: authInstance() }
       );
       console.log("Response:", response.data);
       alert("Conversion rate added successfully!");
@@ -60,6 +62,7 @@ const CurrencyComponent = ({}: Props) => {
   const handleDateChange = (newDate: string) => {
     setSelectedDate(newDate);
   };
+
   return (
     <div className="pl-11">
       <div className="flex items-center justify-between my-2">
@@ -93,7 +96,7 @@ const CurrencyComponent = ({}: Props) => {
             />
             <button
               onClick={handleSubmit}
-              className="font-bold bg-black  text-white p-2 rounded-lg"
+              className="font-bold bg-black text-white p-2 rounded-lg"
             >
               ADD
             </button>
