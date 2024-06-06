@@ -46,7 +46,7 @@ const CurrencyComponent = ({}: Props) => {
     try {
       console.log("Sending payload:", data);
       const response = await axios.post(
-        API_ENDPOINTS.CURRENCY_COVERSTION,
+        API_ENDPOINTS.CURRENCY_CONVERSION,
         data
       );
       console.log("Response:", response.data);

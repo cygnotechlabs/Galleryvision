@@ -5,6 +5,7 @@ import empty from "../../../public/empty.png";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { Eye, Search } from "../icons/icon";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -51,6 +52,7 @@ const GenataredChannelInvoice = ({}: Props) => {
         params: {
           date: selectedDate,
         },
+        headers:authInstance()
       });
       setInvoiceData(response.data);
       setCurrentPage(1); // Reset to first page after fetching new data

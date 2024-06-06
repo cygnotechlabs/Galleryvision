@@ -6,6 +6,7 @@ import { Arrow, Back, Eye, Search } from "../icons/icon";
 import Modal from "../../layouts/Modal";
 import PaymentModal from "../../UI/PaymentModal";
 import { Link } from "react-router-dom";
+import { authInstance } from "../../hooks/axiosInstances";
 
 interface Props {}
 
@@ -53,6 +54,7 @@ const USDPaymentList: React.FC<Props> = () => {
         params: {
           date: selectedDate,
         },
+        headers:authInstance()
       });
       setInvoices(response.data.usdPayments);
       setCurrentPage(1); // Reset to first page after fetching new data
@@ -100,7 +102,9 @@ const USDPaymentList: React.FC<Props> = () => {
     try {
       await axios.put(API_ENDPOINTS.CHANGE_MUSIC_STATUS(invoiceId), {
         status: newStatus,
-      });
+        
+      },
+    {headers:authInstance()});
       setInvoices((prevInvoices) =>
         prevInvoices.map((payment) =>
           payment._id === invoiceId

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Back } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 type Licensor = {
@@ -28,7 +29,7 @@ const CreateMusic: React.FC<Props> = () => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -100,7 +101,7 @@ const CreateMusic: React.FC<Props> = () => {
       try {
         console.log(musicData);
 
-        const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData);
+        const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData,{headers:authInstance()});
         setMessage(response.data.message);
         setMusicData({
           _id: "",

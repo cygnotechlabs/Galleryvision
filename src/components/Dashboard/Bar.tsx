@@ -90,6 +90,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 ChartJS.register(
   CategoryScale,
@@ -111,7 +112,7 @@ const BarChart: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT);
+        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT,{headers:authInstance()});
         setCount(response.data);
       } catch (error) {
         console.error(error);

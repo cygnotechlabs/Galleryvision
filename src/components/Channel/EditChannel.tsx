@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type ChannelData = {
   _id: string;
@@ -32,7 +34,7 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,7 +52,9 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
     try {
       const response = await axios.put(
         API_ENDPOINTS.UPDATE_CHANNEL(formData._id),
-        formData
+        formData,{
+          headers:authInstance()
+        }
       );
       console.log(response.data); // Log the response if needed
       onClose(); // Close the modal after successful submission

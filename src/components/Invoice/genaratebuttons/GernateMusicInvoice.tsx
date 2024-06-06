@@ -4,6 +4,7 @@ import API_ENDPOINTS from "../../../config/apiConfig";
 import { Invoice } from "../../icons/icon";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
+import { authInstance } from "../../../hooks/axiosInstances";
 
 type Props = {
   selectedDate: string;
@@ -15,9 +16,13 @@ const GenerateMusicInvoice = ({ selectedDate }: Props) => {
   const generateMusicInvoice = async () => {
     setButtonText("Generating...");
     try {
-      const response = await axios.post(API_ENDPOINTS.GENERATE_MUSIC_INVOICE, {
-        date: selectedDate,
-      });
+      const response = await axios.post(
+        API_ENDPOINTS.GENERATE_MUSIC_INVOICE,
+        {
+          date: selectedDate,
+        },
+        { headers: authInstance() }
+      );
       const message = response.data.message;
       console.log(message);
 

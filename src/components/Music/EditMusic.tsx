@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Music = {
   _id: string;
@@ -31,7 +32,9 @@ const EditMusic = ({ onClose, music }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{
+          headers:authInstance()
+        });
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -49,7 +52,8 @@ const EditMusic = ({ onClose, music }: Props) => {
     try {
       const response = await axios.put(
         API_ENDPOINTS.UPDATE_MUSIC(formData._id), // Ensure the API endpoint is correct
-        formData
+        formData,
+        {headers:authInstance()}
       );
       console.log(response.data); // Log the response if needed
       onClose(); // Close the modal after successful submission

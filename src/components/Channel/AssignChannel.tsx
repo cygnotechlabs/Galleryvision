@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type Props = {
   channel: Channel;
@@ -32,7 +34,7 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -46,7 +48,10 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
     try {
       const response = await axios.post(
         API_ENDPOINTS.ASSIGN_CHANNEL,
-        updatedData
+        updatedData,
+        {
+          headers:authInstance()
+        }
       );
       setUpdatedData(response.data);
       onClose();

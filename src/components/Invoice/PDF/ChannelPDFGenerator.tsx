@@ -6,6 +6,7 @@ import axios from "axios";
 import API_ENDPOINTS from "../../../config/apiConfig";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { authInstance } from "../../../hooks/axiosInstances";
 
 type Props = {
   onClose: () => void;
@@ -46,7 +47,7 @@ const ChannelPDFGenerator = ({ onClose }: Props) => {
       try {
         if (id) {
           const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id)
+            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id),{headers:authInstance()}
           );
           setInvoiceData(response.data);
         }

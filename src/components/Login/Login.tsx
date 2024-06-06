@@ -51,8 +51,7 @@ const Login = () => {
         password,
       });
       if (response && response.status === 200 && response.data) {
-        // Store the login response data temporarily for OTP verification
-        localStorage.setItem("tempToken", response.data);
+        // OTP verification
         setOpenOtpModal(true);
       } else {
         setError("Login failed. Please check your credentials.");

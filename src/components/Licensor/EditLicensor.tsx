@@ -6,6 +6,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type Props = {};
 
@@ -47,7 +49,9 @@ const EditLicensor: React.FC<Props> = () => {
     if (id) {
       const fetchData = async () => {
         try {
-          const response = await axios.get(API_ENDPOINTS.VIEW_LICENSOR(id));
+          const response = await axios.get(API_ENDPOINTS.VIEW_LICENSOR(id),{
+            headers:authInstance()
+          });
           setFormData(response.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -87,7 +91,10 @@ const EditLicensor: React.FC<Props> = () => {
       try {
         const response = await axios.put(
           API_ENDPOINTS.UPDATE_LICENSOR(id),
-          formData
+          formData,
+          {
+            headers:authInstance()
+          }
         );
         if (response.status === 200) {
           console.log("Data updated successfully!");

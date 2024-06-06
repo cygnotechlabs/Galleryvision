@@ -7,6 +7,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import ChannelPDFGenerator from "./PDF/ChannelPDFGenerator";
 import PrintChannel from "./Print/PrintChannel";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -57,7 +58,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
       try {
         if (id) {
           const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id)
+            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id),{headers:authInstance()}
           );
           setInvoiceData(response.data);
         }

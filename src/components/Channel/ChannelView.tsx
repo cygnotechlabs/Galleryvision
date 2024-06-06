@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { Back, Block, Rupee } from "../icons/icon";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type Props = {};
 
@@ -18,7 +20,9 @@ const ChannelView = ({}: Props) => {
   const fetchChannelData = async () => {
     try {
       if (id) {
-        const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id));
+        const response = await axios.get(API_ENDPOINTS.VIEW_CHANNEL(id),{
+          headers:authInstance()
+        });
         setChannelData(response.data.channelDetails);
         setChannelInvoice(response.data.channelInvoice);
       }

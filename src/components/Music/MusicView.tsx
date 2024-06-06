@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { Back, Block, Rupee } from "../icons/icon";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -15,7 +16,7 @@ const MusicView = ({}: Props) => {
     const fetchMusicData = async () => {
       try {
         if (id) {
-          const response = await axios.get(API_ENDPOINTS.VIEW_MUSIC(id));
+          const response = await axios.get(API_ENDPOINTS.VIEW_MUSIC(id),{headers:authInstance()});
           setMusicData(response.data.musicDetails);
           setMusicInvoice(response.data.musicInvoice);
         }

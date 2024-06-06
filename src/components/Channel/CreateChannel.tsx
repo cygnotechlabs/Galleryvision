@@ -4,6 +4,7 @@ import axios from "axios";
 import { Back } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import toast from "react-hot-toast";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 type Licensor = {
@@ -35,7 +36,7 @@ const CreateChannel = ({}: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -112,7 +113,9 @@ const CreateChannel = ({}: Props) => {
     if (!validateForm()) return;
 
     try {
-      const response = await axios.post(API_ENDPOINTS.ADD_CHANNEL, formData);
+      const response = await axios.post(API_ENDPOINTS.ADD_CHANNEL,formData,{
+        headers:authInstance()
+      });
 
       // Handle success
       console.log(response.data.message);

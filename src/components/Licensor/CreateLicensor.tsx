@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type Props = {};
 
@@ -52,7 +54,9 @@ const CreateLicensor: React.FC<Props> = () => {
     e.preventDefault();
     try {
       console.log("add licensor", formData);
-      const response = await axios.post(API_ENDPOINTS.ADD_LICENSOR, formData);
+      const response = await axios.post(API_ENDPOINTS.ADD_LICENSOR, formData,{
+        headers:authInstance()
+      });
       if (response.status === 200) {
         console.log("Data submitted successfully!");
         notify();

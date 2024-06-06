@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { Arrow, Back, Download, Eye, Search } from "../icons/icon";
+import { authInstance } from "../../hooks/axiosInstances";
 
 interface Props {}
 
@@ -53,6 +54,7 @@ const INRPaymentList: React.FC<Props> = () => {
         params: {
           date: selectedDate,
         },
+        headers:authInstance()
       });
       const inrPayments = response.data.inrPayments.map(
         (payment: InrPayment) => ({
@@ -102,7 +104,8 @@ const INRPaymentList: React.FC<Props> = () => {
     try {
       await axios.put(API_ENDPOINTS.CHANGE_CHANNEL_STATUS(invoiceId), {
         status: newStatus,
-      });
+        
+      },{headers:authInstance()});
       setInvoices((prevInvoices) =>
         prevInvoices.map((payment) =>
           payment._id === invoiceId

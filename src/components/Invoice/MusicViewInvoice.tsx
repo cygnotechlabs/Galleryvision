@@ -6,6 +6,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import MusicPDFGenerator from "./PDF/MusicPDFGenarator";
 import PrintMusicInvoice from "./Print/PrintMusicInvoice";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -55,7 +56,7 @@ const MusicViewInvoice = ({}: Props) => {
       try {
         if (id) {
           const response = await axios.get(
-            API_ENDPOINTS.VIEW_MUSIC_INVOICE(id)
+            API_ENDPOINTS.VIEW_MUSIC_INVOICE(id),{headers:authInstance()}
           );
           setInvoiceData(response.data);
         }

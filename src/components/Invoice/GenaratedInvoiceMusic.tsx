@@ -5,6 +5,7 @@ import empty from "../../../public/empty.png";
 import MonthYearSelector from "../../UI/MonthYear";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { Eye, Search } from "../icons/icon";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -46,17 +47,21 @@ const GenataredMusicInvoice = ({}: Props) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_MUSIC_INVOICE, {
-        params: {
-          date: selectedDate,
-        },
-      });
-      setInvoiceData(response.data);
-      setCurrentPage(1); // Reset to first page after fetching new data
+        const response = await axios.get(
+            API_ENDPOINTS.GET_MUSIC_INVOICE,
+            {
+                params: {
+                    date: selectedDate,
+                },
+                headers: authInstance(),
+            }
+        );
+        setInvoiceData(response.data);
+        setCurrentPage(1); // Reset to first page after fetching new data
     } catch (error) {
-      console.error("Error fetching invoices:", error);
+        console.error("Error fetching invoices:", error);
     }
-  };
+};
 
   const handleDateChange = (newDate: string) => {
     setSelectedDate(newDate);

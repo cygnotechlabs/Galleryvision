@@ -104,6 +104,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 ChartJS.register(
   CategoryScale,
@@ -127,7 +128,7 @@ const LineChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT);
+        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT,{headers:authInstance()});
         setCount(response.data);
       } catch (error) {
         console.error(error);

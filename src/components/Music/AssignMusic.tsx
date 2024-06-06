@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {
   music: Music;
@@ -31,7 +32,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,7 +51,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post(API_ENDPOINTS.ASSIGN_MUSIC, musicData);
+      const response = await axios.post(API_ENDPOINTS.ASSIGN_MUSIC, musicData,{headers:authInstance()});
       setMusicData(response.data);
       onClose();
     } catch (error: any) {

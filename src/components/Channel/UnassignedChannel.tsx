@@ -6,6 +6,8 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import { Back, Edit } from "../icons/icon";
 import AssignChannel from "./AssignChannel";
+import { authInstance } from "../../hooks/axiosInstances";
+authInstance
 
 type Channel = {
   _id: string;
@@ -42,14 +44,22 @@ function UnassignedChannel() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(API_ENDPOINTS.GET_UNLINKED_CHANNEL);
-      setChannels(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+
+const fetchData = async () => {
+  try {
+    // Make the GET request with the token included in the headers
+    const response = await axios.get(API_ENDPOINTS.GET_UNLINKED_CHANNEL, {
+      headers: authInstance(),
+    });
+
+    // Set the channels state with the response data
+    setChannels(response.data);
+  } catch (error) {
+    // Handle any errors that occur during the request
+    console.error("Error fetching data:", error);
+  }
+};
+
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 

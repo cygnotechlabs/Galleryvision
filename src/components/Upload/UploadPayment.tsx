@@ -71,6 +71,7 @@ import "react-toastify/dist/ReactToastify.css";
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { MauthInstance } from "../../hooks/axiosInstances";
 
 const UploadPayment: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -102,9 +103,7 @@ const UploadPayment: React.FC = () => {
       setUploading(true);
       // Change the URL to your backend server endpoint
       await axios.post(API_ENDPOINTS.UPLOADREPORT, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: MauthInstance(),
       });
       console.log("File uploaded successfully!");
       notify();

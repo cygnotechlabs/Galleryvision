@@ -7,6 +7,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import { Edit, Eye, Search, Trash } from "../icons/icon";
 import EditChannel from "./EditChannel";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 interface ChannelType {
@@ -46,7 +47,9 @@ function ChannelTable({}: Props) {
 
   const fetchChannels = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_LINKED_CHANNEL);
+      const response = await axios.get(API_ENDPOINTS.GET_LINKED_CHANNEL,{
+        headers:authInstance()
+      });
       setChannels(response.data);
       setFilteredChannels(response.data);
     } catch (error) {
@@ -58,7 +61,9 @@ function ChannelTable({}: Props) {
     if (!channelDeleteId) return;
 
     try {
-      await axios.delete(API_ENDPOINTS.REMOVE_CHANNEL(channelDeleteId));
+      await axios.delete(API_ENDPOINTS.REMOVE_CHANNEL(channelDeleteId),{
+        headers:authInstance()
+      });
       setOpenDelete(false);
     } catch (error) {
       console.error("Error deleting channel:", error);

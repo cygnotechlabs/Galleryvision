@@ -7,6 +7,8 @@ import Modal from "../../layouts/Modal";
 import { Edit, Eye, Search, Trash } from "../icons/icon";
 import EditMusic from "./EditMusic";
 import toast, { Toaster } from "react-hot-toast";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type Props = {};
 
@@ -46,7 +48,9 @@ function MusicTable({}: Props) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_LINKEDMUSIC);
+      const response = await axios.get(API_ENDPOINTS.GET_LINKEDMUSIC, {
+        headers:authInstance()
+      });
       setMusics(response.data);
     } catch (error) {
       console.error("Error fetching music data:", error);
@@ -55,7 +59,7 @@ function MusicTable({}: Props) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId));
+      await axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId),{headers:authInstance()});
       fetchData();
     } catch (error) {
       console.error("Error deleting music:", error);

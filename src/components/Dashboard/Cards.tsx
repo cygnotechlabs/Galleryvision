@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 
@@ -28,7 +29,7 @@ const Cards: React.FC<Props> = ({}: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT);
+        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT,{headers:authInstance()});
         const formattedData = formatCountData(response.data);
         setCount(formattedData);
       } catch (error) {

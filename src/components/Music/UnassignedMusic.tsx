@@ -5,6 +5,8 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import { Back, Edit } from "../icons/icon";
 import AssignMusic from "./AssignMusic";
+import { authInstance } from "../../hooks/axiosInstances";
+
 
 type Music = {
   _id: string;
@@ -42,9 +44,16 @@ function UnassignedMusic() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_RAWMUSIC);
+      // Make the GET request with the token included in the headers
+      const response = await axios.get(API_ENDPOINTS.GET_RAWMUSIC, {
+        headers: authInstance(), 
+      });
+  
+      // Set the musics state with the response data
       setMusics(response.data);
+      
     } catch (error) {
+      // Handle any errors that occur during the request
       console.error("Error fetching music data:", error);
     }
   };

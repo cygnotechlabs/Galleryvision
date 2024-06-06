@@ -28,6 +28,8 @@ const OtpModal = ({ onClose, email, onOtpVerified }: Props) => {
       });
       if (response.status === 200) {
         const token = response.data.token; // Assuming the OTP verification response contains a token
+        localStorage.setItem("token", token);
+        console.log(localStorage);
         onOtpVerified(token);
       } else {
         setError("Invalid OTP. Please try again.");

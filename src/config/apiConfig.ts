@@ -1,10 +1,12 @@
-const ENV = "production"; // Change this to "development", "production" or "staging" as needed
+const ENV = "development"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
-  development: "http://localhost:5000",
-  staging: "http://13.200.171.128:5000",
-  production: "https://galleryvison.cloud:5000",
+  development: import.meta.env.VITE_REACT_APP_DEVELOPMENT as string,
+  staging: import.meta.env.VITE_REACT_APP_STAGING as string,
+  production: import.meta.env.VITE_REACT_APP_PRODUCTION as string,
 };
+
+console.log(import.meta.env.VITE_REACT_APP_DEVELOPMENT)
 
 const BASE_URL = URLS[ENV];
 

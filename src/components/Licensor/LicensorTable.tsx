@@ -6,6 +6,7 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
 import { Edit, Eye, Search, Trash } from "../icons/icon";
 import LicensorView from "./LicensorView";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
 interface Licensor {
@@ -68,7 +69,9 @@ function LicensorTable({}: Props) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_LICENSOR);
+      const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{
+        headers:authInstance()
+      });
       setLicensors(response.data);
       setFilteredLicensors(response.data);
     } catch (error) {
@@ -78,7 +81,7 @@ function LicensorTable({}: Props) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId));
+      await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId),{headers:authInstance()});
       setLicensors((prevLicensors) =>
         prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
       );
@@ -175,7 +178,7 @@ function LicensorTable({}: Props) {
             </tr>
           </thead>
           <tbody>
-            {currentLicensors.map((licensor, index) => (
+            {currentLicensors?.map((licensor, index) => (
               <tr key={index} className="bg-white">
                 <td className="px-4 py-1 border-gray-200 text-sm">
                   {licensor.licensorName}
