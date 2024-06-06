@@ -90,6 +90,8 @@ exports.generateMusicInvoice = async (req, res) => {
       let iban = "";
       if (currency === "INR") {
         ifsc = licensor.ifsc_iban;
+      } else if (currency === "INRO") {
+        ifsc = licensor.ifsc_iban;
       } else if (currency === "USD") {
         iban = licensor.ifsc_iban;
       }
@@ -116,6 +118,8 @@ exports.generateMusicInvoice = async (req, res) => {
       // Get the conversion rate based on the currency
       let conversionRate = 1.0; // default value if no conversion is needed
       if (currency === "INR") {
+        conversionRate = parseFloat(currencyRate.INR);
+      } else if (currency === "INR0") {
         conversionRate = parseFloat(currencyRate.INR);
       } else if (currency === "USD") {
         conversionRate = parseFloat(currencyRate.USD);

@@ -61,7 +61,7 @@ exports.getPayments = async (req, res) => {
 
     // Separate invoices by currency
     const inrPayments = allInvoices.filter(invoice => invoice.currency === 'INR');
-    const usdPayments = allInvoices.filter(invoice => invoice.currency === 'USD');
+    const usdPayments = allInvoices.filter(invoice => invoice.currency === 'USD'|| invoice.currency === 'INR0');
 
     if (inrPayments.length > 0 || usdPayments.length > 0) {
       res.status(200).json({
