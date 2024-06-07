@@ -14,7 +14,7 @@ const musicSchema = new mongoose.Schema({
     licensorId: { type: String },
     licensorName: { type: String },
     musicName: { type: String },
-    musicEmail: { type: String },
+    // musicEmail: { type: String },
     commission: { type: String },
     musicLogo: { type: String },
     assets: [assetSchema]

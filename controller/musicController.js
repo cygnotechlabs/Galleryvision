@@ -112,7 +112,7 @@ exports.getOneRawMusic = async (req, res) => {
               message: "Music with the provided ID and name already exists",
             });
           }
-  
+   
           const newMusic = new musics({
               musicId,
               musicName,
@@ -129,7 +129,7 @@ exports.getOneRawMusic = async (req, res) => {
   
           await licensors.updateOne(
             { _id: licensorId },
-            { $push: { music: musicId } }
+            { $push: { music: { musicId: musicId } } }
           );
   
           res.status(201).json({ message: 'Music added successfully' });
