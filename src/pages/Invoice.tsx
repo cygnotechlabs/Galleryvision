@@ -66,7 +66,7 @@ const InvoicePage: React.FC = () => {
           Music Partner
         </div>
         <Modal onClose={() => setOpen(false)} open={open}>
-          <MailModal onClose={() => setOpen(false)} toast={() => handleToast} />
+          <MailModal onClose={() => setOpen(false)} toast={() => handleToast()} />
         </Modal>
       </div>
       {isClicked === "channels" ? (

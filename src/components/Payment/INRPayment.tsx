@@ -55,7 +55,7 @@ const INRPaymentList: React.FC<Props> = () => {
         params: {
           date: selectedDate,
         },
-        headers:authInstance()
+        headers: authInstance(),
       });
       const inrPayments = response.data.inrPayments.map(
         (payment: InrPayment) => ({
@@ -103,10 +103,13 @@ const INRPaymentList: React.FC<Props> = () => {
 
   const handleStatusChange = async (invoiceId: string, newStatus: string) => {
     try {
-      await axios.put(API_ENDPOINTS.CHANGE_CHANNEL_STATUS(invoiceId), {
-        status: newStatus,
-        
-      },{headers:authInstance()});
+      await axios.put(
+        API_ENDPOINTS.CHANGE_STATUS(invoiceId),
+        {
+          status: newStatus,
+        },
+        { headers: authInstance() }
+      );
       setInvoices((prevInvoices) =>
         prevInvoices.map((payment) =>
           payment._id === invoiceId
@@ -134,24 +137,24 @@ const INRPaymentList: React.FC<Props> = () => {
 
     const formattedData = selectedData.map((invoice) => ({
       PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
-      PYMT_MODE: invoice.payMode, 
+      PYMT_MODE: invoice.payMode,
       DEBIT_ACC_NO: "777705031300",
       BNF_NAME: invoice.licensorName,
       BENE_ACC_NO: invoice.accNum,
       BENE_IFSC: invoice.ifsc,
       AMOUNT: invoice.payout,
-      DEBIT_NARR :"",
-      CREDIT_NARR :"",
-      MOBILE_NUM :"",
-      EMAIL_ID :invoice.licensorEmail,
-      REMARK :"",
+      DEBIT_NARR: "",
+      CREDIT_NARR: "",
+      MOBILE_NUM: "",
+      EMAIL_ID: invoice.licensorEmail,
+      REMARK: "",
       PYMT_DATE: new Date().toLocaleDateString(),
-      REF_NO :"",
-      ADDL_INFO1 :"",
-      ADDL_INFO2 :"",
-      ADDL_INFO3 :"",
-      ADDL_INFO4 :"",
-      ADDL_INFO5 :"",
+      REF_NO: "",
+      ADDL_INFO1: "",
+      ADDL_INFO2: "",
+      ADDL_INFO3: "",
+      ADDL_INFO4: "",
+      ADDL_INFO5: "",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -285,7 +288,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
       <td className="px-4 py-1 text-left text-sm">
         <button
           className={
-            payment.status === "paid"
+            payment.status === "Paid"
               ? "bg-green-200 py-1 rounded-lg px-2"
               : "bg-red-200 px-2 rounded-lg py-1"
           }

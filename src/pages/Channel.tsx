@@ -1,5 +1,3 @@
-
-
 import ChannelTable from "../components/Channel/ChannelTable";
 import { Plus } from "../components/icons/icon";
 import { Link } from "react-router-dom";

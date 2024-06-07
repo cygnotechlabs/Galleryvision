@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Back } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {};
@@ -36,7 +36,9 @@ const CreateChannel = ({}: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR, {
+          headers: authInstance(),
+        });
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -88,8 +90,6 @@ const CreateChannel = ({}: Props) => {
     if (!formData.channelId) newErrors.channelId = "Channel ID is required.";
     if (!formData.channelName)
       newErrors.channelName = "Channel name is required.";
-    if (!formData.channelEmail)
-      newErrors.channelEmail = "Channel email is required.";
     if (!formData.licensorName)
       newErrors.licensorName = "Licensor name is required.";
     if (!formData.commission) {
@@ -100,12 +100,12 @@ const CreateChannel = ({}: Props) => {
       Number(formData.commission) > 100
     ) {
       newErrors.commission = "Commission must be a number between 0 and 100.";
+      
     }
-    if (!formData.channelLogo)
-      newErrors.channelLogo = "Channel logo is required.";
 
     setErrors(newErrors);
-
+    console.log(newErrors);
+    
     return Object.keys(newErrors).length === 0;
   };
 
@@ -113,8 +113,8 @@ const CreateChannel = ({}: Props) => {
     if (!validateForm()) return;
 
     try {
-      const response = await axios.post(API_ENDPOINTS.ADD_CHANNEL,formData,{
-        headers:authInstance()
+      const response = await axios.post(API_ENDPOINTS.ADD_CHANNEL, formData, {
+        headers: authInstance(),
       });
 
       // Handle success
@@ -167,6 +167,7 @@ const CreateChannel = ({}: Props) => {
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+      <Toaster />
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
@@ -189,7 +190,7 @@ const CreateChannel = ({}: Props) => {
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>Logo</div>
                 <div className="text-sm font-medium">
-                Select your logo here,{" "}
+                  Select your logo here,{" "}
                   <label className="cursor-pointer text-blue-500">
                     browse
                     <input

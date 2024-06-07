@@ -117,8 +117,10 @@ const LicensorView = ({ licensor, onClose }: Props) => {
               <tbody>
                 {licensor.channel.map((ch, index) => (
                   <tr key={index}>
-                    <td className="px-4 py-1">{ch.channelId}</td>
-                    <td className="px-4 py-1">{ch.channelName || "N/A"}</td>
+                    <td className="px-4 text-center py-1">{ch.channelId}</td>
+                    <td className="px-4 text-center py-1">
+                      {ch.channelName || "N/A"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -136,8 +138,10 @@ const LicensorView = ({ licensor, onClose }: Props) => {
               <tbody>
                 {licensor.music.map((ch, index) => (
                   <tr key={index}>
-                    <td className="px-4 py-1">{ch.musicId}</td>
-                    <td className="px-4 py-1">{ch.musicName || "N/A"}</td>
+                    <td className="px-4 text-center py-1">{ch.musicId}</td>
+                    <td className="px-4 text-center py-1">
+                      {ch.musicName || "N/A"}
+                    </td>
                   </tr>
                 ))}
               </tbody>

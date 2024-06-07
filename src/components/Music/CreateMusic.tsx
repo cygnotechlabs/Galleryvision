@@ -4,6 +4,7 @@ import axios from "axios";
 import { Back } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {};
 type Licensor = {
@@ -13,15 +14,13 @@ type Licensor = {
 
 const CreateMusic: React.FC<Props> = () => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
-  const [message, setMessage] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [message, setMessage] = useState("");
   const [musicData, setMusicData] = useState({
-    _id: "",
-    licensorId: "",
     musicId: "",
+    licensorId: "",
     licensorName: "",
     musicName: "",
-    musicEmail: "",
     commission: "",
     musicLogo: "",
   });
@@ -29,36 +28,39 @@ const CreateMusic: React.FC<Props> = () => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR, {
+          headers: authInstance(),
+        });
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error("Error fetching licensors");
       }
     };
 
     getLicensorName();
   }, []);
 
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
-    setMusicData((prevFormData) => {
-      const updatedFormData = { ...prevFormData, [name]: value };
+    setMusicData((prevmusicData) => {
+      const updatedmusicData = { ...prevmusicData, [name]: value };
 
       if (name === "licensorName") {
         const selectedLicensor = licensors.find(
           (licensor) => licensor.licensorName === value
         );
-        updatedFormData.licensorId = selectedLicensor
+        updatedmusicData.licensorId = selectedLicensor
           ? selectedLicensor._id
           : "";
       }
 
-      return updatedFormData;
+      return updatedmusicData;
     });
 
     // Clear error for the field being edited
@@ -66,62 +68,61 @@ const CreateMusic: React.FC<Props> = () => {
   };
 
   const validateForm = () => {
-    let valid = true;
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: any = {};
 
-    if (!musicData.licensorName) {
-      newErrors.licensorName = "Licensor is required.";
-      valid = false;
-    }
-    if (!musicData.musicId) {
-      newErrors.musicId = "Music ID is required.";
-      valid = false;
-    }
-    if (!musicData.musicName) {
-      newErrors.musicName = "Music Name is required.";
-      valid = false;
-    }
-    if (!musicData.commission || isNaN(Number(musicData.commission))) {
-      newErrors.commission = "Commission must be a number.";
-      valid = false;
+    if (!musicData.musicId) newErrors.musicId = "Channel ID is required.";
+    if (!musicData.musicName) newErrors.musicName = "Channel name is required.";
+    if (!musicData.licensorName)
+      newErrors.licensorName = "Licensor name is required.";
+    if (!musicData.commission) {
+      newErrors.commission = "Commission is required.";
     } else if (
+      isNaN(Number(musicData.commission)) ||
       Number(musicData.commission) < 0 ||
       Number(musicData.commission) > 100
     ) {
-      newErrors.commission = "Commission must be between 0 and 100.";
-      valid = false;
+      newErrors.commission = "Commission must be a number between 0 and 100.";
     }
 
     setErrors(newErrors);
-    return valid;
+    console.log(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
-
   const createMusic = async () => {
-    if (validateForm()) {
-      try {
-        console.log(musicData);
+    if (!validateForm()) return;
+    console.log(musicData);
 
-        const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData,{headers:authInstance()});
-        setMessage(response.data.message);
-        setMusicData({
-          _id: "",
-          licensorId: "",
-          musicId: "",
-          licensorName: "",
-          musicName: "",
-          musicEmail: "",
-          commission: "",
-          musicLogo: "",
-        });
-        setTimeout(() => {
-          history("/home/music");
-        }, 1000);
-      } catch (error: any) {
-        if (error.response) {
-          setMessage(error.response.data.message);
-        } else {
-          console.error(error.message);
-        }
+    try {
+      const response = await axios.post(API_ENDPOINTS.ADD_MUSIC, musicData, {
+        headers: authInstance(),
+      });
+
+      // Handle success
+      console.log(response.data.message);
+      setMessage(response.data.message);
+
+      // Clear form after successful creation
+      setMusicData({
+        musicId: "",
+        musicName: "",
+        commission: "",
+        licensorName: "",
+        licensorId: "",
+        musicLogo: "",
+      });
+      toast.success(response.data.message);
+
+      // Redirect to "/channel" after 1 second
+      setTimeout(() => {
+        navigate("/home/channel");
+      }, 1000);
+    } catch (error: any) {
+      if (error.response) {
+        console.error(error.response.data.message);
+        toast.error(error.response.data.message);
+      } else {
+        console.error(error.message);
       }
     }
   };
@@ -146,10 +147,11 @@ const CreateMusic: React.FC<Props> = () => {
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+      <Toaster />
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
-            to="/home/unassigned-musics"
+            to="/home/unassigned-channels"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
             <Back />
@@ -159,7 +161,7 @@ const CreateMusic: React.FC<Props> = () => {
       </div>
       <div className="bg-white shadow-md rounded-xl ml-[34px] px-8 py-8 mt-[24px] mr-[34px] h-[75svh] pr-9">
         <div className="flex justify-between">
-          <p className="text-2xl font-bold">Create Music</p>
+          <p className="text-2xl font-bold">Create Channel</p>
         </div>
         <div className="mt-5">
           <div>
@@ -168,7 +170,7 @@ const CreateMusic: React.FC<Props> = () => {
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>Logo</div>
                 <div className="text-sm font-medium">
-                Select your logo here,{" "}
+                  Select your logo here,{" "}
                   <label className="cursor-pointer text-blue-500">
                     browse
                     <input
@@ -181,6 +183,11 @@ const CreateMusic: React.FC<Props> = () => {
                   </label>
                 </div>
                 <div className="text-xs">Supports, JPG, PNG</div>
+                {errors.musicLogo && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {errors.musicLogo}
+                  </div>
+                )}
                 {musicData.musicLogo && (
                   <div className="w-16 h-16">
                     <img
@@ -193,15 +200,14 @@ const CreateMusic: React.FC<Props> = () => {
               </div>
             </div>
           </div>
-          <div className="py-6 flex justify-between">
+          <div className=" py-6 flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Select Licensor</label>
+              <label htmlFor="">Select licensor</label>
               <select
                 name="licensorName"
                 value={musicData.licensorName}
                 onChange={handleChange}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
-                required
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
               >
                 <option value="">Select Licensor</option>
                 {licensors.map((licensor, index) => (
@@ -211,41 +217,45 @@ const CreateMusic: React.FC<Props> = () => {
                 ))}
               </select>
               {errors.licensorName && (
-                <div className="text-red-500 text-sm">
+                <div className="text-red-500 text-xs mt-2">
                   {errors.licensorName}
                 </div>
               )}
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Music ID</label>
+              <label htmlFor="">Channel ID</label>
               <input
                 type="text"
                 name="musicId"
                 value={musicData.musicId}
                 onChange={handleChange}
-                placeholder={`Enter Music ID`}
+                placeholder="Enter Channel ID"
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
               {errors.musicId && (
-                <div className="text-red-500 text-sm">{errors.musicId}</div>
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.musicId}
+                </div>
               )}
             </div>
           </div>
           <div className="flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Music Name</label>
+              <label htmlFor="">Channel name</label>
               <input
                 type="text"
                 name="musicName"
                 value={musicData.musicName}
                 onChange={handleChange}
-                placeholder={`Enter Music Name`}
+                placeholder="Enter Channel name"
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
               {errors.musicName && (
-                <div className="text-red-500 text-sm">{errors.musicName}</div>
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.musicName}
+                </div>
               )}
             </div>
             <div className="flex flex-col gap-4">
@@ -253,14 +263,18 @@ const CreateMusic: React.FC<Props> = () => {
               <input
                 type="number"
                 name="commission"
-                onChange={handleChange}
                 value={musicData.commission}
-                placeholder={`Enter Commission`}
+                onChange={handleChange}
+                placeholder="Enter Commission"
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
+                min="0"
+                max="100"
                 required
               />
               {errors.commission && (
-                <div className="text-red-500 text-sm">{errors.commission}</div>
+                <div className="text-red-500 text-xs mt-2">
+                  {errors.commission}
+                </div>
               )}
             </div>
           </div>
@@ -269,7 +283,7 @@ const CreateMusic: React.FC<Props> = () => {
               className="bg-black text-white font-bold px-3 py-3 rounded-lg"
               onClick={createMusic}
             >
-              Create Music
+              Create channel
             </button>
           </div>
         </div>

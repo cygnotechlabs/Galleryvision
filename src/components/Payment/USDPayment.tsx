@@ -8,9 +8,8 @@ import PaymentModal from "../../UI/PaymentModal";
 import { Link } from "react-router-dom";
 import { authInstance } from "../../hooks/axiosInstances";
 
-interface Props {}
-
 interface UsdPayment {
+  checked: any;
   _id: string;
   partnerName: string;
   licensorId: string;
@@ -34,7 +33,7 @@ interface UsdPayment {
   commissionAmount: string;
 }
 
-const USDPaymentList: React.FC<Props> = () => {
+const USDPaymentList: React.FC = () => {
   const [invoices, setInvoices] = useState<UsdPayment[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleString("default", { month: "long", year: "numeric" })
@@ -46,18 +45,16 @@ const USDPaymentList: React.FC<Props> = () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedDate]); // Fetch data whenever selectedDate changes
+  }, [selectedDate]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_PAYMENT, {
-        params: {
-          date: selectedDate,
-        },
+        params: { date: selectedDate },
         headers: authInstance(),
       });
       setInvoices(response.data.usdPayments);
-      setCurrentPage(1); // Reset to first page after fetching new data
+      setCurrentPage(1);
     } catch (error) {
       console.error("Error fetching invoices:", error);
     }
@@ -67,14 +64,27 @@ const USDPaymentList: React.FC<Props> = () => {
     setSelectedDate(newDate);
   };
 
-  const handleSearchTermChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
   const handleToggleAll = () => {
-    setAllChecked((prev) => !prev);
+    const newAllChecked = !allChecked;
+    setAllChecked(newAllChecked);
+    setInvoices((prevInvoices) =>
+      prevInvoices.map((payment) => ({
+        ...payment,
+        checked: newAllChecked,
+      }))
+    );
+  };
+
+  const handleCheckboxChange = (id: string) => {
+    setInvoices((prevInvoices) =>
+      prevInvoices.map((payment) =>
+        payment._id === id ? { ...payment, checked: !payment.checked } : payment
+      )
+    );
   };
 
   const filteredInvoices = invoices.filter(
@@ -85,10 +95,7 @@ const USDPaymentList: React.FC<Props> = () => {
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
-  const currentInvoices = filteredInvoices.slice(
-    indexOfFirstInvoice,
-    indexOfLastInvoice
-  );
+  const currentInvoices = filteredInvoices.slice(indexOfFirstInvoice, indexOfLastInvoice);
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -101,17 +108,13 @@ const USDPaymentList: React.FC<Props> = () => {
   const handleStatusChange = async (invoiceId: string, newStatus: string) => {
     try {
       await axios.put(
-        API_ENDPOINTS.CHANGE_MUSIC_STATUS(invoiceId),
-        {
-          status: newStatus,
-        },
+        API_ENDPOINTS.CHANGE_STATUS(invoiceId),
+        { status: newStatus },
         { headers: authInstance() }
       );
       setInvoices((prevInvoices) =>
         prevInvoices.map((payment) =>
-          payment._id === invoiceId
-            ? { ...payment, status: newStatus }
-            : payment
+          payment._id === invoiceId ? { ...payment, status: newStatus } : payment
         )
       );
     } catch (error) {
@@ -135,10 +138,7 @@ const USDPaymentList: React.FC<Props> = () => {
           </i>
         </div>
         <div className="flex gap-2">
-          <MonthYearSelector
-            date={selectedDate}
-            onDateChange={handleDateChange}
-          />
+          <MonthYearSelector date={selectedDate} onDateChange={handleDateChange} />
         </div>
       </div>
       <table className="mx-8 bg-white">
@@ -168,6 +168,7 @@ const USDPaymentList: React.FC<Props> = () => {
               key={payment._id}
               payment={payment}
               allChecked={allChecked}
+              handleCheckboxChange={handleCheckboxChange}
               handleStatusChange={handleStatusChange}
             />
           ))}
@@ -200,59 +201,67 @@ export default USDPaymentList;
 interface InvoiceRowProps {
   payment: UsdPayment;
   allChecked: boolean;
+  handleCheckboxChange: (id: string) => void;
   handleStatusChange: (invoiceId: string, newStatus: string) => Promise<void>;
 }
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
   payment,
   allChecked,
+  handleCheckboxChange,
   handleStatusChange,
 }) => {
   const [open, setOpen] = useState(false);
 
-  const handleConfirmPayment = () => {
-    handleStatusChange(payment._id, "paid");
+  const handleConfirmPayment = async () => {
+    await handleStatusChange(payment._id, "Paid");
     setOpen(false);
   };
 
   return (
-    <tr>
-      <td className="px-4 py-1 text-left text-sm">
-        <input type="checkbox" checked={allChecked} />
-      </td>
-      <td className="px-4 py-1 text-left text-sm">{payment.invoiceNumber}</td>
-      <td className="px-4 py-1 text-left text-sm">{payment.licensorName}</td>
-      <td className="px-4 py-1 text-left text-sm">
-        {payment.channelName ? payment.channelName : payment.musicName}
-      </td>
-      <td className="px-4 py-1 text-left text-sm">{payment.ptAfterTax}</td>
-      <td className="px-4 py-1 text-left text-sm">{payment.currency}</td>
-      <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
-      <td className="px-4 py-1 text-left text-sm">
-        <button
-          className={
-            payment.status === "paid"
-              ? "bg-green-200 py-1 rounded-lg px-2"
-              : "bg-red-200 px-2 rounded-lg py-1"
-          }
-          onClick={() => setOpen(true)}
-        >
-          {payment.status}
-        </button>
-      </td>
-      <td className="flex space-x-2">
-        <Link to={`/home/view-invoices/${payment._id}`}>
-          <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
-            <Eye />
+    <>
+      <tr>
+        <td className="px-4 py-1 text-left text-sm">
+          <input
+            type="checkbox"
+            checked={payment.checked || allChecked}
+            onChange={() => handleCheckboxChange(payment._id)}
+          />
+        </td>
+        <td className="px-4 py-1 text-left text-sm">{payment.invoiceNumber}</td>
+        <td className="px-4 py-1 text-left text-sm">{payment.licensorName}</td>
+        <td className="px-4 py-1 text-left text-sm">
+          {payment.channelName ? payment.channelName : payment.musicName}
+        </td>
+        <td className="px-4 py-1 text-left text-sm">{payment.ptAfterTax}</td>
+        <td className="px-4 py-1 text-left text-sm">{payment.currency}</td>
+        <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
+        <td className="px-4 py-1 text-left text-sm">
+          <button
+            className={
+              payment.status === "Paid"
+                ? "bg-green-200 py-1 rounded-lg px-2"
+                : "bg-red-200 px-2 rounded-lg py-1"
+            }
+            onClick={() => setOpen(true)}
+          >
+            {payment.status}
           </button>
-        </Link>
-      </td>
+        </td>
+        <td className="flex space-x-2">
+          <Link to={`/home/view-invoices/${payment._id}`}>
+            <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
+              <Eye />
+            </button>
+          </Link>
+        </td>
+      </tr>
       <Modal open={open} onClose={() => setOpen(false)}>
         <PaymentModal
           onClose={() => setOpen(false)}
           onConfirm={handleConfirmPayment}
         />
       </Modal>
-    </tr>
+    </>
   );
 };

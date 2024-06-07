@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
 
-
 type Props = {};
 
 interface FormData {
@@ -54,8 +53,8 @@ const CreateLicensor: React.FC<Props> = () => {
     e.preventDefault();
     try {
       console.log("add licensor", formData);
-      const response = await axios.post(API_ENDPOINTS.ADD_LICENSOR, formData,{
-        headers:authInstance()
+      const response = await axios.post(API_ENDPOINTS.ADD_LICENSOR, formData, {
+        headers: authInstance(),
       });
       if (response.status === 200) {
         console.log("Data submitted successfully!");
@@ -74,7 +73,7 @@ const CreateLicensor: React.FC<Props> = () => {
       if (axios.isAxiosError(error) && error.response) {
         // Log the response data for more information
         console.error("Server responded with:", error.response.data);
-        alert(`Error: ${error.response.data.message || "Conflict occurred"}`);
+        toast.error(`Error: ${error.response.data.error}`);
       } else {
         console.error("Error:", error);
       }
@@ -128,7 +127,7 @@ const CreateLicensor: React.FC<Props> = () => {
                 <div className="flex flex-col items-center mb-4 mx-[24px] my-[10px]">
                   <HomeXl />
                   <label className="text-black font-medium text-sm">
-                    Select your logo here, {" "}
+                    Select your logo here,{" "}
                     <label className="cursor-pointer text-blue-500">
                       browse
                       <input
