@@ -24,7 +24,8 @@ const musicInvoicesSchema = mongoose.Schema({
   totalPayout: { type: String },
   conversionRate: { type: String },
   payout: { type: String },
-  status: { type: String }
+  status: { type: String },
+  emailStatus: { type: String }
 
 });
 

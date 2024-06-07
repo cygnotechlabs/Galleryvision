@@ -2,11 +2,6 @@ const channelInvoiceModel = require('../database/model/channelInvoice');
 const musicInvoiceModel = require('../database/model/musicInvoice');
 const csv = require('csvtojson');
 
-
-
-
-
-
 const importReport = async (req, res) => {
     try {
         console.log("Starting importReport process...");
@@ -43,7 +38,7 @@ const importReport = async (req, res) => {
 
             // Extract account numbers and amounts
             for (const record of response) {
-                const debitAccNo = record['DEBIT_ACC_NO'];
+                const debitAccNo = record['BENE_ACC_NO'];
                 const amount = record['AMOUNT'];
                 if (debitAccNo && !isNaN(amount)) {
                     userData.push({ accNum: debitAccNo, amount });
@@ -62,19 +57,22 @@ const importReport = async (req, res) => {
                 
                 const matchingChannelInvoice = channelInvoices.find(invoice => 
                     invoice.accNum === accNum && invoice.payout === amount);
-                if (matchingChannelInvoice && matchingChannelInvoice.status !== 'paid') {
-                    matchingChannelInvoice.status = 'paid';
+                
+                if (matchingChannelInvoice && matchingChannelInvoice.status !== 'Paid') {
+                    matchingChannelInvoice.status = 'Paid';
                     await matchingChannelInvoice.save();
-                    console.log(`Updated channel invoice for account ${accNum} and amount ${amount} to paid.`);
+                    console.log(`Updated channel invoice for account ${accNum} and amount ${amount} to Paid.`);
                 }
 
                 // Update music invoices
                 const matchingMusicInvoice = musicInvoices.find(invoice => 
                     invoice.accNum === accNum && invoice.payout === amount);
-                if (matchingMusicInvoice && matchingMusicInvoice.status !== 'paid') {
-                    matchingMusicInvoice.status = 'paid';
+                
+
+                if (matchingMusicInvoice && matchingMusicInvoice.status !== 'Paid') {
+                    matchingMusicInvoice.status = 'Paid';
                     await matchingMusicInvoice.save();
-                    console.log(`Updated music invoice for account ${accNum} and amount ${amount} to paid.`);
+                    console.log(`Updated music invoice for account ${accNum} and amount ${amount} to Paid.`);
                 }
             }
 

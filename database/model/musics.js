@@ -24,3 +24,4 @@ const musicSchema = new mongoose.Schema({
 const musics = mongoose.model('musics', musicSchema);
 
 module.exports = musics;
+

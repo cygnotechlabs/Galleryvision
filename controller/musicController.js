@@ -133,6 +133,7 @@ exports.getOneRawMusic = async (req, res) => {
           );
   
           res.status(201).json({ message: 'Music added successfully' });
+          console.log("Music added successfully");
       } catch (error) {
           // Log the error for debugging
           console.error("Error adding music:", error);

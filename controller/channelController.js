@@ -36,8 +36,9 @@ exports.addChannel = async (req, res) => {
       { _id: licensorId },
       { $push: { channel: { channelId: channelId } } }
     );
-
+ 
     res.status(201).json({ message: "Channel created successfully" });
+    console.log("channel created successfully");
   } catch (error) {
     console.error("Error creating channel:", error);
     res.status(500).json({ message: "Internal server error" });

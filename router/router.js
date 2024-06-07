@@ -137,9 +137,9 @@ router.post('/add-currency',middleware.verifyToken,SettingsController.addCurrenc
 
 //router.put('/update-currency/:id',SettingsController.updateCurrency)
 
-router.put('/channel-invoice-status/:id',middleware.verifyToken,PaymentController.ChannelInvoiceStatus)
+router.put('/change-invoice-status/:id',middleware.verifyToken,PaymentController.changeInvoiceStatus)
 
-router.put('/music-invoice-status/:id',middleware.verifyToken,PaymentController.MusicInvoiceStatus)
+// router.put('/music-invoice-status/:id',middleware.verifyToken,PaymentController.MusicInvoiceStatus)
 
 //DASHBOARD
 
@@ -153,4 +153,6 @@ router.get('/get-payment',middleware.verifyToken,PaymentController.getPayments)
 
 
 // invoice mailing
-router.get('/mail-invoice',emailController.processInvoicesAndSendEmails)
+router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)
+
+

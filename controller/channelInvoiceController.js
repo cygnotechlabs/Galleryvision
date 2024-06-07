@@ -94,8 +94,9 @@ exports.generateChannelInvoice = async (req, res) => {
       const channelId = channel.channelId;
       const channelName = channel.channelName;
       const licensorAddress =licensor.licensorAddress;
-      const invoiceNumber = generateInvoiceNumber(invoiceCounter++); // Generate and increment invoice number
-      const status = "unpaid";
+      const invoiceNumber = generateInvoiceNumber(invoiceCounter++);
+      const status = "Unpaid";
+      const emailStatus = "Not Sent";
 
       let ifsc = "";
       let iban = "";
@@ -166,7 +167,8 @@ exports.generateChannelInvoice = async (req, res) => {
         totalPayout,
         conversionRate: conversionRate.toFixed(2),
         payout,
-        status
+        status,
+        emailStatus
       });
 
       await invoice.save();

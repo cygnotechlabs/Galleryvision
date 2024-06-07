@@ -80,7 +80,8 @@ exports.generateMusicInvoice = async (req, res) => {
       const accNum = licensor.bankAccNum;
       const currency = licensor.currency;
       const licensorAddress = licensor.licensorAddress
-      const status = "unpaid";
+      const status = "Unpaid";
+      const emailStatus = "Not Sent";
       const musicId = music.musicId;
       const musicName = music.musicName;
       const invoiceNumber = generateInvoiceNumber(invoiceCounter++); // Generate and increment invoice number
@@ -150,7 +151,8 @@ exports.generateMusicInvoice = async (req, res) => {
         totalPayout,
         conversionRate: conversionRate.toFixed(2),
         payout,
-        status
+        status,
+        emailStatus
       });
 
       await invoice.save();
