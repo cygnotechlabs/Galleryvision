@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       <div className="flex justify-between w-full items-center gap-3">
         <Link to={"/home/settings"}>
           <button
-            className="text-black pr-4 focus:outline-none"
+            className="text-white pr-4 focus:outline-none"
             aria-label="Settings"
           >
             <Setting />

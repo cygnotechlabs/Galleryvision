@@ -1,17 +1,12 @@
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { MauthInstance } from "../../hooks/axiosInstances";
+import toast, { Toaster } from "react-hot-toast";
 
 const UploadMusic: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-
-  const notify = () => {
-    toast.success("File uploaded successfully!", { position: "top-center" });
-  };
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -38,9 +33,10 @@ const UploadMusic: React.FC = () => {
         headers: MauthInstance(),
       });
       console.log("File uploaded successfully!");
-      notify();
+      toast.success("File uploaded successfully!");
     } catch (error) {
       console.error("Error uploading file:", error);
+      toast.error("Error uploading file:");
       // You might want to handle this error, e.g., display a message to the user
     } finally {
       setUploading(false);
@@ -49,6 +45,7 @@ const UploadMusic: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center m-8 rounded-2xl px-7 py-4 bg-white">
+      <Toaster />
       <h2 className="text-sm font-bold mb-4 ">Upload Music XLXS File</h2>
       <div className="relative bg-green-100 rounded-lg w-full px-8 border-2 border-dashed border-gray-300 flex flex-col items-center">
         <div className="flex flex-col items-center pt-4">
@@ -97,7 +94,6 @@ const UploadMusic: React.FC = () => {
       >
         {uploading ? "Uploading..." : "Upload file"}
       </button>
-      <ToastContainer theme="colored" />
     </div>
   );
 };
