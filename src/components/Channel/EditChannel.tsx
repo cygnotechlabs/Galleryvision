@@ -4,7 +4,6 @@ import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
 
-
 type ChannelData = {
   _id: string;
   channelId: string;
@@ -34,7 +33,9 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR, {
+          headers: authInstance(),
+        });
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,13 +51,9 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.put(
-        API_ENDPOINTS.UPDATE_CHANNEL(formData._id),
-        formData,{
-          headers:authInstance()
-        }
-      );
-      console.log(response.data); // Log the response if needed
+      await axios.put(API_ENDPOINTS.UPDATE_CHANNEL(formData._id), formData, {
+        headers: authInstance(),
+      });
       onClose(); // Close the modal after successful submission
       onSave();
     } catch (error) {
@@ -110,7 +107,7 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
             <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
               <div>Logo</div>
               <div className="text-sm font-medium">
-              Select your logo here,{" "}
+                Select your logo here,{" "}
                 <label className="cursor-pointer text-blue-500">
                   browse
                   <input
