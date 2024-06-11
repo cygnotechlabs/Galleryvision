@@ -18,10 +18,15 @@ const MonthYearSelector: React.FC<MonthYearSelectorProps> = ({
   const generateMonthYearOptions = () => {
     const options = [];
     const currentYear = new Date().getFullYear();
-    const endYear = currentYear + 10; // Adjust the range as needed
+    const startYear = 2024; // Starting year
+    const endYear = currentYear;
+    const currentMonth = new Date().getMonth();
 
-    for (let year = currentYear; year <= endYear; year++) {
-      for (let month = 0; month < 12; month++) {
+    for (let year = startYear; year <= endYear; year++) {
+      const endMonth = year === currentYear ? currentMonth : 11;
+      const startMonth = year === startYear ? 0 : 11;
+
+      for (let month = startMonth; month <= endMonth; month++) {
         const date = new Date(year, month);
         const monthName = date.toLocaleString("en-US", { month: "long" });
         const value = `${monthName} ${year}`;

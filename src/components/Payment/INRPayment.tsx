@@ -82,8 +82,9 @@ const INRPaymentList: React.FC<Props> = () => {
 
   const filteredInvoices = invoices.filter(
     (payment) =>
-      payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())
+      (payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      payment.date.includes(selectedDate)
   );
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
@@ -134,36 +135,44 @@ const INRPaymentList: React.FC<Props> = () => {
     const selectedData = invoices.filter((invoice) =>
       selectedInvoices.includes(invoice._id)
     );
-
-    const formattedData = selectedData.map((invoice) => ({
-      PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
-      PYMT_MODE: invoice.payMode,
-      DEBIT_ACC_NO: "777705031300",
-      BNF_NAME: invoice.licensorName,
-      BENE_ACC_NO: invoice.accNum,
-      BENE_IFSC: invoice.ifsc,
-      AMOUNT: invoice.payout,
-      DEBIT_NARR: "",
-      CREDIT_NARR: "",
-      MOBILE_NUM: "",
-      EMAIL_ID: invoice.licensorEmail,
-      REMARK: "",
-      PYMT_DATE: new Date().toLocaleDateString(),
-      REF_NO: "",
-      ADDL_INFO1: "",
-      ADDL_INFO2: "",
-      ADDL_INFO3: "",
-      ADDL_INFO4: "",
-      ADDL_INFO5: "",
-    }));
-
+  
+    const formattedData = selectedData.map((invoice) => {
+      const date = new Date();
+      const day = date.getDate().toString().padStart(2, '0'); // Ensure double digits for day
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure double digits for month
+      const year = date.getFullYear().toString();
+      const formattedDate = `${day}-${month}-${year}`;
+  
+      return {
+        PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
+        PYMT_MODE: invoice.payMode,
+        DEBIT_ACC_NO: "777705031300",
+        BNF_NAME: invoice.licensorName,
+        BENE_ACC_NO: invoice.accNum,
+        BENE_IFSC: invoice.ifsc,
+        AMOUNT: invoice.payout,
+        DEBIT_NARR: "",
+        CREDIT_NARR: "",
+        MOBILE_NUM: "",
+        EMAIL_ID: invoice.licensorEmail,
+        REMARK: "",
+        PYMT_DATE: formattedDate,
+        REF_NO: "",
+        ADDL_INFO1: "",
+        ADDL_INFO2: "",
+        ADDL_INFO3: "",
+        ADDL_INFO4: "",
+        ADDL_INFO5: "",
+      };
+    });
+  
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, worksheet, "Selected Data");
-
-    XLSX.writeFile(wb, "selected_data.xlsx");
+  
+    XLSX.writeFile(wb, "Payout_report.xlsx");
   };
-
+  
   const handlePayModeChange = (invoiceId: string, newPayMode: string) => {
     setInvoices((prevInvoices) =>
       prevInvoices.map((payment) =>

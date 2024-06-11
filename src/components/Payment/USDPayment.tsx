@@ -64,7 +64,9 @@ const USDPaymentList: React.FC = () => {
     setSelectedDate(newDate);
   };
 
-  const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchTermChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchTerm(event.target.value);
   };
 
@@ -89,13 +91,17 @@ const USDPaymentList: React.FC = () => {
 
   const filteredInvoices = invoices.filter(
     (payment) =>
-      payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())
+      (payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      payment.date.includes(selectedDate)
   );
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
-  const currentInvoices = filteredInvoices.slice(indexOfFirstInvoice, indexOfLastInvoice);
+  const currentInvoices = filteredInvoices.slice(
+    indexOfFirstInvoice,
+    indexOfLastInvoice
+  );
 
   const handleNextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
@@ -114,7 +120,9 @@ const USDPaymentList: React.FC = () => {
       );
       setInvoices((prevInvoices) =>
         prevInvoices.map((payment) =>
-          payment._id === invoiceId ? { ...payment, status: newStatus } : payment
+          payment._id === invoiceId
+            ? { ...payment, status: newStatus }
+            : payment
         )
       );
     } catch (error) {
@@ -138,7 +146,10 @@ const USDPaymentList: React.FC = () => {
           </i>
         </div>
         <div className="flex gap-2">
-          <MonthYearSelector date={selectedDate} onDateChange={handleDateChange} />
+          <MonthYearSelector
+            date={selectedDate}
+            onDateChange={handleDateChange}
+          />
         </div>
       </div>
       <table className="mx-8 bg-white">

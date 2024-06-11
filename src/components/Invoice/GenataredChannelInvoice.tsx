@@ -52,7 +52,7 @@ const GenataredChannelInvoice = ({}: Props) => {
         params: {
           date: selectedDate,
         },
-        headers:authInstance()
+        headers: authInstance(),
       });
       setInvoiceData(response.data);
       setCurrentPage(1); // Reset to first page after fetching new data

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Close } from "../icons/icon";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
@@ -28,12 +28,15 @@ type Licensor = {
 const EditMusic = ({ onClose, music }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [formData, setFormData] = useState<Music>(music);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{
-          headers:authInstance()
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR, {
+          headers: authInstance(),
         });
         setLicensors(response.data);
       } catch (error) {
@@ -53,27 +56,12 @@ const EditMusic = ({ onClose, music }: Props) => {
       const response = await axios.put(
         API_ENDPOINTS.UPDATE_MUSIC(formData._id), // Ensure the API endpoint is correct
         formData,
-        {headers:authInstance()}
+        { headers: authInstance() }
       );
       console.log(response.data); // Log the response if needed
       onClose(); // Close the modal after successful submission
     } catch (error) {
       console.error("Error updating music data:", error);
-    }
-  };
-
-  const handleLicensorChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedLicensor = licensors.find(
-      (licensor) => licensor.licensorName === event.target.value
-    );
-    if (selectedLicensor) {
-      setFormData((prevData) => ({
-        ...prevData,
-        licensorName: selectedLicensor.licensorName,
-        licensorId: selectedLicensor._id,
-      }));
     }
   };
 
@@ -93,6 +81,24 @@ const EditMusic = ({ onClose, music }: Props) => {
     }
   };
 
+  const handleLicensorChange = (licensorName: string, licensorId: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      licensorName: licensorName,
+      licensorId: licensorId,
+    }));
+    setSearchTerm(licensorName);
+    setIsDropdownOpen(false);
+  };
+  const handleSearchLicensors = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+    setIsDropdownOpen(true);
+  };
+  const filteredLicensors = licensors.filter((licensor) =>
+    licensor.licensorName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   return (
     <div className="px-8 py-8 w-[823px] h-[612px]">
       <div className="flex justify-between">
@@ -108,7 +114,7 @@ const EditMusic = ({ onClose, music }: Props) => {
             <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
               <div>Logo</div>
               <div className="text-sm font-medium">
-              Select your logo here,{" "}
+                Select your logo here,{" "}
                 <label className="cursor-pointer text-blue-500">
                   browse
                   <input
@@ -134,22 +140,32 @@ const EditMusic = ({ onClose, music }: Props) => {
           </div>
         </div>
         <div className=" py-6 flex justify-between">
-          <div className="flex flex-col gap-4">
-            <label htmlFor="licensor">Select licensor</label>
-            <select
-              name="licensorName" // Correct the name attribute
-              onChange={handleLicensorChange}
+          <div className="flex flex-col gap-4 relative" ref={dropdownRef}>
+            <label htmlFor="licensorName">Select licensor</label>
+            <input
+              type="text"
+              name="licensorName"
+              placeholder="Search Licensor"
+              onChange={handleSearchLicensors}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
-              value={formData.licensorName}
-              required
-            >
-              <option value="">Select Licensor</option>
-              {licensors.map((licensor, index) => (
-                <option key={index} value={licensor.licensorName}>
-                  {licensor.licensorName}
-                </option>
-              ))}
-            </select>
+              value={searchTerm}
+              onFocus={() => setIsDropdownOpen(true)}
+            />
+            {isDropdownOpen && (
+              <ul className="absolute top-24 z-10 border border-gray-200 rounded-lg mt-1 max-h-40 overflow-y-auto bg-white w-[358px]">
+                {filteredLicensors.map((licensor) => (
+                  <li
+                    key={licensor._id}
+                    className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() =>
+                      handleLicensorChange(licensor.licensorName, licensor._id)
+                    }
+                  >
+                    {licensor.licensorName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {/* Music ID */}
           <div className="flex flex-col gap-4">

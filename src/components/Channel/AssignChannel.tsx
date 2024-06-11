@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
-
 
 type Props = {
   channel: Channel;
@@ -30,11 +29,16 @@ type Licensor = {
 const AssignChannel = ({ channel, onClose, onSave }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [updatedData, setUpdatedData] = useState<Channel>(channel);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getLicensorName = async () => {
       try {
-        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{headers:authInstance()});
+        const response = await axios.get(API_ENDPOINTS.GET_LICENSOR, {
+          headers: authInstance(),
+        });
         setLicensors(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,7 +54,7 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
         API_ENDPOINTS.ASSIGN_CHANNEL,
         updatedData,
         {
-          headers:authInstance()
+          headers: authInstance(),
         }
       );
       setUpdatedData(response.data);
@@ -68,19 +72,14 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
     setUpdatedData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleLicensorChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedLicensor = licensors.find(
-      (licensor) => licensor.licensorName === event.target.value
-    );
-    if (selectedLicensor) {
-      setUpdatedData((prevData) => ({
-        ...prevData,
-        licensorName: selectedLicensor.licensorName,
-        licensorId: selectedLicensor._id,
-      }));
-    }
+  const handleLicensorChange = (licensorName: string, licensorId: string) => {
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      licensorName: licensorName,
+      licensorId: licensorId,
+    }));
+    setSearchTerm(licensorName);
+    setIsDropdownOpen(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +98,34 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
     }
   };
 
+  const handleSearchLicensors = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+    setIsDropdownOpen(true);
+  };
+
+  const filteredLicensors = licensors.filter((licensor) =>
+    licensor.licensorName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
   return (
     <div className="px-8 py-8 w-[823px] h-[612px]">
       <div className="flex justify-between">
@@ -115,7 +142,7 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>Logo</div>
                 <div className="text-sm font-medium">
-                Select your logo here,{" "}
+                  Select your logo here,{" "}
                   <label className="cursor-pointer text-blue-500">
                     browse
                     <input
@@ -141,22 +168,35 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
             </div>
           </div>
           <div className="py-6 flex justify-between">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 relative" ref={dropdownRef}>
               <label htmlFor="licensorName">Select licensor</label>
-              <select
+              <input
+                type="text"
                 name="licensorName"
-                onChange={handleLicensorChange}
+                placeholder="Search Licensor"
+                onChange={handleSearchLicensors}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
-                value={updatedData.licensorName}
-                required
-              >
-                <option value="">Select Licensor</option>
-                {licensors.map((licensor, index) => (
-                  <option key={index} value={licensor.licensorName}>
-                    {licensor.licensorName}
-                  </option>
-                ))}
-              </select>
+                value={searchTerm}
+                onFocus={() => setIsDropdownOpen(true)}
+              />
+              {isDropdownOpen && (
+                <ul className="absolute top-24 z-10 border border-gray-200 rounded-lg mt-1 max-h-40 overflow-y-auto bg-white w-[358px]">
+                  {filteredLicensors.map((licensor) => (
+                    <li
+                      key={licensor._id}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() =>
+                        handleLicensorChange(
+                          licensor.licensorName,
+                          licensor._id
+                        )
+                      }
+                    >
+                      {licensor.licensorName}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="flex flex-col gap-4">
               <label htmlFor="channelId">Channel ID</label>

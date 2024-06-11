@@ -1,4 +1,4 @@
-const ENV = "production"; // Change this to "development", "production" or "staging" as needed
+const ENV = "development"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: import.meta.env.VITE_REACT_APP_DEVELOPMENT as string,
@@ -64,9 +64,7 @@ const API_ENDPOINTS = {
 
   // Payment
   GET_PAYMENT: `${BASE_URL}/get-payment`,
-  CHANGE_STATUS: (id: string) =>
-    `${BASE_URL}/change-invoice-status/${id}`,
-
+  CHANGE_STATUS: (id: string) => `${BASE_URL}/change-invoice-status/${id}`,
 
   // Dashboard
   VIEW_COUNT: `${BASE_URL}/view-count`,

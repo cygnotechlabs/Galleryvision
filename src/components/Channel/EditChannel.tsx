@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
@@ -29,6 +29,9 @@ type Licensor = {
 const EditChannel = ({ onClose, channel, onSave }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [formData, setFormData] = useState<ChannelData>(channel);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getLicensorName = async () => {
@@ -61,20 +64,24 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
     }
   };
 
-  const handleLicensorChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedLicensor = licensors.find(
-      (licensor) => licensor.licensorName === event.target.value
-    );
-    if (selectedLicensor) {
-      setFormData((prevData) => ({
-        ...prevData,
-        licensorName: selectedLicensor.licensorName,
-        licensorId: selectedLicensor._id,
-      }));
-    }
+  const handleLicensorChange = (licensorName: string, licensorId: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      licensorName: licensorName,
+      licensorId: licensorId,
+    }));
+    setSearchTerm(licensorName);
+    setIsDropdownOpen(false);
   };
+  const handleSearchLicensors = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+    setIsDropdownOpen(true);
+  };
+  const filteredLicensors = licensors.filter((licensor) =>
+    licensor.licensorName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -133,21 +140,32 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
           </div>
         </div>
         <div className="py-6 flex justify-between">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 relative" ref={dropdownRef}>
             <label htmlFor="licensorName">Select licensor</label>
-            <select
+            <input
+              type="text"
               name="licensorName"
-              onChange={handleLicensorChange}
+              placeholder="Search Licensor"
+              onChange={handleSearchLicensors}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
-              value={formData.licensorName}
-            >
-              <option value="">Select Licensor</option>
-              {licensors.map((licensor, index) => (
-                <option key={index} value={licensor.licensorName}>
-                  {licensor.licensorName}
-                </option>
-              ))}
-            </select>
+              value={searchTerm}
+              onFocus={() => setIsDropdownOpen(true)}
+            />
+            {isDropdownOpen && (
+              <ul className="absolute top-24 z-10 border border-gray-200 rounded-lg mt-1 max-h-40 overflow-y-auto bg-white w-[358px]">
+                {filteredLicensors.map((licensor) => (
+                  <li
+                    key={licensor._id}
+                    className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() =>
+                      handleLicensorChange(licensor.licensorName, licensor._id)
+                    }
+                  >
+                    {licensor.licensorName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="flex flex-col gap-4">
             <label htmlFor="channelId">Channel ID</label>

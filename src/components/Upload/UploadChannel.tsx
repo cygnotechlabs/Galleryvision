@@ -48,7 +48,10 @@ const UploadChannelCSV: React.FC = () => {
       <Toaster />
       <div className="flex flex-col items-center m-8 rounded-2xl px-7 py-4 bg-white">
         <h2 className="text-sm font-bold mb-4">Upload Channel CSV File</h2>
-        <div className="relative bg-red-100 rounded-lg w-full border-2 border-dashed border-gray-300 flex flex-col items-center">
+        <div
+          onClick={handleBrowseClick}
+          className="relative bg-red-100 rounded-lg w-full border-2 border-dashed border-gray-300 flex flex-col items-center cursor-pointer"
+        >
           <div className="flex flex-col items-center pt-4">
             <div className="text-red-500 rounded-full flex justify-center items-center mb-4">
               <svg
@@ -70,10 +73,7 @@ const UploadChannelCSV: React.FC = () => {
               <p className="text-black font-medium text-sm mb-">
                 Select your File here,
               </p>
-              <a
-                onClick={handleBrowseClick}
-                className="text-red-600 font-medium text-sm hover:underline pl-1"
-              >
+              <a className="text-red-600 font-medium text-sm hover:underline pl-1">
                 Browse
               </a>
             </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Back } from "../icons/icon";
@@ -32,6 +32,9 @@ const CreateChannel = ({}: Props) => {
     licensorId: "",
     channelLogo: "",
   });
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getLicensorName = async () => {
@@ -100,12 +103,11 @@ const CreateChannel = ({}: Props) => {
       Number(formData.commission) > 100
     ) {
       newErrors.commission = "Commission must be a number between 0 and 100.";
-      
     }
 
     setErrors(newErrors);
     console.log(newErrors);
-    
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -164,6 +166,24 @@ const CreateChannel = ({}: Props) => {
       reader.readAsDataURL(file);
     }
   };
+  const handleLicensorChange = (licensorName: string, licensorId: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      licensorName: licensorName,
+      licensorId: licensorId,
+    }));
+    setSearchTerm(licensorName);
+    setIsDropdownOpen(false);
+  };
+  const handleSearchLicensors = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+    setIsDropdownOpen(true);
+  };
+  const filteredLicensors = licensors.filter((licensor) =>
+    licensor.licensorName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
@@ -221,25 +241,34 @@ const CreateChannel = ({}: Props) => {
             </div>
           </div>
           <div className=" py-6 flex justify-between">
-            <div className="flex flex-col gap-4">
-              <label htmlFor="">Select licensor</label>
-              <select
+            <div className="flex flex-col gap-4 relative" ref={dropdownRef}>
+              <label htmlFor="licensorName">Select licensor</label>
+              <input
+                type="text"
                 name="licensorName"
-                value={formData.licensorName}
-                onChange={handleChange}
-                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg "
-              >
-                <option value="">Select Licensor</option>
-                {licensors.map((licensor, index) => (
-                  <option key={index} value={licensor.licensorName}>
-                    {licensor.licensorName}
-                  </option>
-                ))}
-              </select>
-              {errors.licensorName && (
-                <div className="text-red-500 text-xs mt-2">
-                  {errors.licensorName}
-                </div>
+                placeholder="Search Licensor"
+                onChange={handleSearchLicensors}
+                className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
+                value={searchTerm}
+                onFocus={() => setIsDropdownOpen(true)}
+              />
+              {isDropdownOpen && (
+                <ul className="absolute top-24 z-10 border border-gray-200 rounded-lg mt-1 max-h-40 overflow-y-auto bg-white w-[358px]">
+                  {filteredLicensors.map((licensor) => (
+                    <li
+                      key={licensor._id}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() =>
+                        handleLicensorChange(
+                          licensor.licensorName,
+                          licensor._id
+                        )
+                      }
+                    >
+                      {licensor.licensorName}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
             <div className="flex flex-col gap-4">
