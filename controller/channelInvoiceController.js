@@ -89,6 +89,7 @@ exports.generateChannelInvoice = async (req, res) => {
       const licensorId = licensor._id;
       const licensorName = licensor.licensorName;
       const licensorEmail = licensor.licensorEmail;
+      const tds = licensor.tds || 0;
       const accNum = licensor.bankAccNum;
       const currency = licensor.currency;
       const channelId = channel.channelId;
@@ -102,9 +103,8 @@ exports.generateChannelInvoice = async (req, res) => {
       let iban = "";
       if (currency === "INR") {
         ifsc = licensor.ifsc_iban;
-      } else if (currency === "INRO") {
-        ifsc = licensor.ifsc_iban;
-      } else if (currency === "USD") {
+      } 
+      else if (currency === "USD") {
         iban = licensor.ifsc_iban;
       }
 
@@ -121,27 +121,30 @@ exports.generateChannelInvoice = async (req, res) => {
 
       // Calculate financial fields
       const ptRevenue = parseFloat(asset.partnerRevenue).toFixed(2);
-      const tax = (parseFloat(ptRevenue) * 0.15).toFixed(2); // assuming 15% tax
-      const ptAfterTax = (parseFloat(ptRevenue) - parseFloat(tax)).toFixed(2);
+
+      const usTax = (parseFloat(ptRevenue) * 0.16).toFixed(2); // assuming 16% tax
+      const ptAfterUsTax = (parseFloat(ptRevenue) - parseFloat(usTax)).toFixed(2);
+
+
       const commissionRate = parseFloat(channel.commission) / 100;
-      const commissionAmount = (ptAfterTax * commissionRate).toFixed(2);
-      const totalPayout = (ptAfterTax - parseFloat(commissionAmount)).toFixed(2);
+      const commissionAmount = (ptAfterUsTax * commissionRate).toFixed(2);
+      const totalPayout = (ptAfterUsTax - parseFloat(commissionAmount)).toFixed(2);
 
 
       totalCommissionChannel += parseFloat(commissionAmount);
-      totalTaxDeducted += parseFloat(tax);
+      totalTaxDeducted += parseFloat(usTax);
       
       // Get the conversion rate based on the currency
       let conversionRate = 1.0; // default value if no conversion is needed
       if (currency === "INR") {
         conversionRate = parseFloat(currencyRate.INR);
-      } else if (currency === "INR0") {
-        conversionRate = parseFloat(currencyRate.INR);
       } else if (currency === "USD") {
         conversionRate = parseFloat(currencyRate.USD);
       } 
 
-      const payout = (parseFloat(totalPayout) * conversionRate).toFixed(2);
+      const payout1 = (parseFloat(totalPayout) * conversionRate).toFixed(2);      
+      const tdsTax = (parseFloat(payout1) * (parseFloat(licensor.tds) / 100)).toFixed(2);
+      const payout = (parseFloat(payout1) - parseFloat(tdsTax)).toFixed(2);
       
 
       // Create invoice
@@ -160,8 +163,10 @@ exports.generateChannelInvoice = async (req, res) => {
         date,
         invoiceNumber,
         ptRevenue,
-        tax,
-        ptAfterTax,
+        usTax,
+        tdsTax,
+        tds,
+        ptAfterUsTax,
         commission: channel.commission,
         commissionAmount,
         totalPayout,
@@ -365,6 +370,11 @@ exports.generateChannelInvoice = async (req, res) => {
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // };
+
+
+
+
+
 
 
 

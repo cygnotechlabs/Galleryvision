@@ -55,7 +55,7 @@ exports.generateMusicInvoice = async (req, res) => {
     };
 
     let totalCommissionMusic = 0;
-    let musicTaxDeducted = 0;
+    // let musicTaxDeducted = 0;
 
     for (const music of musics) {
       // Check if an invoice already exists for this musicId and date
@@ -78,6 +78,7 @@ exports.generateMusicInvoice = async (req, res) => {
       const licensorName = licensor.licensorName;
       const licensorEmail = licensor.licensorEmail;
       const accNum = licensor.bankAccNum;
+      const tds = licensor.tds || 0;
       const currency = licensor.currency;
       const licensorAddress = licensor.licensorAddress
       const status = "Unpaid";
@@ -105,14 +106,16 @@ exports.generateMusicInvoice = async (req, res) => {
 
       // Calculate financial fields
       const ptRevenue = parseFloat(asset.partnerRevenue).toFixed(2);
-      const tax = (parseFloat(ptRevenue) * 0.15).toFixed(2); // assuming 15% tax
-      const ptAfterTax = (parseFloat(ptRevenue) - parseFloat(tax)).toFixed(2);
+
+      // const tax = (parseFloat(ptRevenue) * 0.16).toFixed(2); // assuming 16% tax
+      // const ptAfterTax = (parseFloat(ptRevenue) - parseFloat(tax)).toFixed(2);
+
       const commissionRate = parseFloat(music.commission) / 100;
-      const commissionAmount = (ptAfterTax * commissionRate).toFixed(2);
-      const totalPayout = (ptAfterTax - parseFloat(commissionAmount)).toFixed(2);
+      const commissionAmount = (ptRevenue * commissionRate).toFixed(2);
+      const totalPayout = (ptRevenue - parseFloat(commissionAmount)).toFixed(2);
 
       totalCommissionMusic += parseFloat(commissionAmount);
-      musicTaxDeducted += parseFloat(tax);
+      // musicTaxDeducted += parseFloat(tax);
 
       
 
@@ -120,13 +123,15 @@ exports.generateMusicInvoice = async (req, res) => {
       let conversionRate = 1.0; // default value if no conversion is needed
       if (currency === "INR") {
         conversionRate = parseFloat(currencyRate.INR);
-      } else if (currency === "INR0") {
-        conversionRate = parseFloat(currencyRate.INR);
-      } else if (currency === "USD") {
+      }  else if (currency === "USD") {
         conversionRate = parseFloat(currencyRate.USD);
       }
 
-      const payout = (parseFloat(totalPayout) * conversionRate).toFixed(2);
+      // const payout = (parseFloat(totalPayout) * conversionRate).toFixed(2);
+
+      const payout1 = (parseFloat(totalPayout) * conversionRate).toFixed(2);      
+      const tdsTax = (parseFloat(payout1) * (parseFloat(licensor.tds) / 100)).toFixed(2);
+      const payout = (parseFloat(payout1) - parseFloat(tdsTax)).toFixed(2);
 
       // Create invoice
       const invoice = new MusicInvoice({
@@ -144,8 +149,8 @@ exports.generateMusicInvoice = async (req, res) => {
         invoiceNumber,
         date,
         ptRevenue,
-        tax,
-        ptAfterTax,
+        tdsTax,
+        tds,
         commission: music.commission,
         commissionAmount,
         totalPayout,
@@ -174,7 +179,7 @@ exports.generateMusicInvoice = async (req, res) => {
 
       // Handle empty or undefined musicCommission and musicTaxDeducted
       const existingMusicCommission = parseFloat(existingDashboard.musicCommission) || 0;
-      const existingMusicTaxDeducted = parseFloat(existingDashboard.musicTaxDeducted) || 0;
+      // const existingMusicTaxDeducted = parseFloat(existingDashboard.musicTaxDeducted) || 0;
 
       const existingTotalCommission = parseFloat(existingDashboard.totalCommission) || 0;
       const existingTotalTaxDeducted = parseFloat(existingDashboard.totalTaxDeducted) || 0;
@@ -183,17 +188,17 @@ exports.generateMusicInvoice = async (req, res) => {
       
       // Parse and add new values
       const commissionToAdd = parseFloat(totalCommissionMusic);
-      const taxToAdd = parseFloat(musicTaxDeducted);
+      // const taxToAdd = parseFloat(musicTaxDeducted);
 
       existingDashboard.musicCommission = commissionToAdd + existingMusicCommission;
-      existingDashboard.musicTaxDeducted = taxToAdd + existingMusicTaxDeducted;
+      // existingDashboard.musicTaxDeducted = taxToAdd + existingMusicTaxDeducted;
 
       existingDashboard.totalCommission = existingTotalCommission + commissionToAdd;
-      existingDashboard.totalTaxDeducted = existingTotalTaxDeducted + taxToAdd;
+      // existingDashboard.totalTaxDeducted = existingTotalTaxDeducted + taxToAdd;
 
       // Format the results to ensure they are consistent
       existingDashboard.musicCommission = parseFloat(existingDashboard.musicCommission);
-      existingDashboard.musicTaxDeducted = parseFloat(existingDashboard.musicTaxDeducted);
+      // existingDashboard.musicTaxDeducted = parseFloat(existingDashboard.musicTaxDeducted);
 
 
     } else {
@@ -204,7 +209,7 @@ exports.generateMusicInvoice = async (req, res) => {
         totalNumberOfChannel: channel.length,
         totalNumberOfMusic: musics.length,
         musicCommission: totalCommissionMusic,
-        musicTaxDeducted: musicTaxDeducted,
+        // musicTaxDeducted: musicTaxDeducted,
         totalCommission:totalCommissionMusic,
         totalTaxDeducted: totalTaxDeducted,
 

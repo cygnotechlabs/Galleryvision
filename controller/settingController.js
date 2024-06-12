@@ -10,7 +10,7 @@ exports.viewTax = async (req, res) => {
         
         if(getTax.length > 0){
             res.status(200).json(getTax);
-            console.log("Displayed Successfully")
+            // console.log("Displayed Successfully")
         }
         else{
             res.status(404).json("Tax list is empty")
@@ -115,7 +115,7 @@ exports.viewCurrency = async (req, res) => {
         
         if(getCurrency.length > 0){
             res.status(200).json(getCurrency);
-            console.log("Displayed Successfully")
+            // console.log("Displayed Successfully")
         }
         else{
             res.status(404).json("Currency list is empty")

@@ -62,7 +62,7 @@ const importMusic = async (req, res) => {
             }
 
             await autoUpdateMusics(); // Call without req and res
-            res.status(200).send({ success: true, msg: 'CSV Imported and data inserted into the database' });
+            res.status(200).send({ success: true, msg: 'Music XLXS Extracted Successfully' });
 
         } catch (error) {
             console.error("Error parsing CSV:", error);

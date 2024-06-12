@@ -24,37 +24,6 @@ exports.getRawMusic = async (req, res) => {
     }
 };
 
-
-// exports.getRawMusic = async (req, res) => {
-//   try {
-//     // Verify and decode the token
-//     jwt.verify(req.token, secretKey, async (err, authData) => {
-//       if (err) {
-//         // If token is invalid, return a 403 Forbidden response
-//         res.sendStatus(403);
-//       } else {
-//         // If token is valid, proceed with fetching raw music data
-//         try {
-//           const allRawMusic = await rawMusic.find();
-
-//           if (allRawMusic.length > 0) {
-//             res.status(200).json(allRawMusic);
-//           } else {
-//             res.status(404).json("Raw music not found");
-//           }
-//         } catch (error) {
-//           console.error(error);
-//           res.status(500).json("Internal server error");
-//         }
-//       }
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json("Internal server error");
-//   }
-// };
-
-
 // get particular licensor
 exports.getOneRawMusic = async (req, res) => {
     try {
@@ -84,7 +53,7 @@ exports.getOneRawMusic = async (req, res) => {
         
         if (getMusics.length > 0) {
             res.status(200).json(getMusics);
-            console.log("Displayed Successfully")
+            
         } else {
             res.status(404).json("Music Channel list is empty"); 
         }
@@ -94,14 +63,19 @@ exports.getOneRawMusic = async (req, res) => {
     }
   };
   
-  
   //Adding Music Channel
   exports.addMusic = async (req, res) => {
       try {
-      const { musicId, musicName, licensorName, licensorId, commission, musicLogo } = req.body;
+      const { 
+        musicId,
+        musicName,
+        licensorName,
+        licensorId,
+        commission,
+        musicLogo } = req.body;
           
           // Log the received data for debugging
-          console.log("Received data:", req.body);
+          console.log("Received Add Music Data:", req.body);
   
           const existingMusics = await musics.findOne({
             $or: [{ musicId }, { musicName }],
@@ -140,7 +114,6 @@ exports.getOneRawMusic = async (req, res) => {
           res.status(500).json({ error: 'Internal server error' });
       }
   };
-  
   
   
   //delete music channel
@@ -190,20 +163,20 @@ exports.getOneRawMusic = async (req, res) => {
     try {
       const Id = req.params.id;
       const updatedData = req.body;
-      console.log("update music",updatedData);
+      console.log("Update Music",updatedData);
       
       const objectid = new ObjectId(Id);
       
       // Find the music to get the current licensorName
       const music = await musics.findOne({ _id: objectid });
       if (!music) {
-        return res.status(404).json({ error: "music not found" });
+        return res.status(404).json({ error: "Music not found" });
       }
         
       const oldLicensorName = music.licensorName;
       const newLicensorName = updatedData.licensorName;
   
-      console.log("old=",oldLicensorName,"new=",newLicensorName)
+      console.log("Old=",oldLicensorName,"New=",newLicensorName)
   
       if (newLicensorName && oldLicensorName !== newLicensorName) {
         // Find the old and new licensor documents
@@ -248,10 +221,10 @@ exports.getOneRawMusic = async (req, res) => {
       if (updateResult.modifiedCount === 1) {
         return res.json({
           success: true,
-          message: "music details updated successfully",
+          message: "Music details updated successfully",
         });
       } else {
-        return res.status(404).json({ error: "music not found" });
+        return res.status(404).json({ error: "Music not found" });
       }
     } catch (error) {
       console.error("Error updating channel:", error);
@@ -259,60 +232,6 @@ exports.getOneRawMusic = async (req, res) => {
     }
   };
   
-  
-  
-  // get linked musics
-  // exports.getLinkedMusic = async (req, res) => {
-  //   try {
-  //       const linkedMusics = await musics.find({ MusicName: { $ne: "" } });
-  
-  //       if (linkedMusics.length > 0) {
-  //           res.status(200).json(linkedMusics);
-  //       } else {
-  //           res.status(404).json("No linked musics found");
-  //       }
-  //   } catch (error) {
-  //       console.error(error);
-  //       res.status(500).json("Internal server error");
-  //   }
-  // };
-  
-  // get unlinked channels
-  // exports.getUnlinkedMusic = async (req, res) => {
-  //   try {
-  //       const unlinkedMusics = await musics.find({ licenser: "" });
-  
-  //       if (unlinkedMusics.length > 0) {
-  //           res.status(200).json(unlinkedMusics);
-  //       } else {
-  //           res.status(404).json("No unlinked musics found");
-  //       }
-  //   } catch (error) {
-  //       console.error(error);
-  //       res.status(500).json("Internal server error");
-  //   }
-  // };
-  
-  //show a particular music channel
-  // exports.musicDetails = async (req, res) => {
-  //    try{
-  //     const { id } = req.params;
-  //     const objectId = new ObjectId(id);
-  //     const mchanneldetails = await musics.findOne({ _id: objectId})
-  
-  //     if(!mchanneldetails) {
-  //       return res.status(404).json({ error: 'Music Channel not found'});
-  //     }
-  //     return res.status(200).json(mchanneldetails);
-  //    } 
-  //    catch (error) 
-  //    { 
-  //     if (error.name === 'CastError'){
-  //       return res.status(400).json({ error: 'Invalid Music Channel ID' });
-  //     }
-  //     return res.status(500).json({ errro: 'Internal Server Error!'})
-  //    }
-  // };
 
   exports.getOneMusic = async (req, res) => {
     console.log("view music", req.body);
@@ -324,14 +243,14 @@ exports.getOneRawMusic = async (req, res) => {
       const musicDetails = await musics.findOne({ _id: objectId });
   
       if (!musicDetails) {
-        return res.status(404).json({ error: "music not found" });
+        return res.status(404).json({ error: "Music not found" });
       }
   
       const musicId = musicDetails.musicId;
-      console.log("get invoice for music", musicId);
+      console.log("Get invoice for music", musicId);
   
       if (!musicId) {
-        return res.status(400).json("music ID is required");
+        return res.status(400).json("Music ID is required");
       }
   
       // Find the channel invoices
@@ -348,13 +267,10 @@ exports.getOneRawMusic = async (req, res) => {
       return res.status(500).json({ error: "Internal server error" });
     }
   };
-
-
-  
-  
-  
+ 
+  //Assign Music
   exports.assignMusic = async (req, res) => {
-    console.log("assign music",req.body);
+    console.log("Assign music",req.body);
     try {
       const {
         musicId,
@@ -373,13 +289,6 @@ exports.getOneRawMusic = async (req, res) => {
       if (existingmusic) {
         return res.status(409).json({ message: 'Music with the same ID already exists' });
       }
-      
-      // if (!licensor) {
-      //   // Handle the case where the licensor is not found
-      //   return { error: `Licensor with ID ${licensorId} not found` };
-      // }
-      //  licensorName = licensor.licensorName;
-      //  console.log(licensorName);
   
       const assets = [
         {

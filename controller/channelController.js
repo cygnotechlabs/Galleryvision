@@ -45,6 +45,7 @@ exports.addChannel = async (req, res) => {
   }
 };
 
+// Assign channel
 exports.assignChannel = async (req, res) => {
   console.log("assign channel",req.body);
   try {
@@ -210,30 +211,6 @@ exports.getInvoiceForChannel = async (req, res) => {
 };
 
 
-
-// get particular unassigned channel
-// exports.getOneChannel = async (req, res) => {
-//   console.log("view channel",req.body );
-//   try {
-//     const { id } = req.params;
-//     const objectId = new ObjectId(id);
-//     const channelDetails = await channels.findOne({ _id: objectId });
-
-//     if (!channelDetails) {
-//       return res.status(404).json({ error: "Channel not found" });
-//     }
-
-//     return res.status(200).json(channelDetails);
-//   } catch (error) {
-//     if (error.name === "CastError") {
-//       return res.status(400).json({ error: "Invalid channel ID" });
-//     }
-
-//     return res.status(500).json({ error: "Internal server error" });
-//   }
-// };
-
-
 exports.getOneChannel = async (req, res) => {
   console.log("View Channel", req.body);
   try {
@@ -269,33 +246,6 @@ exports.getOneChannel = async (req, res) => {
   }
 };
 
-
-// // remove channel
-// exports.removeChannel = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const objectId = new ObjectId(id);
-
-//     // Check if the channel exists
-//     const channelToRemove = await channels.findOne({ _id: objectId });
-//     if (!channelToRemove) {
-//       return res.status(404).json({ error: "Channel not found" });
-//     }
-
-//     // Remove the channel
-//     const removeChannel = await channels.deleteOne({ _id: objectId });
-//     if (removeChannel) {
-//       const allChannels = await channels.find();
-//       res.status(200).json(allChannels);
-//     }
-//   } catch (error) {
-//     if (error.name === "CastError") {
-//       return res.status(400).json({ error: "Invalid channel ID" });
-//     }
-
-//     return res.status(500).json({ error: "Internal server error" });
-//   }
-// };
 
 
 
@@ -339,43 +289,6 @@ exports.removeChannel = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
-
-// update channel
-// exports.updateChannel = async (req, res) => {
-//   try {
-//     const channelId = req.params.id;
-//     const updatedData = req.body;
-
-//     const objectid = new ObjectId(channelId);
-
-//     const filter = { _id: objectid };
-//     const updateResult = await channels.updateOne(filter, {
-//       $set: updatedData,
-//     });
-
-//     if (updateResult.modifiedCount === 1) {
-//       return res.json({
-//         success: true,
-//         message: "channel details updated successfully",
-//       });
-//     } else {
-//       return res.status(404).json({ error: "channel not found" });
-//     }
-//   } catch (error) {
-//     console.error("Error updating order:", error);
-//     return res.status(500).json({ error: "Internal server error" });
-//   }
-// };
-
-// new update
-
-
-
-
-
-
 
 
 
@@ -450,7 +363,7 @@ exports.updateChannel = async (req, res) => {
 };
 
 
-// new update
+
 
 // get particular raw licensor
 exports.getOneRawChannel = async (req, res) => {

@@ -77,6 +77,7 @@ const importReport = async (req, res) => {
             }
 
             res.status(200).send({ success: true, msg: "Invoices updated successfully" });
+            console.log("Report Extrated Successfully");
 
         } catch (error) {
             console.error("Error parsing CSV:", error);

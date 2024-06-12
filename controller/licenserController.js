@@ -18,6 +18,8 @@ exports.addLicensor = async (req, res) => {
         bankAccNum,
         ifsc_iban,
         currency,
+        panNumber,
+        tds
       } = req.body;
       
       const existingLicensor = await licensors.findOne({ licensorName });
@@ -39,6 +41,8 @@ exports.addLicensor = async (req, res) => {
         bankAccNum,
         ifsc_iban,
         currency,
+        panNumber,
+        tds
       });
   
       await newLicensor.save();

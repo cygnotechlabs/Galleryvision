@@ -31,6 +31,8 @@ const licensorSchema = new Schema({
     bankAccNum : { type: String },
     ifsc_iban : { type: String },
     currency: { type: String },
+    panNumber: { type: String },
+    tds: { type: String },
     channel:[channelSchema],
     music: [musicSchema]
 });

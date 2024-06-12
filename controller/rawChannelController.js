@@ -89,7 +89,7 @@ const importChannel = async (req, res) => {
                     console.log("Data inserted into the database.");
 
                     await autoUpdateChannels(); // Call without req and res
-                    res.status(200).send({ success: true, msg: 'CSV Imported' });
+                    res.status(200).send({ success: true, msg: 'Channel CSV Extracted Successfully' });
                 });
     } catch (error) {
         console.error("Error during import process:", error);
