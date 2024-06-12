@@ -21,6 +21,8 @@ interface FormData {
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
+  panNumber: string;
+  tds: string;
 }
 
 const CreateLicensor: React.FC<Props> = () => {
@@ -35,7 +37,11 @@ const CreateLicensor: React.FC<Props> = () => {
     bankAccNum: "",
     ifsc_iban: "",
     currency: "INR",
+    panNumber: "",
+    tds: "",
   });
+  const [bankFormat, setBankFormat] = useState("IFSC Code");
+  const [showPan, setShowPan] = useState(false);
 
   const notify = () => {
     toast.success("Licensor created successfully!", { position: "top-center" });
@@ -97,7 +103,9 @@ const CreateLicensor: React.FC<Props> = () => {
     }
   };
 
-  const [bankFormat, setBankFormat] = useState("IFSC Code");
+  const togglePan = () => {
+    setShowPan(true);
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -272,7 +280,10 @@ const CreateLicensor: React.FC<Props> = () => {
                       id="domestic"
                       name="paymentType"
                       value="domestic"
-                      onClick={() => setBankFormat("IFSC Code")}
+                      onClick={() => {
+                        setBankFormat("IFSC Code");
+                        togglePan();
+                      }}
                     />
                     <label htmlFor="domestic">Domestic</label>
                   </div>
@@ -282,7 +293,10 @@ const CreateLicensor: React.FC<Props> = () => {
                       id="international"
                       name="paymentType"
                       value="international"
-                      onClick={() => setBankFormat("IBAN")}
+                      onClick={() => {
+                        setBankFormat("IBAN");
+                        setShowPan(false);
+                      }}
                     />
                     <label htmlFor="international">International</label>
                   </div>
@@ -329,11 +343,42 @@ const CreateLicensor: React.FC<Props> = () => {
                     required
                   >
                     <option value="INR">INR</option>
-                    <option value="INR0">INR0</option>
                     <option value="USD">USD</option>
                   </select>
                 </div>
               </div>
+              {showPan && (
+                <div className="flex items-center gap-12">
+                  <div className="flex flex-col gap-2 w-[50svh]">
+                    <label htmlFor="" className="text-sm font-semibold">
+                      PAN CARD
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Pan Number"
+                      name="panNumber"
+                      value={formData.panNumber}
+                      onChange={handleChange}
+                      className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 w-[50svh]">
+                    <label htmlFor="" className="text-sm font-semibold">
+                      TDS
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="TDS %"
+                      name="tds"
+                      value={formData.tds}
+                      onChange={handleChange}
+                      className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex justify-end pr-[32px] pt-[20px]">

@@ -153,6 +153,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={searchTerm}
                 onFocus={() => setIsDropdownOpen(true)}
+                required
               />
               {isDropdownOpen && (
                 <ul className="absolute top-24 z-10 border border-gray-200 rounded-lg mt-1 max-h-40 overflow-y-auto bg-white w-[358px]">

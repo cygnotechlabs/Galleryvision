@@ -89,7 +89,7 @@ const Layout = ({ children }: Props) => {
           onClick={() => handleItemClick("Settings")}
         />
       </Sidebar>
-      <div className="flex-1 flex flex-col ml-0 lg:ml-[320px]">
+      <div className="flex-1 flex flex-col ml-0 lg:ml-[250px]">
         <Header toggleSidebar={toggleSidebar} />
         <div className="overflow-y-auto flex-1 p-4">{children}</div>
       </div>

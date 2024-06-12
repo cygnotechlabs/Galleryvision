@@ -19,9 +19,9 @@ export default function Sidebar({
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out lg:translate-x-0`}
     >
-      <nav className="h-full w-[320px] flex flex-col bg-white overflow-y-auto">
-        <div className="py-8 px-8 flex justify-between items-center">
-          <img src={logo} className="w-[70%]" alt="Logo" />
+      <nav className="h-full w-[250px] flex flex-col bg-white overflow-y-auto">
+        <div className=" flex justify-between items-center">
+          <img src={logo} className="" alt="Logo" />
           <button className="lg:hidden text-gray-700" onClick={toggleSidebar}>
             ✕
           </button>
