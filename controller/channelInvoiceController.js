@@ -99,6 +99,12 @@ exports.generateChannelInvoice = async (req, res) => {
       const status = "Unpaid";
       const emailStatus = "Not Sent";
 
+      let inrPayout = 0 ;
+      let tdsTax = 0 ;
+      let payout =0;
+      
+      
+
       let ifsc = "";
       let iban = "";
       if (currency === "INR") {
@@ -138,13 +144,16 @@ exports.generateChannelInvoice = async (req, res) => {
       let conversionRate = 1.0; // default value if no conversion is needed
       if (currency === "INR") {
         conversionRate = parseFloat(currencyRate.INR);
+
+        inrPayout = (parseFloat(totalPayout) * conversionRate).toFixed(2);
+        tdsTax = (parseFloat(inrPayout) * (parseFloat(licensor.tds) / 100)).toFixed(2);
+        payout = (parseFloat(inrPayout) - parseFloat(tdsTax)).toFixed(2);
+
       } else if (currency === "USD") {
         conversionRate = parseFloat(currencyRate.USD);
+        payout = (parseFloat(totalPayout)).toFixed(2);
       } 
-
-      const payout1 = (parseFloat(totalPayout) * conversionRate).toFixed(2);      
-      const tdsTax = (parseFloat(payout1) * (parseFloat(licensor.tds) / 100)).toFixed(2);
-      const payout = (parseFloat(payout1) - parseFloat(tdsTax)).toFixed(2);
+      
       
 
       // Create invoice
@@ -167,6 +176,7 @@ exports.generateChannelInvoice = async (req, res) => {
         tdsTax,
         tds,
         ptAfterUsTax,
+        inrPayout,
         commission: channel.commission,
         commissionAmount,
         totalPayout,

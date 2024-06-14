@@ -22,7 +22,8 @@ const channelInvoicesSchema = mongoose.Schema({
   usTax: { type: String},  
   ptAfterUsTax: { type: String },
 
-  tdsTax: { type: String},  
+  tdsTax: { type: String},
+  inrPayout: { type: String},  
 
 
   commission: { type: String },

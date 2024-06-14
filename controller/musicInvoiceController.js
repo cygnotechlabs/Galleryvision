@@ -85,7 +85,10 @@ exports.generateMusicInvoice = async (req, res) => {
       const emailStatus = "Not Sent";
       const musicId = music.musicId;
       const musicName = music.musicName;
-      const invoiceNumber = generateInvoiceNumber(invoiceCounter++); // Generate and increment invoice number
+      const invoiceNumber = generateInvoiceNumber(invoiceCounter++);
+      let inrPayout =0;
+      let tdsTax =0;
+      let payout =0; 
 
       // Set IFSC or IBAN based on the currency
       let ifsc = "";
@@ -123,15 +126,20 @@ exports.generateMusicInvoice = async (req, res) => {
       let conversionRate = 1.0; // default value if no conversion is needed
       if (currency === "INR") {
         conversionRate = parseFloat(currencyRate.INR);
+        inrPayout = (parseFloat(totalPayout) * conversionRate).toFixed(2);
+        tdsTax = (parseFloat(inrPayout) * (parseFloat(licensor.tds) / 100)).toFixed(2);
+        payout = (parseFloat(inrPayout) - parseFloat(tdsTax)).toFixed(2);
+
       }  else if (currency === "USD") {
         conversionRate = parseFloat(currencyRate.USD);
+        payout = (parseFloat(totalPayout)).toFixed(2);
       }
 
       // const payout = (parseFloat(totalPayout) * conversionRate).toFixed(2);
 
-      const payout1 = (parseFloat(totalPayout) * conversionRate).toFixed(2);      
-      const tdsTax = (parseFloat(payout1) * (parseFloat(licensor.tds) / 100)).toFixed(2);
-      const payout = (parseFloat(payout1) - parseFloat(tdsTax)).toFixed(2);
+      // const inrPayout = (parseFloat(totalPayout) * conversionRate).toFixed(2);      
+      // const tdsTax = (parseFloat(inrPayout) * (parseFloat(licensor.tds) / 100)).toFixed(2);
+      // const payout = (parseFloat(inrPayout) - parseFloat(tdsTax)).toFixed(2);
 
       // Create invoice
       const invoice = new MusicInvoice({

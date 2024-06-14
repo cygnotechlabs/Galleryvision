@@ -155,5 +155,6 @@ router.get('/get-payment',middleware.verifyToken,PaymentController.getPayments)
 
 // invoice mailing
 router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)
+router.post('/download-invoice',emailController.downloadInvoicePDF)
 
 
