@@ -70,8 +70,11 @@ const API_ENDPOINTS = {
   VIEW_COUNT: `${BASE_URL}/view-count`,
   GET_DASHBOARD: `${BASE_URL}/get-dashboard`,
 
-  //
+  //Bulk Invoice Sending
   MAIL_INVOICE: `${BASE_URL}/mail-invoice`,
+
+  //Single Invoice
+  DOWNLOAD_INVOICE_PDF: `${BASE_URL}/download-invoice`,
 };
 
 export default API_ENDPOINTS;

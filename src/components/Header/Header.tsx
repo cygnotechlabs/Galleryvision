@@ -17,7 +17,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   };
 
   return (
-    <header className="flex items-center justify-between px-4 py-3 bg-white relative">
+    <header className="flex items-center justify-between px-2 py-1 bg-white relative">
       <button
         className="lg:hidden text-black pr-4 focus:outline-none"
         aria-label="Toggle Sidebar"
@@ -42,13 +42,13 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             onClick={toggleDropdown}
           >
             <img
-              className="h-12 w-12 rounded-full object-cover"
+              className="w-10 rounded-full object-cover"
               src={logo}
               alt="Profile"
             />
             <div className="lg:block px-5">
-              <div className="font-semibold">Admin</div>
-              <div className="text-sm">admin</div>
+              <div className="font-semibold text-sm">Admin</div>
+              <div className="text-xs">admin</div>
             </div>
           </button>
           {dropdownVisible && (

@@ -76,7 +76,7 @@ const Login = () => {
         />
         <div className="absolute top-20 lg:top-40 left-10 lg:left-56 w-[80%] lg:w-[50%]">
           <p
-            className="text-white text-lg lg:text-3xl font-medium"
+            className="text-white text-lg lg:text-2xl font-medium"
             style={{ lineHeight: "1.5" }}
           >
             Seamless Revenue Management & Payment Processing for YouTube & Music
@@ -88,13 +88,13 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="flex flex-col w-full lg:w-1/2 bg-white gap-10 lg:gap-40">
+      <div className="flex flex-col w-full lg:w-1/2 bg-white gap-10 lg:gap-10">
         <div className="flex justify-center lg:justify-end p-4 lg:p-8">
           <img src={logo} alt="Gallery Vision Logo" className="w-24 lg:w-32" />
         </div>
 
-        <div className="flex flex-col justify-center px-8 lg:px-28">
-          <p className="text-2xl lg:text-4xl font-bold mb-4 lg:mb-8">Login</p>
+        <div className="flex flex-col justify-center px-8 lg:px-36">
+          <p className="text-1xl lg:text-2xl font-bold mb-4 lg:mb-8">Login</p>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div className="flex flex-col gap-2">

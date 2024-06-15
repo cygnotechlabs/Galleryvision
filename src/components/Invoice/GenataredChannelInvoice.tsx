@@ -125,7 +125,7 @@ const GenataredChannelInvoice = ({}: Props) => {
           </p>
           <Link to={"/home/generate-invoice"}>
             <div className=" px-3 py-3 w-[12.5%] mx-auto rounded-lg bg-black text-white">
-              Generate new Invoice
+              Generate Invoice
             </div>
           </Link>
         </div>
