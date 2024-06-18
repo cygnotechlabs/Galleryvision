@@ -147,12 +147,6 @@ const Login = () => {
                   checked={stayLoggedIn}
                   onChange={handleStayLoggedInChange}
                 />
-                <label
-                  htmlFor="stay-logged-in"
-                  className="ml-2 block text-sm text-gray-900"
-                >
-                  Stay logged in
-                </label>
               </div>
             </div>
 

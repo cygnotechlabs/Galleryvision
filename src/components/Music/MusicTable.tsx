@@ -92,7 +92,7 @@ function MusicTable({}: Props) {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px]  pr-9">
+    <div className="bg-white py-2 shadow-md rounded-xl mx-8 my-8 ">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
         <Toaster />
         <div className="flex">

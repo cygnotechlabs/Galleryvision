@@ -24,7 +24,7 @@ function Licensor({}: Props) {
             to="/home/create-licensor"
             className="flex bg-black text-white rounded-lg px-4 py-3 justify-center gap-2 items-center font-bold"
           >
-            Create licensor
+            Create Licensor
             <Arrow />
           </Link>
         </div>

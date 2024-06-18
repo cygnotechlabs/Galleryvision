@@ -24,6 +24,8 @@ interface Licensor {
   currency: string;
   channel: Channel[];
   music: Music[];
+  panNumber: string;
+  tds: string;
 }
 
 interface Channel {
@@ -60,6 +62,8 @@ function LicensorTable({}: Props) {
     currency: "",
     channel: [], // Initialize as an empty array of Channel type
     music: [],
+    panNumber: "",
+    tds: "",
   });
   const [open, setOpen] = useState(false);
 
@@ -69,8 +73,8 @@ function LicensorTable({}: Props) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.GET_LICENSOR,{
-        headers:authInstance()
+      const response = await axios.get(API_ENDPOINTS.GET_LICENSOR, {
+        headers: authInstance(),
       });
       setLicensors(response.data);
       setFilteredLicensors(response.data);
@@ -81,7 +85,9 @@ function LicensorTable({}: Props) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId),{headers:authInstance()});
+      await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId), {
+        headers: authInstance(),
+      });
       setLicensors((prevLicensors) =>
         prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
       );

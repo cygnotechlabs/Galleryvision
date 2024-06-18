@@ -19,6 +19,8 @@ interface Licensor {
   currency: string;
   channel: Channel[];
   music: Music[];
+  panNumber: string;
+  tds: string;
 }
 
 interface Channel {
@@ -35,7 +37,7 @@ const LicensorView = ({ licensor, onClose }: Props) => {
   console.log(licensor.companyLogo);
 
   return (
-    <div className="w-full lg:w-[1135px] py-8 m-2 bg-white rounded-xl">
+    <div className="w-full lg:w-[1135px] py-2 m-2 bg-white rounded-xl">
       <div className="flex px-4 lg:px-8 items-center justify-between">
         <p className="text-base font-bold">Licensor Details</p>
         <button onClick={onClose}>
@@ -97,14 +99,22 @@ const LicensorView = ({ licensor, onClose }: Props) => {
             <p className="text-base text-gray-500">IFSC code</p>
             <p className="text-sm font-medium">{licensor.ifsc_iban}</p>
           </div>
-          <div className="pl-6 mt-2 lg:mt-0">
+          <div className="px-6 border-r border-gray-500 mt-2 lg:mt-0">
             <p className="text-base text-gray-500">Currency</p>
             <p className="text-sm font-medium">{licensor.currency}</p>
+          </div>
+          <div className="px-6 border-r border-gray-500 mt-2 lg:mt-0">
+            <p className="text-base text-gray-500">TDS</p>
+            <p className="text-sm font-medium">{licensor.tds}</p>
+          </div>
+          <div className="px-6 border-r border-gray-500 mt-2 lg:mt-0">
+            <p className="text-base text-gray-500">PanCard Number</p>
+            <p className="text-sm font-medium">{licensor.panNumber}</p>
           </div>
         </div>
       </div>
       <div className="mx-4 lg:mx-8 mt-4 w-full lg:w-[1071px] px-6 py-6 h-auto lg:h-[246px] bg-gray-100 rounded-lg">
-        <div className="flex flex-col lg:flex-row items-center mt-4">
+        <div className="flex flex-col lg:flex-row mt-4">
           <div className="w-full lg:w-[50%]">
             <p className="font-bold">Channels</p>
             <table className="w-full">

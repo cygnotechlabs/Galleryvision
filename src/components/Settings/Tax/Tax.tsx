@@ -1,96 +1,108 @@
-import { useState } from "react";
-import Modal from "../../../layouts/Modal";
-import { Edit, Plus, Trash } from "../../icons/icon";
-import EditTax from "./EditTax";
-import AddTax from "./AddTax";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import MonthYearSelector from "../../../UI/MonthYear";
+import API_ENDPOINTS from "../../../config/apiConfig";
+import { authInstance } from "../../../hooks/axiosInstances";
+import { Arrow, USA } from "../../icons/icon";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {};
 
-interface Tax {
-  id: string;
-  tax: string;
-  rate: string;
+interface Currency {
+  date: string;
+  taxPercentage: string;
 }
 
-const tax: Tax[] = [
-  {
-    id: "1",
-    tax: "VAT",
-    rate: "12",
-  },
-  {
-    id: "2",
-    tax: "GST",
-    rate: "10",
-  },
-  {
-    id: "3",
-    tax: "GBP",
-    rate: "17",
-  },
-];
+const CurrencyComponent = ({}: Props) => {
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toLocaleString("default", { month: "long", year: "numeric" })
+  );
+  const [INRValue, setINRValue] = useState<string>("");
+  const [data, setData] = useState<Currency>({
+    date: "",
+    taxPercentage: "",
+  });
 
-const Tax = ({}: Props) => {
-  const [openEdit, setOpenEdit] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
+  useEffect(() => {
+    setData((prevData) => ({
+      ...prevData,
+      date: selectedDate,
+    }));
+  }, [selectedDate]);
+
+  const handleINRChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setINRValue(value);
+    setData((prevData) => ({
+      ...prevData,
+      taxPercentage: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!data.date || !data.taxPercentage) {
+      alert("Please provide both the date and Percentage value.");
+      return;
+    }
+
+    try {
+      console.log("Sending payload:", data);
+      const response = await axios.post(API_ENDPOINTS.ADD_TAX, data, {
+        headers: authInstance(),
+      });
+      // console.log("Response:", response.data);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.error("Error adding conversion rate:", error);
+      toast.error("Adding or Updating Tax");
+    }
+  };
+
+  const handleDateChange = (newDate: string) => {
+    setSelectedDate(newDate);
+  };
+
   return (
     <div className="pl-11">
-      <div className="flex items-center justify-between">
+      <Toaster />
+      <div className="flex items-center justify-between my-2">
         <div>
-          <p className="text-lg font-bold">Tax</p>
-          <p className="text-sm">Add Usable tax to the system</p>
+          <p className="text-lg font-bold">US Tax</p>
+          <p className="text-sm">Choose the month</p>
         </div>
-        <button
-          onClick={() => setOpenAdd(true)}
-          className="flex items-center py-2 px-4 rounded-lg text-white bg-black"
-        >
-          <Plus /> <p className="text-sm font-medium">Add</p>
-        </button>
       </div>
-      <div>
-        <table className="mt-6">
-          <thead className="bg-gray-100">
-            <th className="text-left px-2 py-1 ">Tax Type</th>
-            <th className="text-left px-2 py-1">Rate</th>
-            <th className="text-left px-2 py-1">Action</th>
-          </thead>
-          <tbody>
-            {tax.map((tax, index) => (
-              <tr key={index} className="bg-white">
-                <td className="px-2 py-1 w-[215px] h-[42px] border-gray-200 text-sm">
-                  {tax.tax}
-                </td>
-                <td className="px-2 py-1 w-[172px] h-[48px] border-gray-200 text-sm">
-                  {tax.rate}
-                </td>
-                <td className="px-2 py-1 border-gray-200">
-                  <div className="flex gap-3 items-center space-x-2">
-                    <button
-                      onClick={() => setOpenEdit(true)}
-                      className="flex gap-2 bg-gray-200 hover:bg-red-100 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
-                    >
-                      <Edit />
-                      Edit
-                    </button>
-                    <button className="flex gap-2 bg-red-100 hover:bg-gray-300 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
-                      <Trash />
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col items-start gap-2">
+          <label htmlFor="">Select Month: {selectedDate}</label>
+          <MonthYearSelector
+            date={selectedDate}
+            onDateChange={handleDateChange}
+          />
+        </div>
+        <div className="flex gap-3">
+          <div className="flex gap-1 items-center">
+            <USA />
+            <span>US Tax %</span>
+            <Arrow />
+          </div>
+          <div className="flex gap-1 items-center border p-2">
+            <input
+              type="text"
+              className="px-2 w-14 h-full border-2"
+              value={INRValue}
+              onChange={handleINRChange}
+            />
+            <button
+              onClick={handleSubmit}
+              className="font-bold bg-black text-white p-2 rounded-lg"
+            >
+              ADD
+            </button>
+          </div>
+        </div>
       </div>
-      <Modal open={openEdit} onClose={() => setOpenEdit(false)}>
-        <EditTax onClose={() => setOpenEdit(false)} />
-      </Modal>
-      <Modal open={openAdd} onClose={() => setOpenAdd(false)}>
-        <AddTax onClose={() => setOpenAdd(false)} />
-      </Modal>
     </div>
   );
 };
 
-export default Tax;
+export default CurrencyComponent;

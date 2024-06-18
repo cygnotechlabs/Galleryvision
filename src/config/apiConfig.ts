@@ -75,6 +75,9 @@ const API_ENDPOINTS = {
 
   //Single Invoice
   DOWNLOAD_INVOICE_PDF: `${BASE_URL}/download-invoice`,
+
+  //Tax
+  ADD_TAX: `${BASE_URL}/add-tax`,
 };
 
 export default API_ENDPOINTS;

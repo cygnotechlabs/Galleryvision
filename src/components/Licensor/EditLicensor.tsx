@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
 
-
 type Props = {};
 
 interface FormData {
@@ -17,11 +16,13 @@ interface FormData {
   companyLogo: string;
   licensorName: string;
   licensorEmail: string;
-  licensorAddress: string;
   licensorPhno: string;
+  licensorAddress: string;
   bankAccNum: string;
   ifsc_iban: string;
   currency: string;
+  panNumber: string;
+  tds: string;
 }
 
 const EditLicensor: React.FC<Props> = () => {
@@ -32,12 +33,15 @@ const EditLicensor: React.FC<Props> = () => {
     companyLogo: "",
     licensorName: "",
     licensorEmail: "",
-    licensorAddress: "",
     licensorPhno: "",
+    licensorAddress: "",
     bankAccNum: "",
     ifsc_iban: "",
-    currency: "",
+    currency: "INR",
+    panNumber: "",
+    tds: "",
   });
+  const [showPan, setShowPan] = useState(false);
 
   const notify = () => {
     toast.success("Licensor edited successfully!", { position: "top-center" });
@@ -49,8 +53,8 @@ const EditLicensor: React.FC<Props> = () => {
     if (id) {
       const fetchData = async () => {
         try {
-          const response = await axios.get(API_ENDPOINTS.VIEW_LICENSOR(id),{
-            headers:authInstance()
+          const response = await axios.get(API_ENDPOINTS.VIEW_LICENSOR(id), {
+            headers: authInstance(),
           });
           setFormData(response.data);
         } catch (error) {
@@ -93,7 +97,7 @@ const EditLicensor: React.FC<Props> = () => {
           API_ENDPOINTS.UPDATE_LICENSOR(id),
           formData,
           {
-            headers:authInstance()
+            headers: authInstance(),
           }
         );
         if (response.status === 200) {
@@ -110,7 +114,9 @@ const EditLicensor: React.FC<Props> = () => {
       }
     }
   };
-
+  const togglePan = () => {
+    setShowPan(true);
+  };
   const [bankFormat, setBankFormat] = useState("IFSC Code");
 
   return (
@@ -141,7 +147,7 @@ const EditLicensor: React.FC<Props> = () => {
                 <div className="flex flex-col items-center mb-4 mx-[24px] my-[10px]">
                   <HomeXl />
                   <label className="text-black font-medium text-sm">
-                  Select your logo here, or{" "}
+                    Select your logo here, or{" "}
                     <label className="cursor-pointer text-blue-500">
                       browse
                       <input
@@ -280,7 +286,10 @@ const EditLicensor: React.FC<Props> = () => {
                       id="domestic"
                       name="paymentType"
                       value="domestic"
-                      onClick={() => setBankFormat("IFSC Code")}
+                      onClick={() => {
+                        setBankFormat("IFSC Code");
+                        togglePan();
+                      }}
                     />
                     <label htmlFor="domestic">Domestic</label>
                   </div>
@@ -290,7 +299,10 @@ const EditLicensor: React.FC<Props> = () => {
                       id="international"
                       name="paymentType"
                       value="international"
-                      onClick={() => setBankFormat("IBAN")}
+                      onClick={() => {
+                        setBankFormat("IBAN");
+                        setShowPan(false);
+                      }}
                     />
                     <label htmlFor="international">International</label>
                   </div>
@@ -338,6 +350,38 @@ const EditLicensor: React.FC<Props> = () => {
                   </select>
                 </div>
               </div>
+              {showPan && (
+                <div className="flex items-center gap-12">
+                  <div className="flex flex-col gap-2 w-[50svh]">
+                    <label htmlFor="" className="text-sm font-semibold">
+                      PAN CARD
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Pan Number"
+                      name="panNumber"
+                      value={formData.panNumber}
+                      onChange={handleChange}
+                      className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 w-[50svh]">
+                    <label htmlFor="" className="text-sm font-semibold">
+                      TDS
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="TDS %"
+                      name="tds"
+                      value={formData.tds}
+                      onChange={handleChange}
+                      className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex justify-end pr-[32px] pt-[20px]">
