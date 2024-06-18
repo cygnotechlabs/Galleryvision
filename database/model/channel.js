@@ -16,7 +16,7 @@ const channelSchema = mongoose.Schema({
   channelName: { type: String},
   commission: { type: String},
   tax: { type: String},
-  // channelEmail: { type: String },
+  country: { type: String },
   licensorId: { type: String},
   licensorName: { type: String},
   channelLogo: { type: String},

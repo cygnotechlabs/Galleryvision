@@ -1,14 +1,12 @@
 const mongoose = require('mongoose')
 
 const taxSchema = mongoose.Schema({
-    taxName: {
-        type: String,
-        unique: true,
-        required: true
-      },
+    
       taxPercentage: {
-        type: Number,
-        required: true
+        type: String
+      },
+      date:{
+        type:String
       }
 })
 

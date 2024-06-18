@@ -12,11 +12,13 @@ const channelInvoicesSchema = mongoose.Schema({
   iban: { type: String},
   currency: { type: String},
   date: { type: String},
+  ustaxPercentage :{ type: String},
   
   channelId: { type: String},
   channelName: { type: String},
   invoiceNumber: { type: String},
   ptRevenue: { type: String },
+  country: { type: String },
   tds: { type: String},
 
   usTax: { type: String},  

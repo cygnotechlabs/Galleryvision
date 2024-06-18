@@ -28,7 +28,7 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
             },
         });
 
-        const createChannelINRPDF = (invoice) => {
+        const createChannel_INR = (invoice) => {
             const doc = new PDFDocument({ size: 'A4', margin: 50, padding: 50 });
             const fontPath = 'public/font/Satoshi-Bold.otf';
             doc.font(fontPath);
@@ -37,13 +37,13 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
 
             doc.pipe(fs.createWriteStream(filePath));
 
-            const ghostImagePath = 'public/image/ghostChannelINR.png';
+            const ghostImagePath = 'public/image/ghost.png';
             doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
             doc.fillColor('grey');
             doc
                 .fontSize(12)
                 .text(` ${invoice.date}`, 398, 65)
-                doc
+            doc
                 .fillColor('white')
                 .text(` ${invoice.partnerName}`, 134, 119)
                 .text(` ${invoice.licensorName}`, 154, 147)
@@ -51,20 +51,30 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
                 .fillColor('black')
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 295)
-                .text(`${invoice.usTax}`, 480, 330)
-                .text(`${invoice.ptAfterUsTax}`, 480, 364)
+                .text(`Total Revenue (in USD)`, 40, 230)
+                .text(`Youtube Revenue`, 40, 295)
+                .text(`$${invoice.ptRevenue}`, 480, 295)
+                .text(`Withholding Tax on US Revenue`, 40, 330)
+                .text(`-$${invoice.usTax}`, 480, 330)
+                .text(`Youtube Revenue afer Tax`, 40, 364)
+                .text(`$${invoice.ptAfterUsTax}`, 480, 364)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.commission}`, 480, 443)
-                .text(`${invoice.commissionAmount}`, 480, 476)
+                .text(`Partner Revenue Share`, 40, 443)
+                .text(`${100-invoice.commission}%`, 480, 443)
+                .text(`Partner Revenue Amount`, 40, 476)
+                .text(`$${invoice.commissionAmount}`, 480, 476)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.totalPayout}`, 480, 552)
+                .text(`Total Payout(in USD)`, 40, 552)
+                .text(`$${invoice.totalPayout}`, 480, 552)
+                .text(`Conversion Rate`, 40, 586)
                 .text(`${invoice.conversionRate}`, 480, 586)
+                .text(`TDS`, 40, 620)
                 .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
                 .moveDown()
                 .fontSize(10)
+                .text(`Payout(in INR)`, 40, 655)
                 .text(`${invoice.payout}`, 480, 655)
                 .moveDown()
                 .fontSize(10);
@@ -73,7 +83,7 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
             return filePath;
         };
 
-        const createChannelUSDPDF = (invoice) => {
+        const createChannel_INR_Other = (invoice) => {
             const doc = new PDFDocument({ size: 'A4', margin: 50, padding: 50 });
             const fontPath = 'public/font/Satoshi-Bold.otf';
             doc.font(fontPath);
@@ -82,7 +92,7 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
 
             doc.pipe(fs.createWriteStream(filePath));
 
-            const ghostImagePath = 'public/image/ghostChannelUSD.png';
+            const ghostImagePath = 'public/image/ghost.png';
             doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
             doc.fillColor('grey');
             doc
@@ -96,21 +106,141 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
                 .fillColor('black')
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 295)
-                .text(`${invoice.usTax}`, 480, 330)
-                .text(`${invoice.ptAfterUsTax}`, 480, 364)
+                .text(`Total Revenue (in USD)`, 40, 230)
+                .text(`Youtube Revenue`, 40, 330)
+                .text(`$${invoice.ptRevenue}`, 480, 330)
+                // .text(`Withholding Tax on US Revenue`, 40, 330)
+                // .text(`-$${invoice.usTax}`, 480, 330)
+                // .text(`Youtube Revenue afer Tax`, 40, 364)
+                // .text(`$${invoice.ptAfterUsTax}`, 480, 364)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.commission}`, 480, 443)
-                .text(`${invoice.commissionAmount}`, 480, 476)
+                .text(`Partner Revenue Share`, 40, 443)
+                .text(`${100-invoice.commission}%`, 480, 443)
+                .text(`Partner Revenue Amount`, 40, 476)
+                .text(`$${invoice.commissionAmount}`, 480, 476)
                 .moveDown()
                 .fontSize(10)
-                // .text(`${invoice.totalPayout}`, 480, 605)
-                // .text(`${invoice.conversionRate}`, 480, 638)
-                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648)
+                .text(`Total Payout(in USD)`, 40, 552)
+                .text(`$${invoice.totalPayout}`, 480, 552)
+                .text(`Conversion Rate`, 40, 586)
+                .text(`${invoice.conversionRate}`, 480, 586)
+                .text(`TDS`, 40, 620)
+                .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.payout}`, 480, 651)
+                .text(`Payout(in INR)`, 40, 655)
+                .text(`${invoice.payout}`, 480, 655)
+                .moveDown()
+                .fontSize(10);
+
+            doc.end();
+            return filePath;
+        };
+
+        const createChannel_USD = (invoice) => {
+            const doc = new PDFDocument({ size: 'A4', margin: 50, padding: 50 });
+            const fontPath = 'public/font/Satoshi-Bold.otf';
+            doc.font(fontPath);
+            const fileName = `Channel_Invoice_${invoice.invoiceNumber}.pdf`;
+            const filePath = path.join(__dirname, fileName);
+
+            doc.pipe(fs.createWriteStream(filePath));
+
+            const ghostImagePath = 'public/image/ghost.png';
+            doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
+            doc.fillColor('grey');
+            doc
+                .fontSize(12)
+                .text(` ${invoice.date}`, 398, 65)
+            doc
+                .fillColor('white')
+                .text(` ${invoice.partnerName}`, 134, 119)
+                .text(` ${invoice.licensorName}`, 154, 147)
+            doc
+                .fillColor('black')
+                .moveDown()
+                .fontSize(10)
+                .text(`Total Revenue (in USD)`, 40, 230)
+                .text(`Youtube Revenue`, 40, 295)
+                .text(`$${invoice.ptRevenue}`, 480, 295)
+                .text(`Withholding Tax on US Revenue`, 40, 330)
+                .text(`-$${invoice.usTax}`, 480, 330)
+                .text(`Youtube Revenue afer Tax`, 40, 364)
+                .text(`$${invoice.ptAfterUsTax}`, 480, 364)
+                .moveDown()
+                .fontSize(10)
+                .text(`Partner Revenue Share`, 40, 443)
+                .text(`${100-invoice.commission}%`, 480, 443)
+                .text(`Partner Revenue Amount`, 40, 476)
+                .text(`$${invoice.commissionAmount}`, 480, 476)
+                .moveDown()
+                .fontSize(10)
+                .text(`Total Payout(in USD)`, 40, 630)
+                .text(`$${invoice.totalPayout}`, 480, 630)
+                // .text(`Conversion Rate`, 40, 586)
+                // .text(`${invoice.conversionRate}`, 480, 586)
+                // .text(`TDS`, 40, 620)
+                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
+                // .moveDown()
+                // .fontSize(10)
+                // .text(`Payout(in INR)`, 40, 655)
+                // .text(`${invoice.payout}`, 480, 655)
+                .moveDown()
+                .fontSize(10);
+
+            doc.end();
+            return filePath;
+        };
+
+        const createChannel_USD_Other = (invoice) => {
+            const doc = new PDFDocument({ size: 'A4', margin: 50, padding: 50 });
+            const fontPath = 'public/font/Satoshi-Bold.otf';
+            doc.font(fontPath);
+            const fileName = `Channel_Invoice_${invoice.invoiceNumber}.pdf`;
+            const filePath = path.join(__dirname, fileName);
+
+            doc.pipe(fs.createWriteStream(filePath));
+
+            const ghostImagePath = 'public/image/ghost.png';
+            doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
+            doc.fillColor('grey');
+            doc
+                .fontSize(12)
+                .text(` ${invoice.date}`, 398, 65)
+            doc
+                .fillColor('white')
+                .text(` ${invoice.partnerName}`, 134, 119)
+                .text(` ${invoice.licensorName}`, 154, 147)
+            doc
+                .fillColor('black')
+                .moveDown()
+                .fontSize(10)
+                .text(`Total Revenue (in USD)`, 40, 230)
+                .text(`Youtube Revenue`, 40, 330)
+                .text(`$${invoice.ptRevenue}`, 480, 330)
+                // .text(`Withholding Tax on US Revenue`, 40, 330)
+                // .text(`-$${invoice.usTax}`, 480, 330)
+                // .text(`Youtube Revenue afer Tax`, 40, 364)
+                // .text(`$${invoice.ptAfterUsTax}`, 480, 364)
+                .moveDown()
+                .fontSize(10)
+                .text(`Partner Revenue Share`, 40, 443)
+                .text(`${100-invoice.commission}%`, 480, 443)
+                .text(`Partner Revenue Amount`, 40, 476)
+                .text(`$${invoice.commissionAmount}`, 480, 476)
+                .moveDown()
+                .fontSize(10)
+                .text(`Total Payout(in USD)`, 40, 630)
+                .text(`$${invoice.totalPayout}`, 480, 630)
+                // .text(`Conversion Rate`, 40, 586)
+                // .text(`${invoice.conversionRate}`, 480, 586)
+                // .text(`TDS`, 40, 620)
+                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
+                // .moveDown()
+                // .fontSize(10)
+                // .text(`Payout(in INR)`, 40, 655)
+                // .text(`${invoice.payout}`, 480, 655)
                 .moveDown()
                 .fontSize(10);
 
@@ -127,10 +257,11 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
 
             doc.pipe(fs.createWriteStream(filePath));
 
-            const ghostImagePath = 'public/image/ghostMusicINR.png';
-            doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
-            doc.fillColor('grey');
-            doc
+            const ghostImagePath = 'public/image/ghostMus.png';
+                doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
+                doc.fillColor('grey');
+
+                doc
                 .fontSize(12)
                 .text(` ${invoice.date}`, 398, 65)
             doc
@@ -141,25 +272,32 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
                 .fillColor('black')
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 294)
+                .text(`Total Revenue (in USD)`, 40, 230)
+                .text(`Digital Distribution Revenue`, 40, 294)
+                .text(`$${invoice.ptRevenue}`, 480, 294)
                 // .text(`${invoice.usTax}`, 480, 349)
                 // .text(`${invoice.ptAfterUsTax}`, 480, 360)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.commission}`, 480, 373)
-                .text(`${invoice.commissionAmount}`, 480, 406)
+                .text(`Partner Revenue Share`, 40, 373)
+                .text(`${100-invoice.commission}%`, 480, 373)
+                .text(`Partner Revenue Amount`, 40, 406)
+                .text(`$${invoice.commissionAmount}`, 480, 406)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.totalPayout}`, 480, 485)
+                .text(`Total Payout (in USD)`, 40, 485)
+                .text(`$${invoice.totalPayout}`, 480, 485)
+                .text(`Conversion Rate (in INR)`, 40, 518)
                 .text(`${invoice.conversionRate}`, 480, 518)
+                .text(`TDS`, 40, 555)
                 .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 555)
                 .moveDown()
                 .fontSize(10)
+                .text(`Payout (in INR)`, 40, 588)
                 .text(`${invoice.payout}`, 480, 588)
                 .moveDown()
                 .fontSize(10);
-
-            doc.end();
+                doc.end();
             return filePath;
         };
 
@@ -172,13 +310,14 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
 
             doc.pipe(fs.createWriteStream(filePath));
 
-            const ghostImagePath = 'public/image/ghostMusicUSD.png';
-            doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
-            doc.fillColor('grey');
-            doc
+            const ghostImagePath = 'public/image/ghostMus.png';
+                doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
+                doc.fillColor('grey');
+
+                doc
                 .fontSize(12)
                 .text(` ${invoice.date}`, 398, 65)
-                doc
+            doc
                 .fillColor('white')
                 .text(` ${invoice.partnerName}`, 134, 119)
                 .text(` ${invoice.licensorName}`, 154, 147)
@@ -186,25 +325,32 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
                 .fillColor('black')
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 294)
+                .text(`Total Revenue (in USD)`, 40, 230)
+                .text(`Digital Distribution Revenue`, 40, 294)
+                .text(`$${invoice.ptRevenue}`, 480, 294)
                 // .text(`${invoice.usTax}`, 480, 349)
                 // .text(`${invoice.ptAfterUsTax}`, 480, 360)
                 .moveDown()
                 .fontSize(10)
-                .text(`${invoice.commission}`, 480, 373)
-                .text(`${invoice.commissionAmount}`, 480, 406)
+                .text(`Partner Revenue Share`, 40, 373)
+                .text(`${100-invoice.commission}%`, 480, 373)
+                .text(`Partner Revenue Amount`, 40, 406)
+                .text(`$${invoice.commissionAmount}`, 480, 406)
                 .moveDown()
                 .fontSize(10)
-                // .text(`${invoice.totalPayout}`, 480, 605)
-                // .text(`${invoice.conversionRate}`, 480, 638)
-                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.payout}`, 480, 652)
+                .text(`Total Payout (in USD)`, 40, 555)
+                .text(`$${invoice.totalPayout}`, 480, 555)
+                // .text(`Conversion Rate (in INR)`, 40, 518)
+                // .text(`${invoice.conversionRate}`, 480, 518)
+                // .text(`TDS`, 40, 555)
+                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 555)
+                // .moveDown()
+                // .fontSize(10)
+                // .text(`Payout (in INR)`, 40, 588)
+                // .text(`${invoice.payout}`, 480, 588)
                 .moveDown()
                 .fontSize(10);
-
-            doc.end();
+                doc.end();
             return filePath;
         };
 
@@ -246,8 +392,13 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
             }
         };
 
-        await processInvoicesByTypeAndCurrency(channelInvoices.filter(i => i.currency === 'INR'), 'channel', createChannelINRPDF);
-        await processInvoicesByTypeAndCurrency(channelInvoices.filter(i => i.currency === 'USD'), 'channel', createChannelUSDPDF);
+        // Process channel invoices
+        await processInvoicesByTypeAndCurrency(channelInvoices.filter(i => i.currency === 'INR' ), 'channel', createChannel_INR);
+        // await processInvoicesByTypeAndCurrency(channelInvoices.filter(i => i.currency === 'INR' && i.country !== 'US'), 'channel', createChannel_INR_Other);
+        await processInvoicesByTypeAndCurrency(channelInvoices.filter(i => i.currency === 'USD' ), 'channel', createChannel_USD);
+        // await processInvoicesByTypeAndCurrency(channelInvoices.filter(i => i.currency === 'USD' && i.country !== 'US'), 'channel', createChannel_USD_Other);
+
+        // Process music invoices
         await processInvoicesByTypeAndCurrency(musicInvoices.filter(i => i.currency === 'INR'), 'music', createMusicINRPDF);
         await processInvoicesByTypeAndCurrency(musicInvoices.filter(i => i.currency === 'USD'), 'music', createMusicUSDPDF);
 
@@ -260,166 +411,7 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
 };
 
 
-// download single invoice pdf
-// exports.downloadInvoicePDF = async (req, res) => {
-//     try {
-//         const { invoiceNumber } = req.body;
-
-//         console.log(`Received request with invoiceNumber: ${invoiceNumber}`);
-
-//         // Fetch the invoice from both collections
-//         let invoice = await channelInvoiceModel.findOne({ invoiceNumber });
-//         let invoiceType = 'channel';
-
-//         if (!invoice) {
-//             invoice = await musicInvoiceModel.findOne({ invoiceNumber });
-//             invoiceType = 'music';
-//         }
-
-//         if (!invoice) {
-//             return res.status(404).json({ success: false, message: 'Invoice not found' });
-//         }
-
-//         // Define functions to create the PDF based on the type and currency
-//         const createChannelINRPDF = (invoice) => {
-//             const doc = new PDFDocument({ size: 'A4', margin: 50 });
-//             const fontPath = 'public/font/Satoshi-Bold.otf';
-//             const fileName = `Channel_Invoice_${invoice.invoiceNumber}.pdf`;
-//             const filePath = path.join(__dirname, fileName);
-
-//             doc.font(fontPath);
-//             doc.pipe(fs.createWriteStream(filePath));
-
-//             const ghostImagePath = 'public/image/ghostChannelINR.png';
-//             doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
-//             doc.fillColor('grey');
-
-//             doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
-//             doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
-//             doc.fillColor('grey').fontSize(10);
-//             doc.text(`${invoice.ptRevenue}`, 480, 315).text(`${invoice.usTax}`, 480, 349).text(`${invoice.ptAfterUsTax}`, 480, 360);
-//             doc.text(`${invoice.commission}`, 480, 476).text(`${invoice.commissionAmount}`, 480, 510);
-//             doc.text(`${invoice.totalPayout}`, 480, 605).text(`${invoice.conversionRate}`, 480, 638).text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648);
-//             doc.text(`${invoice.payout}`, 480, 672);
-
-//             doc.end();
-//             return filePath;
-//         };
-
-//         const createChannelUSDPDF = (invoice) => {
-//             const doc = new PDFDocument({ size: 'A4', margin: 50 });
-//             const fontPath = 'public/font/Satoshi-Bold.otf';
-//             const fileName = `Channel_Invoice_${invoice.invoiceNumber}.pdf`;
-//             const filePath = path.join(__dirname, fileName);
-
-//             doc.font(fontPath);
-//             doc.pipe(fs.createWriteStream(filePath));
-
-//             const ghostImagePath = 'public/image/ghostChannelUSD.png';
-//             doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
-//             doc.fillColor('grey');
-
-//             doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
-//             doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
-//             doc.fillColor('grey').fontSize(10);
-//             doc.text(`${invoice.ptRevenue}`, 480, 315).text(`${invoice.usTax}`, 480, 349).text(`${invoice.ptAfterUsTax}`, 480, 360);
-//             doc.text(`${invoice.commission}`, 480, 476).text(`${invoice.commissionAmount}`, 480, 510);
-//             doc.text(`${invoice.totalPayout}`, 480, 605).text(`${invoice.conversionRate}`, 480, 638).text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648);
-//             doc.text(`${invoice.payout}`, 480, 672);
-
-//             doc.end();
-//             return filePath;
-//         };
-
-//         const createMusicINRPDF = (invoice) => {
-//             const doc = new PDFDocument({ size: 'A4', margin: 50 });
-//             const fontPath = 'public/font/Satoshi-Bold.otf';
-//             const fileName = `Music_Invoice_${invoice.invoiceNumber}.pdf`;
-//             const filePath = path.join(__dirname, fileName);
-
-//             doc.font(fontPath);
-//             doc.pipe(fs.createWriteStream(filePath));
-//             const ghostImagePath = 'public/image/ghostMusicINR.png';
-//             doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
-//             doc.fillColor('grey');
-
-//             doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
-//             doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
-//             doc.fillColor('grey').fontSize(10);
-//             doc.text(`${invoice.ptRevenue}`, 480, 315).text(`${invoice.usTax}`, 480, 349).text(`${invoice.ptAfterUsTax}`, 480, 360);
-//             doc.text(`${invoice.commission}`, 480, 476).text(`${invoice.commissionAmount}`, 480, 510);
-//             doc.text(`${invoice.totalPayout}`, 480, 605).text(`${invoice.conversionRate}`, 480, 638).text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648);
-//             doc.text(`${invoice.payout}`, 480, 672);
-
-//             doc.end();
-//             return filePath;
-//         };
-
-//         const createMusicUSDPDF = (invoice) => {
-//             const doc = new PDFDocument({ size: 'A4', margin: 50 });
-//             const fontPath = 'public/font/Satoshi-Bold.otf';
-//             const fileName = `Music_Invoice_${invoice.invoiceNumber}.pdf`;
-//             const filePath = path.join(__dirname, fileName);
-
-//             doc.font(fontPath);
-//             doc.pipe(fs.createWriteStream(filePath));
-//             const ghostImagePath = 'public/image/ghostMusicUSD.png';
-//             doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
-//             doc.fillColor('grey');
-
-//             doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
-//             doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
-//             doc.fillColor('grey').fontSize(10);
-//             doc.text(`${invoice.ptRevenue}`, 480, 315).text(`${invoice.usTax}`, 480, 349).text(`${invoice.ptAfterUsTax}`, 480, 360);
-//             doc.text(`${invoice.commission}`, 480, 476).text(`${invoice.commissionAmount}`, 480, 510);
-//             doc.text(`${invoice.totalPayout}`, 480, 605).text(`${invoice.conversionRate}`, 480, 638).text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648);
-//             doc.text(`${invoice.payout}`, 480, 672);
-
-//             doc.end();
-//             return filePath;
-//         };
-
-//         // Select the appropriate PDF creation function based on the model and currency
-//         let pdfPath;
-//         if (invoiceType === 'channel' && invoice.currency === 'INR') {
-//             pdfPath = createChannelINRPDF(invoice);
-//         } else if (invoiceType === 'channel' && invoice.currency === 'USD') {
-//             pdfPath = createChannelUSDPDF(invoice);
-//         } else if (invoiceType === 'music' && invoice.currency === 'INR') {
-//             pdfPath = createMusicINRPDF(invoice);
-//         } else if (invoiceType === 'music' && invoice.currency === 'USD') {
-//             pdfPath = createMusicUSDPDF(invoice);
-//         } else {
-//             return res.status(400).json({ success: false, message: 'Invalid type or currency' });
-//         }
-
-//         if (!pdfPath) {
-//             return res.status(500).json({ success: false, message: 'Error generating PDF' });
-//         }
-
-//         // Send the PDF as a response to the frontend
-//         res.setHeader('Content-Type', 'application/pdf');
-//         res.setHeader('Content-Disposition', `attachment; filename=${path.basename(pdfPath)}`);
-//         res.sendFile(pdfPath, (err) => {
-//             if (err) {
-//                 console.error('Error sending the PDF:', err);
-//                 return res.status(500).json({ success: false, message: 'Error sending the PDF' });
-//             }
-
-//             // Delete the PDF file after sending it
-//             fs.unlink(pdfPath, (err) => {
-//                 if (err) {
-//                     console.error(`Failed to delete file: ${pdfPath}`, err);
-//                 } else {
-//                     console.log(`File deleted: ${pdfPath}`);
-//                 }
-//             });
-//         });
-//     } catch (error) {
-//         console.error('Error generating or sending invoice PDF:', error);
-//         res.status(500).json({ success: false, message: 'Internal Server Error' });
-//     }
-// };
+// download single invoice 
 
 exports.downloadInvoicePDF = async (req, res) => {
     try {
@@ -442,7 +434,7 @@ exports.downloadInvoicePDF = async (req, res) => {
         }
 
         // Define functions to create the PDF based on the type and currency
-        const ChannelINRPDF = (invoice) => {
+        const ChannelINR_US_PDF = (invoice) => {
             return new Promise((resolve, reject) => {
                 const doc = new PDFDocument({ size: 'A4', margin: 50 });
                 const fontPath = 'public/font/Satoshi-Bold.otf';
@@ -453,7 +445,7 @@ exports.downloadInvoicePDF = async (req, res) => {
                 const stream = fs.createWriteStream(filePath);
                 doc.pipe(stream);
 
-                const ghostImagePath = 'public/image/ghostChannelINR.png';
+                const ghostImagePath = 'public/image/ghost.png';
                 doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
                 doc.fillColor('grey');
 
@@ -465,26 +457,36 @@ exports.downloadInvoicePDF = async (req, res) => {
                 .text(` ${invoice.partnerName}`, 134, 119)
                 .text(` ${invoice.licensorName}`, 154, 147)
             doc
-                .fillColor('black')
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 295)
-                .text(`${invoice.usTax}`, 480, 330)
-                .text(`${invoice.ptAfterUsTax}`, 480, 364)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.commission}`, 480, 443)
-                .text(`${invoice.commissionAmount}`, 480, 476)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.totalPayout}`, 480, 552)
-                .text(`${invoice.conversionRate}`, 480, 586)
-                .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.payout}`, 480, 655)
-                .moveDown()
-                .fontSize(10);
+            .fillColor('black')
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Revenue (in USD)`, 40, 230)
+            .text(`Youtube Revenue`, 40, 295)
+            .text(`$${invoice.ptRevenue}`, 480, 295)
+            .text(`Withholding Tax on US Revenue`, 40, 330)
+            .text(`-$${invoice.usTax}`, 480, 330)
+            .text(`Youtube Revenue afer Tax`, 40, 364)
+            .text(`$${invoice.ptAfterUsTax}`, 480, 364)
+            .moveDown()
+            .fontSize(10)
+            .text(`Partner Revenue Share`, 40, 443)
+            .text(`${100-invoice.commission}%`, 480, 443)
+            .text(`Partner Revenue Amount`, 40, 476)
+            .text(`$${invoice.commissionAmount}`, 480, 476)
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Payout(in USD)`, 40, 552)
+            .text(`$${invoice.totalPayout}`, 480, 552)
+            .text(`Conversion Rate`, 40, 586)
+            .text(`${invoice.conversionRate}`, 480, 586)
+            .text(`TDS`, 40, 620)
+            .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
+            .moveDown()
+            .fontSize(10)
+            .text(`Payout(in INR)`, 40, 655)
+            .text(`${invoice.payout}`, 480, 655)
+            .moveDown()
+            .fontSize(10);
 
                 // doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
                 // doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
@@ -501,7 +503,7 @@ exports.downloadInvoicePDF = async (req, res) => {
             });
         };
 
-        const ChannelUSDPDF = (invoice) => {
+        const ChannelINR_NonUS_PDF = (invoice) => {
             return new Promise((resolve, reject) => {
                 const doc = new PDFDocument({ size: 'A4', margin: 50 });
                 const fontPath = 'public/font/Satoshi-Bold.otf';
@@ -512,7 +514,135 @@ exports.downloadInvoicePDF = async (req, res) => {
                 const stream = fs.createWriteStream(filePath);
                 doc.pipe(stream);
 
-                const ghostImagePath = 'public/image/ghostChannelUSD.png';
+                const ghostImagePath = 'public/image/ghost.png';
+                doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
+                doc.fillColor('grey');
+
+                doc
+                .fontSize(12)
+                .text(` ${invoice.date}`, 398, 65)
+                doc
+                .fillColor('white')
+                .text(` ${invoice.partnerName}`, 134, 119)
+                .text(` ${invoice.licensorName}`, 154, 147)
+            doc
+            .fillColor('black')
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Revenue (in USD)`, 40, 230)
+            .text(`Youtube Revenue`, 40, 330)
+            .text(`$${invoice.ptRevenue}`, 480, 330)
+            // .text(`Withholding Tax on US Revenue`, 40, 330)
+            // .text(`-$${invoice.usTax}`, 480, 330)
+            // .text(`Youtube Revenue afer Tax`, 40, 364)
+            // .text(`$${invoice.ptAfterUsTax}`, 480, 364)
+            .moveDown()
+            .fontSize(10)
+            .text(`Partner Revenue Share`, 40, 443)
+            .text(`${100-invoice.commission}%`, 480, 443)
+            .text(`Partner Revenue Amount`, 40, 476)
+            .text(`$${invoice.commissionAmount}`, 480, 476)
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Payout(in USD)`, 40, 552)
+            .text(`$${invoice.totalPayout}`, 480, 552)
+            .text(`Conversion Rate`, 40, 586)
+            .text(`${invoice.conversionRate}`, 480, 586)
+            .text(`TDS`, 40, 620)
+            .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 620)
+            .moveDown()
+            .fontSize(10)
+            .text(`Payout(in INR)`, 40, 655)
+            .text(`${invoice.payout}`, 480, 655)
+            .moveDown()
+            .fontSize(10);
+
+                // doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
+                // doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
+                // doc.fillColor('grey').fontSize(10);
+                // doc.text(`${invoice.ptRevenue}`, 480, 315).text(`${invoice.usTax}`, 480, 349).text(`${invoice.ptAfterUsTax}`, 480, 360);
+                // doc.text(`${invoice.commission}`, 480, 476).text(`${invoice.commissionAmount}`, 480, 510);
+                // doc.text(`${invoice.totalPayout}`, 480, 605).text(`${invoice.conversionRate}`, 480, 638).text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648);
+                // doc.text(`${invoice.payout}`, 480, 672);
+
+                doc.end();
+
+                stream.on('finish', () => resolve(filePath));
+                stream.on('error', reject);
+            });
+        };
+
+        const ChannelUSD_US_PDF = (invoice) => {
+            return new Promise((resolve, reject) => {
+                const doc = new PDFDocument({ size: 'A4', margin: 50 });
+                const fontPath = 'public/font/Satoshi-Bold.otf';
+                const fileName = `Channel_Invoice_${invoice.invoiceNumber}.pdf`;
+                const filePath = path.join(__dirname, fileName);
+
+                doc.font(fontPath);
+                const stream = fs.createWriteStream(filePath);
+                doc.pipe(stream);
+
+                const ghostImagePath = 'public/image/ghost.png';
+                doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
+                doc.fillColor('grey');
+
+                doc
+                .fontSize(12)
+                .text(` ${invoice.date}`, 398, 65)
+                doc
+                .fillColor('white')
+                .text(` ${invoice.partnerName}`, 134, 119)
+                .text(` ${invoice.licensorName}`, 154, 147)
+            doc
+            .fillColor('black')
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Revenue (in USD)`, 40, 230)
+            .text(`Youtube Revenue`, 40, 295)
+            .text(`$${invoice.ptRevenue}`, 480, 295)
+            .text(`Withholding Tax on US Revenue`, 40, 330)
+            .text(`-$${invoice.usTax}`, 480, 330)
+            .text(`Youtube Revenue afer Tax`, 40, 364)
+            .text(`$${invoice.ptAfterUsTax}`, 480, 364)
+            .moveDown()
+            .fontSize(10)
+            .text(`Partner Revenue Share`, 40, 443)
+            .text(`${100-invoice.commission}%`, 480, 443)
+            .text(`Partner Revenue Amount`, 40, 476)
+            .text(`$${invoice.commissionAmount}`, 480, 476)
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Payout(in USD)`, 40, 630)
+            .text(`$${invoice.totalPayout}`, 480, 630)
+
+                // doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
+                // doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
+                // doc.fillColor('grey').fontSize(10);
+                // doc.text(`${invoice.ptRevenue}`, 480, 315).text(`${invoice.usTax}`, 480, 349).text(`${invoice.ptAfterUsTax}`, 480, 360);
+                // doc.text(`${invoice.commission}`, 480, 476).text(`${invoice.commissionAmount}`, 480, 510);
+                // doc.text(`${invoice.totalPayout}`, 480, 605).text(`${invoice.conversionRate}`, 480, 638).text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648);
+                // doc.text(`${invoice.payout}`, 480, 672);
+
+                doc.end();
+
+                stream.on('finish', () => resolve(filePath));
+                stream.on('error', reject);
+            });
+        };
+
+        const ChannelUSD_NonUS_PDF = (invoice) => {
+            return new Promise((resolve, reject) => {
+                const doc = new PDFDocument({ size: 'A4', margin: 50 });
+                const fontPath = 'public/font/Satoshi-Bold.otf';
+                const fileName = `Channel_Invoice_${invoice.invoiceNumber}.pdf`;
+                const filePath = path.join(__dirname, fileName);
+
+                doc.font(fontPath);
+                const stream = fs.createWriteStream(filePath);
+                doc.pipe(stream);
+
+                const ghostImagePath = 'public/image/ghost.png';
                 doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
                 doc.fillColor('grey');
 
@@ -524,27 +654,26 @@ exports.downloadInvoicePDF = async (req, res) => {
                 .text(` ${invoice.partnerName}`, 134, 119)
                 .text(` ${invoice.licensorName}`, 154, 147)
             doc
-                .fillColor('black')
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 295)
-                .text(`${invoice.usTax}`, 480, 330)
-                .text(`${invoice.ptAfterUsTax}`, 480, 364)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.commission}`, 480, 443)
-                .text(`${invoice.commissionAmount}`, 480, 476)
-                .moveDown()
-                .fontSize(10)
-                // .text(`${invoice.totalPayout}`, 480, 605)
-                // .text(`${invoice.conversionRate}`, 480, 638)
-                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.payout}`, 480, 651)
-                .moveDown()
-                .fontSize(10);
-
+            .fillColor('black')
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Revenue (in USD)`, 40, 230)
+            .text(`Youtube Revenue`, 40, 330)
+            .text(`$${invoice.ptRevenue}`, 480, 330)
+            // .text(`Withholding Tax on US Revenue`, 40, 330)
+            // .text(`-$${invoice.usTax}`, 480, 330)
+            // .text(`Youtube Revenue afer Tax`, 40, 364)
+            // .text(`$${invoice.ptAfterUsTax}`, 480, 364)
+            .moveDown()
+            .fontSize(10)
+            .text(`Partner Revenue Share`, 40, 443)
+            .text(`${100-invoice.commission}%`, 480, 443)
+            .text(`Partner Revenue Amount`, 40, 476)
+            .text(`$${invoice.commissionAmount}`, 480, 476)
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Payout(in USD)`, 40, 630)
+            .text(`$${invoice.totalPayout}`, 480, 630)
                 // doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
                 // doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
                 // doc.fillColor('grey').fontSize(10);
@@ -571,7 +700,7 @@ exports.downloadInvoicePDF = async (req, res) => {
                 const stream = fs.createWriteStream(filePath);
                 doc.pipe(stream);
 
-                const ghostImagePath = 'public/image/ghostMusicINR.png';
+                const ghostImagePath = 'public/image/ghostMus.png';
                 doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
                 doc.fillColor('grey');
 
@@ -583,26 +712,34 @@ exports.downloadInvoicePDF = async (req, res) => {
                 .text(` ${invoice.partnerName}`, 134, 119)
                 .text(` ${invoice.licensorName}`, 154, 147)
             doc
-                .fillColor('black')
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 294)
-                // .text(`${invoice.usTax}`, 480, 349)
-                // .text(`${invoice.ptAfterUsTax}`, 480, 360)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.commission}`, 480, 373)
-                .text(`${invoice.commissionAmount}`, 480, 406)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.totalPayout}`, 480, 485)
-                .text(`${invoice.conversionRate}`, 480, 518)
-                .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 555)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.payout}`, 480, 588)
-                .moveDown()
-                .fontSize(10);
+            .fillColor('black')
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Revenue (in USD)`, 40, 230)
+            .text(`Digital Distribution Revenue`, 40, 294)
+            .text(`$${invoice.ptRevenue}`, 480, 294)
+            // .text(`${invoice.usTax}`, 480, 349)
+            // .text(`${invoice.ptAfterUsTax}`, 480, 360)
+            .moveDown()
+            .fontSize(10)
+            .text(`Partner Revenue Share`, 40, 373)
+            .text(`${100-invoice.commission}%`, 480, 373)
+            .text(`Partner Revenue Amount`, 40, 406)
+            .text(`$${invoice.commissionAmount}`, 480, 406)
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Payout (in USD)`, 40, 485)
+            .text(`$${invoice.totalPayout}`, 480, 485)
+            .text(`Conversion Rate (in INR)`, 40, 518)
+            .text(`${invoice.conversionRate}`, 480, 518)
+            .text(`TDS`, 40, 555)
+            .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 555)
+            .moveDown()
+            .fontSize(10)
+            .text(`Payout (in INR)`, 40, 588)
+            .text(`${invoice.payout}`, 480, 588)
+            .moveDown()
+            .fontSize(10);
 
 
                 // doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
@@ -631,7 +768,7 @@ exports.downloadInvoicePDF = async (req, res) => {
                 const stream = fs.createWriteStream(filePath);
                 doc.pipe(stream);
 
-                const ghostImagePath = 'public/image/ghostMusicUSD.png';
+                const ghostImagePath = 'public/image/ghostMus.png';
                 doc.image(ghostImagePath, 0, 0, { width: 595.28, height: 841.89 });
                 doc.fillColor('grey');
 
@@ -643,26 +780,24 @@ exports.downloadInvoicePDF = async (req, res) => {
                 .text(` ${invoice.partnerName}`, 134, 119)
                 .text(` ${invoice.licensorName}`, 154, 147)
             doc
-                .fillColor('black')
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.ptRevenue}`, 480, 294)
-                // .text(`${invoice.usTax}`, 480, 349)
-                // .text(`${invoice.ptAfterUsTax}`, 480, 360)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.commission}`, 480, 373)
-                .text(`${invoice.commissionAmount}`, 480, 406)
-                .moveDown()
-                .fontSize(10)
-                // .text(`${invoice.totalPayout}`, 480, 605)
-                // .text(`${invoice.conversionRate}`, 480, 638)
-                // .text(`${invoice.tdsTax}(${invoice.tds}%)`, 480, 648)
-                .moveDown()
-                .fontSize(10)
-                .text(`${invoice.payout}`, 480, 652)
-                .moveDown()
-                .fontSize(10);
+            .fillColor('black')
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Revenue (in USD)`, 40, 230)
+            .text(`Digital Distribution Revenue`, 40, 294)
+            .text(`$${invoice.ptRevenue}`, 480, 294)
+            // .text(`${invoice.usTax}`, 480, 349)
+            // .text(`${invoice.ptAfterUsTax}`, 480, 360)
+            .moveDown()
+            .fontSize(10)
+            .text(`Partner Revenue Share`, 40, 373)
+            .text(`${100-invoice.commission}%`, 480, 373)
+            .text(`Partner Revenue Amount`, 40, 406)
+            .text(`$${invoice.commissionAmount}`, 480, 406)
+            .moveDown()
+            .fontSize(10)
+            .text(`Total Payout (in USD)`, 40, 555)
+            .text(`$${invoice.totalPayout}`, 480, 555)
 
                 // doc.fontSize(12).text(` ${invoice.date}`, 398, 65);
                 // doc.fillColor('white').text(` ${invoice.partnerName}`, 130, 126).text(` ${invoice.licensorName}`, 150, 162);
@@ -681,17 +816,27 @@ exports.downloadInvoicePDF = async (req, res) => {
 
         // Select the appropriate PDF creation function based on the model and currency
         let pdfPath;
-        if (invoiceType === 'channel' && invoice.currency === 'INR') {
-            pdfPath = await ChannelINRPDF(invoice);
-        } else if (invoiceType === 'channel' && invoice.currency === 'USD') {
-            pdfPath = await ChannelUSDPDF(invoice);
-        } else if (invoiceType === 'music' && invoice.currency === 'INR') {
-            pdfPath = await MusicINRPDF(invoice);
-        } else if (invoiceType === 'music' && invoice.currency === 'USD') {
-            pdfPath = await MusicUSDPDF(invoice);
-        } else {
-            return res.status(400).json({ success: false, message: 'Invalid type or currency' });
-        }
+if (invoiceType === 'channel' && invoice.currency === 'INR' ) {
+    pdfPath = await ChannelINR_US_PDF(invoice);
+} 
+// else if (invoiceType === 'channel' && invoice.currency === 'INR' && invoice.country !== 'US') {
+//     pdfPath = await ChannelINR_NonUS_PDF(invoice);
+// } 
+else if (invoiceType === 'channel' && invoice.currency === 'USD' ) {
+    pdfPath = await ChannelUSD_US_PDF(invoice);
+} 
+// else if (invoiceType === 'channel' && invoice.currency === 'USD' && invoice.country !== 'US') {
+//     pdfPath = await ChannelUSD_NonUS_PDF(invoice);
+// } 
+else if (invoiceType === 'music' && invoice.currency === 'INR') {
+    pdfPath = await MusicINRPDF(invoice);
+} 
+else if (invoiceType === 'music' && invoice.currency === 'USD') {
+    pdfPath = await MusicUSDPDF(invoice);
+}
+ else {
+    return res.status(400).json({ success: false, message: 'Invalid type, currency, or country' });
+}
 
         if (!pdfPath) {
             return res.status(500).json({ success: false, message: 'Error generating PDF' });

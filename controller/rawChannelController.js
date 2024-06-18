@@ -62,12 +62,14 @@ const importChannel = async (req, res) => {
                 if (row['Asset Channel ID']) {
                     const channelId = row['Asset Channel ID'];
                     const partnerRevenue = parseFloat(row['Partner Revenue'] || 0);
+                    const country = row['Country'];
 
                     if (!aggregatedData[channelId]) {
                         aggregatedData[channelId] = {
                             channelId: channelId,
                             date: formattedDate,
-                            partnerRevenue: partnerRevenue
+                            partnerRevenue: partnerRevenue,
+                            country : country
                         };
                     } else {
                         aggregatedData[channelId].partnerRevenue += partnerRevenue;

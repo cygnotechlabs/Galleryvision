@@ -58,6 +58,7 @@ exports.assignChannel = async (req, res) => {
       channelLogo,
       date,
       partnerRevenue,
+      country
     } = req.body;
 
     // Check if a document with the same channelId already exists in the channels collection
@@ -81,6 +82,7 @@ exports.assignChannel = async (req, res) => {
       licensorId,
       licensorName,
       channelLogo,
+      country,
       assets,
     });
 

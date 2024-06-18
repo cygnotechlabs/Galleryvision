@@ -22,32 +22,64 @@ exports.viewTax = async (req, res) => {
     }
 };
 
-exports.addTax = async (req, res) => {
-    try {
-        const { taxName, taxPercentage } = req.body;
-        console.log("received data:", req.body);
+// exports.addTax = async (req, res) => {
+//     try {
+//         const {taxPercentage ,date } = req.body;
+//         console.log("received data:", req.body);
 
-        const existingTax = await tax.findOne({
-            $or: [{ taxName }],
-        });
+//         const existingTax = await tax.findOne({
+//             $or: [{ date }],
+//         });
 
-        if ( existingTax ){
-            return res.status(409).json({
-                message:"Tax is already exists",
-            });
-        }
+//         if ( existingTax ){
+//             return res.status(409).json({
+//                 message:"Tax is already exists",
+//             });
+//         }
 
-        const newTax = new tax({
-            taxName,
-            taxPercentage
-        });
-        await newTax.save();
-        res.status(201).json({message: 'Tax added Succesfully'});
-    } catch (error) {
-        console.error("Error adding Tax:",error);
-        res.status(500).json({ error : 'Internal Server error'});
+
+//         const newTax = new tax({
+//             taxPercentage,
+//             date
+//         });
+//         await newTax.save();
+//         res.status(201).json({message: 'Tax added Succesfully'});
+//     } catch (error) {
+//         console.error("Error adding Tax:",error);
+//         res.status(500).json({ error : 'Internal Server error'});
         
-    }
+//     }
+// };
+
+exports.addTax = async (req, res) => {
+  try {
+      const { taxPercentage, date } = req.body;
+      console.log("Received data:", req.body);
+
+      const existingTax = await tax.findOneAndUpdate(
+          { date },
+          { taxPercentage, date },
+          { new: true, upsert: true }
+      );
+
+      if (existingTax) {
+          return res.status(200).json({
+              message: "Tax updated successfully",
+              tax: existingTax
+          });
+      }
+
+      const newTax = new tax({
+          taxPercentage,
+          date
+      });
+      await newTax.save();
+      res.status(201).json({ message: 'Tax added successfully' });
+
+  } catch (error) {
+      console.error("Error adding or updating tax:", error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 
