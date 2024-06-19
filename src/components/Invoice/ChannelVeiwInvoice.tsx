@@ -1,12 +1,9 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import { Back, Download, Emailsm } from "../icons/icon";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
-import Modal from "../../layouts/Modal";
-import ChannelPDFGenerator from "./PDF/ChannelPDFGenerator";
-import PrintChannel from "./Print/PrintChannel";
 import { authInstance } from "../../hooks/axiosInstances";
+import { Back, Download } from "../icons/icon";
 // import FileSaver from '../Filesaver/file-saver';
 import { saveAs } from "file-saver"; // Import file-saver
 type Props = {};
@@ -41,18 +38,8 @@ export type InvoiceData = {
 
 const ChannelViewInvoice: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
-  const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
-
-  const subject = `Invoice for ${invoiceData?.date} - ${invoiceData?.channelName}`;
-  const body = `Dear ${invoiceData?.licensorName},\n
-  Please find attached the invoice for the month of ${invoiceData?.date} for the channel ${invoiceData?.channelName}.\n
-  If you have any questions or require further clarification regarding the invoice, please do not hesitate to reach out. We are here to assist you and ensure all your queries are addressed promptly.\n
-  Thank you for your continued partnership and prompt payment. We look forward to continuing to work with you.\n
-  Best regards,\n
-  Gallery Vision`;
-  const encodedBody = encodeURIComponent(body);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -188,15 +175,6 @@ const ChannelViewInvoice: React.FC<Props> = () => {
           </div>
         </div>
         <div className="flex justify-end gap-4 mx-8">
-          <PrintChannel invoiceData={invoiceData} />
-          <a
-            href={`mailto:${
-              invoiceData.licensorEmail
-            }?subject=${encodeURIComponent(subject)}&body=${encodedBody}`}
-            className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100"
-          >
-            <Emailsm /> Email
-          </a>
           <button
             onClick={handleDownloadPdf}
             className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"
@@ -205,9 +183,6 @@ const ChannelViewInvoice: React.FC<Props> = () => {
           </button>
         </div>
       </div>
-      <Modal onClose={() => setOpen(false)} open={open}>
-        <ChannelPDFGenerator onClose={() => setOpen(false)} />
-      </Modal>
     </div>
   );
 };

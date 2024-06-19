@@ -1,13 +1,10 @@
-import { Link, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
 import axios from "axios";
-import { Back, Download, Emailsm } from "../icons/icon";
-import API_ENDPOINTS from "../../config/apiConfig";
-import Modal from "../../layouts/Modal";
-import MusicPDFGenerator from "./PDF/MusicPDFGenarator";
-import PrintMusicInvoice from "./Print/PrintMusicInvoice";
-import { authInstance } from "../../hooks/axiosInstances";
 import { saveAs } from "file-saver"; // Import file-saver
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
+import { Back, Download } from "../icons/icon";
 
 type Props = {};
 
@@ -41,17 +38,7 @@ type InvoiceData = {
 
 const MusicViewInvoice = ({}: Props) => {
   const { id } = useParams<{ id: string }>();
-  const [open, setOpen] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
-
-  const subject = `Invoice for ${invoiceData?.date} - ${invoiceData?.musicName}`;
-  const body = `Dear ${invoiceData?.licensorName},\n
-  Please find attached the invoice for the month of ${invoiceData?.date} for the channel ${invoiceData?.musicName}.\n
-  If you have any questions or require further clarification regarding the invoice, please do not hesitate to reach out. We are here to assist you and ensure all your queries are addressed promptly.\n
-  Thank you for your continued partnership and prompt payment. We look forward to continuing to work with you.\n
-  Best regards,\n
-  Gallery Vision`;
-  const encodedBody = encodeURIComponent(body);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -210,15 +197,6 @@ const MusicViewInvoice = ({}: Props) => {
           </div>
         </div>
         <div className="flex justify-end gap-4 mx-8">
-          <PrintMusicInvoice invoiceData={invoiceData} />
-          <a
-            href={`mailto:${
-              invoiceData.licensorEmail
-            }?subject=${encodeURIComponent(subject)}&body=${encodedBody}`}
-            className="flex items-center gap-1 rounded-lg border border-red-500 text-sm font-bold px-3 py-2 bg-red-100"
-          >
-            <Emailsm /> Email
-          </a>
           <button
             onClick={handleDownloadPdf}
             className="flex items-center text-white gap-1 rounded-lg border border-black text-sm font-bold px-3 py-2 bg-black"
@@ -227,9 +205,6 @@ const MusicViewInvoice = ({}: Props) => {
           </button>
         </div>
       </div>
-      <Modal onClose={() => setOpen(false)} open={open}>
-        <MusicPDFGenerator onClose={() => setOpen(false)} />
-      </Modal>
     </div>
   );
 };
