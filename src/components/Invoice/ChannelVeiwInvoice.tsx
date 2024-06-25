@@ -34,6 +34,9 @@ export type InvoiceData = {
   channelEmail: string;
   licensorEmail: string;
   tds: string;
+  ustaxPercentage: string;
+  inrPayout:string;
+  tdsTax: string;
 };
 
 const ChannelViewInvoice: React.FC<Props> = () => {
@@ -130,12 +133,38 @@ const ChannelViewInvoice: React.FC<Props> = () => {
               <p className="font-bold text-sm">{invoiceData.channelId}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Channel Name</p>
-              <p className="font-bold text-sm">{invoiceData.channelName}</p>
+              <p className="text-sm">Partner Revenue</p>
+              <p className="font-bold text-sm">{invoiceData.ptRevenue}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Invoice Date</p>
-              <p className="font-bold text-sm">{invoiceData.date}</p>
+              <p className="text-sm">US Tax({invoiceData.ustaxPercentage}%)</p>
+              <p className="font-bold text-sm">{invoiceData.usTax}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Partner Revenue After Tax</p>
+              <p className="font-bold text-sm">{invoiceData.ptAfterUsTax}</p>
+            </div>
+          </div>
+          <div className="flex border-b-2 pb-6">
+          <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Commission({invoiceData.commission}%)</p>
+              <p className="font-bold text-sm">{invoiceData.commissionAmount}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Total Payout</p>
+              <p className="font-bold text-sm">{invoiceData.totalPayout}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Conversion ({invoiceData.conversionRate})</p>
+              <p className="font-bold text-sm">{invoiceData.inrPayout}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">TDS( {invoiceData.tds}% )</p>
+              <p className="font-bold text-sm">{invoiceData.tdsTax}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Payout</p>
+              <p className="font-bold text-sm">{invoiceData.payout}</p>
             </div>
           </div>
           <div className="flex border-b-2 pb-6">
@@ -149,24 +178,24 @@ const ChannelViewInvoice: React.FC<Props> = () => {
                 <p className="font-bold text-sm">{invoiceData.licensorEmail}</p>
               </div>
             </div>
-            <div className="flex flex-col w-[33%] gap-2">
+            {/* <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Channel Email</p>
               <p className="font-bold text-sm">{invoiceData.channelEmail}</p>
-            </div>
+            </div> */}
           </div>
           <div className="flex flex-col gap-1 border-b-2 pb-6">
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Total Payout(USD)</p>
-              <p className="font-bold text-sm">${invoiceData.totalPayout}</p>
+              <p className="text-sm">Partner Revenue(USD)</p>
+              <p className="font-bold text-sm">${invoiceData.ptRevenue}</p>
             </div>
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Commission {invoiceData.commission}%</p>
+              <p className="text-sm">Commission ({invoiceData.commission}%)</p>
               <p className="font-bold text-sm">
                 ${invoiceData.commissionAmount}
               </p>
             </div>
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Total Amount({invoiceData.currency})</p>
+              <p className="text-sm">Total Payout({invoiceData.currency})</p>
               <p className="font-bold text-sm">
                 {invoiceData.currency == "USD" ? "$ " : "₹ "}
                 {invoiceData.payout}

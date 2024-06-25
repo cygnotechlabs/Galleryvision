@@ -73,8 +73,8 @@ const CreateMusic: React.FC<Props> = () => {
   const validateForm = () => {
     const newErrors: any = {};
 
-    if (!musicData.musicId) newErrors.musicId = "Channel ID is required.";
-    if (!musicData.musicName) newErrors.musicName = "Channel name is required.";
+    if (!musicData.musicId) newErrors.musicId = "Music ID is required.";
+    if (!musicData.musicName) newErrors.musicName = "Music name is required.";
     if (!musicData.licensorName)
       newErrors.licensorName = "Licensor name is required.";
     if (!musicData.commission) {
@@ -116,7 +116,7 @@ const CreateMusic: React.FC<Props> = () => {
       });
       toast.success(response.data.message);
 
-      // Redirect to "/channel" after 1 second
+      // Redirect to "/Music" after 1 second
       setTimeout(() => {
         navigate("/home/music");
       }, 1000);
@@ -172,7 +172,7 @@ const CreateMusic: React.FC<Props> = () => {
       <div className="flex justify-between items-center pl-[34px]">
         <div>
           <Link
-            to="/home/unassigned-channels"
+            to="/home/unassigned-musics"
             className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
           >
             <Back />
@@ -182,11 +182,11 @@ const CreateMusic: React.FC<Props> = () => {
       </div>
       <div className="bg-white shadow-md rounded-xl ml-[34px] px-8 py-8 mt-[24px] mr-[34px] h-[75svh] pr-9">
         <div className="flex justify-between">
-          <p className="text-2xl font-bold">Create Channel</p>
+          <p className="text-2xl font-bold">Create Music</p>
         </div>
         <div className="mt-5">
           <div>
-            <p className="text-xl font-bold mb-2">Add channel logo</p>
+            <p className="text-xl font-bold mb-2">Add Music logo</p>
             <div className="bg-slate-100 px-4 py-6 w-[723px] h-[184px] rounded-2xl">
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
                 <div>Logo</div>
@@ -253,13 +253,13 @@ const CreateMusic: React.FC<Props> = () => {
               )}
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Channel ID</label>
+              <label htmlFor="">Music ID</label>
               <input
                 type="text"
                 name="musicId"
                 value={musicData.musicId}
                 onChange={handleChange}
-                placeholder="Enter Channel ID"
+                placeholder="Enter Music ID"
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
@@ -272,13 +272,13 @@ const CreateMusic: React.FC<Props> = () => {
           </div>
           <div className="flex justify-between">
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Channel name</label>
+              <label htmlFor="">Music name</label>
               <input
                 type="text"
                 name="musicName"
                 value={musicData.musicName}
                 onChange={handleChange}
-                placeholder="Enter Channel name"
+                placeholder="Enter Music name"
                 className="px-3 py-3 w-[75svh] border border-gray-200 rounded-lg"
                 required
               />
@@ -313,7 +313,7 @@ const CreateMusic: React.FC<Props> = () => {
               className="bg-black text-white font-bold px-3 py-3 rounded-lg"
               onClick={createMusic}
             >
-              Create channel
+              Create Music
             </button>
           </div>
         </div>

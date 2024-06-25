@@ -34,6 +34,8 @@ type InvoiceData = {
   date: string;
   licensorEmail: string;
   tds: string;
+  tdsTax: string;
+  inrPayout : string;
 };
 
 const MusicViewInvoice = ({}: Props) => {
@@ -126,29 +128,31 @@ const MusicViewInvoice = ({}: Props) => {
               <p className="font-bold text-sm">{invoiceData.musicId}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">PT Revenue</p>
+              <p className="text-sm">Partner Revenue</p>
               <p className="font-bold text-sm">{invoiceData.ptRevenue}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Commission({invoiceData.commission}%)</p>
+              <p className="font-bold text-sm">
+                {invoiceData.commissionAmount}
+              </p>
             </div>
           </div>
           <div className="flex border-b-2 pb-6">
-            <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">TDS(%)</p>
-              <p className="font-bold text-sm">{invoiceData.tds}</p>
-            </div>
-            <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Commission</p>
-              <p className="font-bold text-sm">{invoiceData.commission}</p>
-            </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Total Payout</p>
               <p className="font-bold text-sm">{invoiceData.totalPayout}</p>
             </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">Conversion ({invoiceData.conversionRate})</p>
+              <p className="font-bold text-sm">{invoiceData.inrPayout}</p>
+            </div>
+            <div className="flex flex-col w-[33%] gap-2">
+              <p className="text-sm">TDS( {invoiceData.tds}% )</p>
+              <p className="font-bold text-sm">{invoiceData.tdsTax}</p>
+            </div>
           </div>
           <div className="flex border-b-2 pb-6">
-            <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Conversion Rate</p>
-              <p className="font-bold text-sm">{invoiceData.conversionRate}</p>
-            </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Payout</p>
               <p className="font-bold text-sm">{invoiceData.payout}</p>
@@ -178,17 +182,17 @@ const MusicViewInvoice = ({}: Props) => {
           </div>
           <div className="flex flex-col gap-1 border-b-2 pb-6">
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Total Revenue</p>
+              <p className="text-sm">Partner Revenue</p>
               <p className="font-bold text-sm">${invoiceData.ptRevenue}</p>
             </div>
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Commission {invoiceData.commission}</p>
+              <p className="text-sm">Commission ({invoiceData.commission}%)</p>
               <p className="font-bold text-sm">
                 ${invoiceData.commissionAmount}
               </p>
             </div>
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Total Amount</p>
+              <p className="text-sm">Total Payout({invoiceData.currency})</p>
               <p className="font-bold text-sm">
                 {invoiceData.currency == "USD" ? "$ " : "₹ "}
                 {invoiceData.payout}
