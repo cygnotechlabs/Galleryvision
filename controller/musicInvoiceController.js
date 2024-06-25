@@ -158,6 +158,7 @@ exports.generateMusicInvoice = async (req, res) => {
         date,
         ptRevenue,
         tdsTax,
+        inrPayout,
         tds,
         commission: music.commission,
         commissionAmount,

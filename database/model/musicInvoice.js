@@ -19,6 +19,7 @@ const musicInvoicesSchema = mongoose.Schema({
   ptRevenue: { type: String },
   tdsTax: { type: String},
   tds: { type: String},
+  inrPayout: { type: String},
   commission: { type: String },
   commissionAmount: { type: String },
   totalPayout: { type: String },
