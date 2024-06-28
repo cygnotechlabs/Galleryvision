@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import API_ENDPOINTS from "../../config/apiConfig";
-import { authInstance } from "../../hooks/axiosInstances";
-import { Back, Download } from "../icons/icon";
+import API_ENDPOINTS from "../../../config/apiConfig";
+import { authInstance } from "../../../hooks/axiosInstances";
+import { Back, Download } from "../../icons/icon";
 import { saveAs } from "file-saver";
 type Props = {};
 
@@ -34,11 +34,11 @@ export type InvoiceData = {
   licensorEmail: string;
   tds: string;
   ustaxPercentage: string;
-  inrPayout:string;
+  inrPayout: string;
   tdsTax: string;
 };
 
-const ChannelViewInvoice: React.FC<Props> = () => {
+const ChannelPreview: React.FC<Props> = () => {
   const { id } = useParams<{ id: string }>();
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
@@ -84,7 +84,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Link to="/home/invoice">
+      <Link to="/home/payment">
         <div className="flex gap-1 justify-center items-center border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]  hover:bg-gray-200 cursor-pointer">
           <Back />
           Back
@@ -129,7 +129,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
           <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Channel ID</p>
-              <p className="font-bold text-sm">{invoiceData.channelId}</p>
+              <p className="font-bold text-xs">{invoiceData.channelId}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Partner Revenue</p>
@@ -145,16 +145,20 @@ const ChannelViewInvoice: React.FC<Props> = () => {
             </div>
           </div>
           <div className="flex border-b-2 pb-6">
-          <div className="flex flex-col w-[33%] gap-2">
+            <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Commission({invoiceData.commission}%)</p>
-              <p className="font-bold text-sm">{invoiceData.commissionAmount}</p>
+              <p className="font-bold text-sm">
+                {invoiceData.commissionAmount}
+              </p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Total Payout</p>
               <p className="font-bold text-sm">{invoiceData.totalPayout}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Conversion ({invoiceData.conversionRate})</p>
+              <p className="text-sm">
+                Conversion ({invoiceData.conversionRate})
+              </p>
               <p className="font-bold text-sm">{invoiceData.inrPayout}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
@@ -177,10 +181,6 @@ const ChannelViewInvoice: React.FC<Props> = () => {
                 <p className="font-bold text-sm">{invoiceData.licensorEmail}</p>
               </div>
             </div>
-            {/* <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Channel Email</p>
-              <p className="font-bold text-sm">{invoiceData.channelEmail}</p>
-            </div> */}
           </div>
           <div className="flex flex-col gap-1 border-b-2 pb-6">
             <div className="flex justify-between gap-2">
@@ -215,4 +215,4 @@ const ChannelViewInvoice: React.FC<Props> = () => {
   );
 };
 
-export default ChannelViewInvoice;
+export default ChannelPreview;

@@ -1,5 +1,3 @@
-// AppRoutes.tsx
-
 import { Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -8,6 +6,12 @@ import { AuthProvider } from "./Context/AuthContext";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Root = lazy(() => import("./pages/Root"));
 const Login = lazy(() => import("./components/Login/Login"));
+const ChannelPreview = lazy(
+  () => import("./components/Payment/View/ChannelPreview")
+);
+const MusicPreview = lazy(
+  () => import("./components/Payment/View/MusicPreview")
+);
 
 // Channel
 const ChannelView = lazy(() => import("./components/Channel/ChannelView"));
@@ -83,6 +87,8 @@ const AppRoutes: React.FC = () => {
               <Route path="unassigned-musics" element={<UnassignedMusic />} />
               <Route path="csv-upload" element={<Upload />} />
               <Route path="payment" element={<Payment />} />
+              <Route path="preview/:id" element={<ChannelPreview />} />
+              <Route path="preview-muisc/:id" element={<MusicPreview />} />
               <Route path="settings" element={<Settings />} />
             </Route>
           </Route>

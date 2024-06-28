@@ -128,8 +128,8 @@ const BarChart: React.FC = () => {
       {
         label: "Sales",
         data: count ? count.totalCommissionArray : [],
-        backgroundColor: "rgba(75,192,192,0.4)",
-        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "#EB2727",
+        borderColor: "#E472A7",
         borderWidth: 2,
         barPercentage: 0.9, // Adjust the bar width as needed
         categoryPercentage: 0.7, // Adjust the gap between bars as needed

@@ -1,54 +1,53 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { saveAs } from "file-saver"; // Import file-saver
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import API_ENDPOINTS from "../../config/apiConfig";
-import { authInstance } from "../../hooks/axiosInstances";
-import { Back, Download } from "../icons/icon";
-import { saveAs } from "file-saver";
+import API_ENDPOINTS from "../../../config/apiConfig";
+import { authInstance } from "../../../hooks/axiosInstances";
+import { Back, Download } from "../../icons/icon";
+
 type Props = {};
 
-export type InvoiceData = {
+type InvoiceData = {
   _id: string;
   partnerName: string;
   licensorId: string;
+  invoiceNumber: string;
   licensorName: string;
   accNum: string;
   ifsc: string;
   iban: string;
   currency: string;
-  date: string;
-  channelId: string;
-  channelName: string;
-  invoiceNumber: string;
+  musicId: string;
   ptRevenue: string;
-  usTax: string;
-  ptAfterUsTax: string;
+  tax: string;
+  ptAfterTax: string;
   commission: string;
   totalPayout: string;
   conversionRate: string;
   payout: string;
   status: string;
   commissionAmount: string;
+  musicName: string;
   licensorAddress: string;
-  channelEmail: string;
+  MusicEmail: string;
+  date: string;
   licensorEmail: string;
   tds: string;
-  ustaxPercentage: string;
-  inrPayout:string;
   tdsTax: string;
+  inrPayout: string;
 };
 
-const ChannelViewInvoice: React.FC<Props> = () => {
+const MusicPreview = ({}: Props) => {
   const { id } = useParams<{ id: string }>();
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
-  const invoiceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (id) {
           const response = await axios.get(
-            API_ENDPOINTS.VIEW_CHANNEL_INVOICE(id),
+            API_ENDPOINTS.VIEW_MUSIC_INVOICE(id),
             { headers: authInstance() }
           );
           setInvoiceData(response.data);
@@ -84,17 +83,14 @@ const ChannelViewInvoice: React.FC<Props> = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Link to="/home/invoice">
+      <Link to={"/home/payment"}>
         <div className="flex gap-1 justify-center items-center border-2 px-1 py-2 rounded-lg text-sm font-medium w-[5%]  hover:bg-gray-200 cursor-pointer">
           <Back />
           Back
         </div>
       </Link>
 
-      <div
-        className="flex flex-col gap-6 bg-white w-[75%] p-8"
-        ref={invoiceRef}
-      >
+      <div className="flex flex-col gap-6 bg-white w-[75%] p-8">
         <p className="text-lg font-bold">Preview</p>
         <div className="flex flex-col gap-6 w-[94%] border-2 p-8 mx-8">
           <p className="text-lg font-bold">{invoiceData.invoiceNumber}</p>
@@ -128,63 +124,67 @@ const ChannelViewInvoice: React.FC<Props> = () => {
           </div>
           <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Channel ID</p>
-              <p className="font-bold text-sm">{invoiceData.channelId}</p>
+              <p className="text-sm">Music ID</p>
+              <p className="font-bold text-sm">{invoiceData.musicId}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Partner Revenue</p>
               <p className="font-bold text-sm">{invoiceData.ptRevenue}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">US Tax({invoiceData.ustaxPercentage}%)</p>
-              <p className="font-bold text-sm">{invoiceData.usTax}</p>
-            </div>
-            <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Partner Revenue After Tax</p>
-              <p className="font-bold text-sm">{invoiceData.ptAfterUsTax}</p>
+              <p className="text-sm">Commission({invoiceData.commission}%)</p>
+              <p className="font-bold text-sm">
+                {invoiceData.commissionAmount}
+              </p>
             </div>
           </div>
           <div className="flex border-b-2 pb-6">
-          <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Commission({invoiceData.commission}%)</p>
-              <p className="font-bold text-sm">{invoiceData.commissionAmount}</p>
-            </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Total Payout</p>
               <p className="font-bold text-sm">{invoiceData.totalPayout}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Conversion ({invoiceData.conversionRate})</p>
+              <p className="text-sm">
+                Conversion ({invoiceData.conversionRate})
+              </p>
               <p className="font-bold text-sm">{invoiceData.inrPayout}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">TDS( {invoiceData.tds}% )</p>
               <p className="font-bold text-sm">{invoiceData.tdsTax}</p>
             </div>
+          </div>
+          <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
               <p className="text-sm">Payout</p>
               <p className="font-bold text-sm">{invoiceData.payout}</p>
             </div>
-          </div>
-          <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Licensor Address</p>
-              <div className="flex flex-col">
-                <p className="font-bold text-sm">
-                  {invoiceData.licensorAddress}
-                </p>
-                <p className="text-sm">Email</p>
-                <p className="font-bold text-sm">{invoiceData.licensorEmail}</p>
+              <p className="text-sm">Status</p>
+              <p className="font-bold text-sm">{invoiceData.status}</p>
+            </div>
+          </div>
+          <div className="flex border-b-2 justify-between pb-6">
+            <div className="flex flex-col gap-3">
+              <p className="text-sm font-bold">Payment to</p>
+              <div className="flex gap-2">
+                <div className="flex-col">
+                  <p className="text-sm font-bold">
+                    Music Partner Name: {invoiceData.licensorName}
+                  </p>
+                  <p className="text-sm">
+                    Licensor Name: {invoiceData.licensorName}
+                  </p>
+                  <p className="text-sm">
+                    Licensor Address: {invoiceData.licensorAddress}
+                  </p>
+                </div>
               </div>
             </div>
-            {/* <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Channel Email</p>
-              <p className="font-bold text-sm">{invoiceData.channelEmail}</p>
-            </div> */}
           </div>
           <div className="flex flex-col gap-1 border-b-2 pb-6">
             <div className="flex justify-between gap-2">
-              <p className="text-sm">Partner Revenue(USD)</p>
+              <p className="text-sm">Partner Revenue</p>
               <p className="font-bold text-sm">${invoiceData.ptRevenue}</p>
             </div>
             <div className="flex justify-between gap-2">
@@ -215,4 +215,4 @@ const ChannelViewInvoice: React.FC<Props> = () => {
   );
 };
 
-export default ChannelViewInvoice;
+export default MusicPreview;

@@ -32,7 +32,8 @@ interface InrPayment {
   payout: string;
   status: string;
   commissionAmount: string;
-  payMode: string; // Add payMode property
+  payMode: string;
+  type: string;
 }
 
 const INRPaymentList: React.FC<Props> = () => {
@@ -135,14 +136,14 @@ const INRPaymentList: React.FC<Props> = () => {
     const selectedData = invoices.filter((invoice) =>
       selectedInvoices.includes(invoice._id)
     );
-  
+
     const formattedData = selectedData.map((invoice) => {
       const date = new Date();
-      const day = date.getDate().toString().padStart(2, '0'); // Ensure double digits for day
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure double digits for month
+      const day = date.getDate().toString().padStart(2, "0"); // Ensure double digits for day
+      const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Ensure double digits for month
       const year = date.getFullYear().toString();
       const formattedDate = `${day}-${month}-${year}`;
-  
+
       return {
         PYMT_PROD_TYPE_CODE: "PAB_VENDOR",
         PYMT_MODE: invoice.payMode,
@@ -165,14 +166,14 @@ const INRPaymentList: React.FC<Props> = () => {
         ADDL_INFO5: "",
       };
     });
-  
+
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, worksheet, "Selected Data");
-  
+
     XLSX.writeFile(wb, "Payout_report.xlsx");
   };
-  
+
   const handlePayModeChange = (invoiceId: string, newPayMode: string) => {
     setInvoices((prevInvoices) =>
       prevInvoices.map((payment) =>
@@ -235,7 +236,7 @@ const INRPaymentList: React.FC<Props> = () => {
               handleStatusChange={handleStatusChange}
               handleCheckboxChange={handleCheckboxChange}
               isChecked={selectedInvoices.includes(payment._id)}
-              handlePayModeChange={handlePayModeChange} // Pass handlePayModeChange
+              handlePayModeChange={handlePayModeChange}
             />
           ))}
         </tbody>
@@ -269,7 +270,7 @@ interface InvoiceRowProps {
   handleStatusChange: (invoiceId: string, newStatus: string) => Promise<void>;
   handleCheckboxChange: (invoiceId: string) => void;
   isChecked: boolean;
-  handlePayModeChange: (invoiceId: string, newPayMode: string) => void; // Add handlePayModeChange prop
+  handlePayModeChange: (invoiceId: string, newPayMode: string) => void;
 }
 
 export const InvoiceRow: React.FC<InvoiceRowProps> = ({
@@ -278,6 +279,11 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
   isChecked,
   handlePayModeChange,
 }) => {
+  const previewLink =
+    payment.type === "Channel"
+      ? `/home/preview/${payment._id}`
+      : `/home/preview-muisc/${payment._id}`;
+
   return (
     <tr>
       <td className="px-4 py-1 text-left text-sm">
@@ -314,7 +320,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
           <option value="NEFT">NEFT</option>
           <option value="IMPS">IMPS</option>
         </select>
-        <Link to={`/home/view-invoices/${payment._id}`}>
+        <Link to={previewLink}>
           <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
             <Eye />
           </button>

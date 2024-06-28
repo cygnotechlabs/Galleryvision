@@ -260,7 +260,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
           </button>
         </td>
         <td className="flex space-x-2">
-          <Link to={`/home/view-invoices/${payment._id}`}>
+          <Link to={`/home/preview/${payment._id}`}>
             <button className="flex gap-2 bg-red-100 hover:bg-gray-400 text-black font-medium py-2 px-3 border border-black text-sm items-center rounded-lg">
               <Eye />
             </button>

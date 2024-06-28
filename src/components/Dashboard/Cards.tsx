@@ -14,7 +14,7 @@ type Count = {
   totalMusicCommission: number;
 };
 
-const card = "flex flex-col py-2 gap-3 px-2 w-[150%] rounded-2xl bg-white";
+const card = "flex flex-col py-3 gap-3 px-3 w-[150%] rounded-2xl bg-white";
 
 const Cards: React.FC<Props> = ({}: Props) => {
   const [count, setCount] = useState<Count>({
