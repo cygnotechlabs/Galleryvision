@@ -20,6 +20,7 @@ const channelInvoicesSchema = mongoose.Schema({
   ptRevenue: { type: String },
   country: { type: String },
   tds: { type: String},
+  type: { type: String},
 
   usTax: { type: String},  
   ptAfterUsTax: { type: String },

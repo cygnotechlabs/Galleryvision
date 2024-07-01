@@ -86,6 +86,8 @@ exports.generateMusicInvoice = async (req, res) => {
       const musicId = music.musicId;
       const musicName = music.musicName;
       const invoiceNumber = generateInvoiceNumber(invoiceCounter++);
+      const type = "Music";
+
       let inrPayout =0;
       let tdsTax =0;
       let payout =0; 
@@ -166,6 +168,7 @@ exports.generateMusicInvoice = async (req, res) => {
         conversionRate: conversionRate.toFixed(2),
         payout,
         status,
+        type,
         emailStatus
       });
 

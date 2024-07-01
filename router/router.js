@@ -152,6 +152,8 @@ router.get('/get-dashboard',middleware.verifyToken,dashboardController.getDashbo
 // payment
 router.get('/get-payment',middleware.verifyToken,PaymentController.getPayments)
 
+router.get('/view-payment/:id',middleware.verifyToken,PaymentController.viewPayment)
+
 
 // invoice mailing
 router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)

@@ -391,6 +391,7 @@ exports.generateChannelInvoice = async (req, res) => {
         const ustaxPercentage = usTaxRate.taxPercentage;
         const status = "Unpaid";
         const emailStatus = "Not Sent";
+        const type = "Channel";
   
         let inrPayout = 0;
         let tdsTax = 0;
@@ -477,6 +478,7 @@ exports.generateChannelInvoice = async (req, res) => {
           conversionRate: conversionRate.toFixed(2),
           payout,
           status,
+          type,
           emailStatus
         });
   

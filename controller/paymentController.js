@@ -62,7 +62,7 @@ exports.getPayments = async (req, res) => {
 
     // Separate invoices by currency
     const inrPayments = allInvoices.filter(invoice => invoice.currency === 'INR');
-    const usdPayments = allInvoices.filter(invoice => invoice.currency === 'USD'|| invoice.currency === 'INR0');
+    const usdPayments = allInvoices.filter(invoice => invoice.currency === 'USD');
 
     if (inrPayments.length > 0 || usdPayments.length > 0) {
       res.status(200).json({
@@ -78,3 +78,32 @@ exports.getPayments = async (req, res) => {
   }
 };
 
+exports.viewPayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("View invoice ID: ",id);
+    const objectId = new ObjectId(id);
+
+    // Try to find the invoice in channelInvoices collection
+    let invoiceDetails = await channelInvoices.findOne({ _id: objectId });
+
+    // If not found, try to find it in MusicInvoice collection
+    if (!invoiceDetails) {
+      invoiceDetails = await musicInvoices.findOne({ _id: objectId });
+    }
+
+    // If still not found, return a 404 error
+    if (!invoiceDetails) {
+      return res.status(404).json({ error: 'Invoice not found' });
+    }
+
+    // If found, return the invoice details
+    return res.status(200).json(invoiceDetails);
+  } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid licensor ID' });
+    }
+
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
