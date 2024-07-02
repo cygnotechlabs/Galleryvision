@@ -106,6 +106,7 @@ exports.updateTax = async (req, res) =>{
       }
   }; 
 
+  
 
 
 exports.delTax = async (req, res) => {
@@ -220,6 +221,45 @@ exports.addCurrency = async (req, res) => {
     }
 };
   
+exports.getCurrency = async (req, res) => {
+  try {
+      console.log("req",req);
+      const { date } = req.query;
+      console.log("Received date:", date);
+
+      const currencyData = await currency.findOne({ date });
+
+      if (currencyData) {
+          res.status(200).json(currencyData);
+      } else {
+          res.status(404).json("Currency data not found for the specified date");
+      }
+  } catch (error) {
+      console.error("Error retrieving currency data:", error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+exports.getTax = async (req, res) => {
+  try {
+      // console.log("req",req);
+      const { date } = req.query;
+      console.log("Received Tax date:", date);
+
+      const taxData = await tax.findOne({ date });
+
+      if (taxData) {
+          res.status(200).json(taxData);
+      } else {
+          res.status(404).json("Tax data not found for the specified date");
+      }
+  } catch (error) {
+      console.error("Error retrieving tax data:", error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 
 exports.updateCurrency = async (req, res) =>{

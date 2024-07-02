@@ -154,6 +154,10 @@ router.get('/get-payment',middleware.verifyToken,PaymentController.getPayments)
 
 router.get('/view-payment/:id',middleware.verifyToken,PaymentController.viewPayment)
 
+router.get('/get-currency',SettingsController.getCurrency)
+
+router.get('/get-tax',SettingsController.getTax)
+
 
 // invoice mailing
 router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)
