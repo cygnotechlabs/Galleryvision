@@ -61,6 +61,7 @@ const API_ENDPOINTS = {
 
   // Currency Conversion
   CURRENCY_CONVERSION: `${BASE_URL}/add-currency`, // Fixed typo here
+  GET_CURRENCY: `${BASE_URL}/get-currency`,
 
   // Payment
   GET_PAYMENT: `${BASE_URL}/get-payment`,
@@ -78,6 +79,7 @@ const API_ENDPOINTS = {
 
   //Tax
   ADD_TAX: `${BASE_URL}/add-tax`,
+  GET_TAX:  `${BASE_URL}/get-tax`,
 };
 
 export default API_ENDPOINTS;

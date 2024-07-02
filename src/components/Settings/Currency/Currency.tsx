@@ -37,13 +37,16 @@ const CurrencyComponent = ({}: Props) => {
       INR: value,
     }));
   };
+  useEffect(() => {
+    handleDateChange(selectedDate);
+  }, []);
 
   const handleSubmit = async () => {
     if (!data.date || !data.INR) {
       alert("Please provide both the date and INR value.");
       return;
     }
-  
+
     try {
       console.log("Sending payload:", data);
       const response = await axios.post(
@@ -59,8 +62,18 @@ const CurrencyComponent = ({}: Props) => {
     }
   };
 
-  const handleDateChange = (newDate: string) => {
+  const handleDateChange = async (newDate: string) => {
     setSelectedDate(newDate);
+    console.log(newDate);
+    try {
+      const response = await axios.get(API_ENDPOINTS.GET_CURRENCY, {
+        params: { date: newDate },
+      });
+      setINRValue(response.data.INR);
+      console.log("Currency data:", response.data.INR);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -90,7 +103,7 @@ const CurrencyComponent = ({}: Props) => {
             <span>INR - Indian rupees</span>
             <input
               type="text"
-              className="px-2 w-14 h-full border-2"
+              className="px-2  h-full border-2"
               value={INRValue}
               onChange={handleINRChange}
             />
@@ -98,7 +111,7 @@ const CurrencyComponent = ({}: Props) => {
               onClick={handleSubmit}
               className="font-bold bg-black text-white p-2 rounded-lg"
             >
-              ADD
+              {INRValue ? "UPDATE" : "ADD"}
             </button>
           </div>
         </div>

@@ -44,6 +44,7 @@ const INRPaymentList: React.FC<Props> = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
+  const [filter, setFilter] = useState<string>("All");
   const rowsPerPage = 12;
 
   useEffect(() => {
@@ -81,12 +82,19 @@ const INRPaymentList: React.FC<Props> = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredInvoices = invoices.filter(
-    (payment) =>
-      (payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      payment.date.includes(selectedDate)
-  );
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(event.target.value);
+  };
+
+  const filteredInvoices = invoices.filter((payment) => {
+    const matchesSearch =
+      payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDate = payment.date.includes(selectedDate);
+    const matchesFilter =
+      filter === "All" || payment.status.toLowerCase() === filter.toLowerCase();
+    return matchesSearch && matchesDate && matchesFilter;
+  });
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
@@ -200,6 +208,17 @@ const INRPaymentList: React.FC<Props> = () => {
           </i>
         </div>
         <div className="flex gap-3">
+          <div>
+            <select
+              className="border px-4 py-3 rounded-lg"
+              value={filter}
+              onChange={handleFilterChange}
+            >
+              <option value="All">All</option>
+              <option value="Paid">Paid</option>
+              <option value="Unpaid">Unpaid</option>
+            </select>
+          </div>
           <button
             onClick={handleExportSelected}
             className="flex items-center gap-3 p-2 border rounded-lg font-semibold hover:bg-gray-200 cursor-pointer"

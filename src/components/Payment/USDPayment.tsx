@@ -40,6 +40,7 @@ const USDPaymentList: React.FC = () => {
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState<string>("All");
   const [allChecked, setAllChecked] = useState(false);
   const rowsPerPage = 12;
 
@@ -88,13 +89,19 @@ const USDPaymentList: React.FC = () => {
       )
     );
   };
+  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(event.target.value);
+  };
 
-  const filteredInvoices = invoices.filter(
-    (payment) =>
-      (payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      payment.date.includes(selectedDate)
-  );
+  const filteredInvoices = invoices.filter((payment) => {
+    const matchesSearch =
+      payment.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.partnerName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDate = payment.date.includes(selectedDate);
+    const matchesFilter =
+      filter === "All" || payment.status.toLowerCase() === filter.toLowerCase();
+    return matchesSearch && matchesDate && matchesFilter;
+  });
 
   const indexOfLastInvoice = currentPage * rowsPerPage;
   const indexOfFirstInvoice = indexOfLastInvoice - rowsPerPage;
@@ -145,6 +152,17 @@ const USDPaymentList: React.FC = () => {
             <Search />
           </i>
         </div>
+        <div>
+          <select
+            className="border px-4 py-3 rounded-lg"
+            value={filter}
+            onChange={handleFilterChange}
+          >
+            <option value="All">All</option>
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
+        </div>
         <div className="flex gap-2">
           <MonthYearSelector
             date={selectedDate}
@@ -166,7 +184,6 @@ const USDPaymentList: React.FC = () => {
             <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
             <th className="px-4 py-2 text-left text-sm">Licensor Name</th>
             <th className="px-4 py-2 text-left text-sm">Channel/Music</th>
-            <th className="px-4 py-2 text-left text-sm">Partner Revenue</th>
             <th className="px-4 py-2 text-left text-sm">Currency</th>
             <th className="px-4 py-2 text-left text-sm">Commission</th>
             <th className="px-4 py-2 text-left text-sm">Status</th>
@@ -244,7 +261,6 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
         <td className="px-4 py-1 text-left text-sm">
           {payment.channelName ? payment.channelName : payment.musicName}
         </td>
-        <td className="px-4 py-1 text-left text-sm">{payment.ptAfterTax}</td>
         <td className="px-4 py-1 text-left text-sm">{payment.currency}</td>
         <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
         <td className="px-4 py-1 text-left text-sm">
