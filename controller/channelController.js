@@ -57,6 +57,7 @@ exports.assignChannel = async (req, res) => {
       licensorName,
       channelLogo,
       date,
+      usRevenue,
       partnerRevenue,
       country
     } = req.body;
@@ -71,6 +72,7 @@ exports.assignChannel = async (req, res) => {
     const assets = [
       {
         date,
+        usRevenue,
         partnerRevenue
       },
     ];
@@ -125,6 +127,7 @@ exports.autoUpdateChannels = async (req, res) => {
         existingChannel.assets.push({
           date: rawChannel.date,
           ytRevenue: rawChannel.ytRevenue,
+          usRevenue:rawChannel.usRevenue,
           partnerRevenue: rawChannel.partnerRevenue,
         });
         await existingChannel.save();

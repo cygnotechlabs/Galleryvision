@@ -4,6 +4,7 @@ const channelRawSchema = new mongoose.Schema({
     channelId: {type : String},
     date: {type : String},
     country: {type : String},
+    usRevenue: {type : String},
     partnerRevenue: {type : String}
 });
 

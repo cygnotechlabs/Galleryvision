@@ -1,12 +1,9 @@
 const mongoose = require("mongoose");
 
 const assetSchema = new mongoose.Schema({
-  date: {
-    type: String
-  },
-  partnerRevenue: {
-    type: String
-  }
+  date: {type: String},
+  usRevenue: {type: String},
+  partnerRevenue: {type: String}
 }, { _id: false });
 
 

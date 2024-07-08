@@ -418,8 +418,9 @@ exports.generateChannelInvoice = async (req, res) => {
   
         // Calculate financial fields
         const ptRevenue = parseFloat(asset.partnerRevenue).toFixed(2);
+        const usRevenue = parseFloat(asset.usRevenue).toFixed(2);
   
-        const usTax = (parseFloat(ptRevenue) * (parseFloat(usTaxRate.taxPercentage) / 100)).toFixed(2);
+        const usTax = (parseFloat(usRevenue) * (parseFloat(usTaxRate.taxPercentage) / 100)).toFixed(2);
         const ptAfterUsTax = (parseFloat(ptRevenue) - parseFloat(usTax)).toFixed(2);
   
         // Apply US tax only if the country is 'US'
