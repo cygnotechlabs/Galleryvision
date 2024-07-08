@@ -199,7 +199,7 @@ const EditMusic = ({ onClose, music }: Props) => {
           </div>
           {/* Commission */}
           <div className="flex flex-col gap-4">
-            <label htmlFor="commission">Commission (%)</label>
+            <label htmlFor="commission">GV Commission (%)</label>
             <input
               type="number"
               id="commission" // Correct the id attribute

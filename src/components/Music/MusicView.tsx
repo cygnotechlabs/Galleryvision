@@ -61,8 +61,8 @@ const MusicView = ({}: Props) => {
                 </div>
                 <div className="px-[52px]">
                   <Rupee />
-                  <p className="text-sm text-gray-400 py-1">Commission %</p>
-                  <p className="text-sm font-bold">{musicData.commission}</p>
+                  <p className="text-sm text-gray-400 py-1">GV Commission</p>
+                  <p className="text-sm font-bold">{musicData.commission}%</p>
                 </div>
               </div>
             </div>

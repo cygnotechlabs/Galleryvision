@@ -115,7 +115,7 @@ function MusicTable({}: Props) {
               <th className="px-4 py-1 text-left text-sm">Logo</th>
               <th className="px-4 py-1 text-left text-sm">Music Name</th>
               <th className="px-4 py-1 text-left text-sm">Licensor Name</th>
-              <th className="px-4 py-1 text-left text-sm">Commission</th>
+              <th className="px-4 py-1 text-left text-sm">GV Commission</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
           </thead>
@@ -138,7 +138,7 @@ function MusicTable({}: Props) {
                   {music.licensorName}
                 </td>
                 <td className="px-4 py-1  border-gray-200 text-sm">
-                  {music.commission}
+                  {music.commission}%
                 </td>
                 <td className="px-4 py-1  border-gray-200">
                   <div className="flex items-center space-x-2">

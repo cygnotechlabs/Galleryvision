@@ -200,7 +200,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
               />
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="commission">Commission (%)</label>
+              <label htmlFor="commission">GV Commission (%)</label>
               <input
                 type="number"
                 placeholder="Commission"

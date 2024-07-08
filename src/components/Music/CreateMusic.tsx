@@ -289,7 +289,7 @@ const CreateMusic: React.FC<Props> = () => {
               )}
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="">Commission (%)</label>
+              <label htmlFor="">GV Commission (%)</label>
               <input
                 type="number"
                 name="commission"

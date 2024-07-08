@@ -66,8 +66,8 @@ const ChannelView = ({}: Props) => {
                 </div>
                 <div className="px-[52px]">
                   <Rupee />
-                  <p className="text-sm text-gray-400 py-1">GV Commission %</p>
-                  <p className="text-sm font-bold">{channelData.commission}</p>
+                  <p className="text-sm text-gray-400 py-1">GV Commission</p>
+                  <p className="text-sm font-bold">{channelData.commission}%</p>
                 </div>
               </div>
             </div>

@@ -149,7 +149,7 @@ function ChannelTable({}: Props) {
                     {channel.licensorName}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
-                    {channel.commission}
+                    {channel.commission}%
                   </td>
                   <td className="px-4 py-1 border-gray-200">
                     <div className="flex items-center space-x-2">

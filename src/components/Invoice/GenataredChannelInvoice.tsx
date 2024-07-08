@@ -160,7 +160,7 @@ const GenataredChannelInvoice = ({}: Props) => {
                     {invoice.ptRevenue}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
-                    {invoice.commission}
+                    {invoice.commission}%
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
                     {invoice.status}
