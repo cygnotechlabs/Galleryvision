@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { DeleteModalLicensor } from "../../UI/DeleteModal";
+// import { DeleteModalLicensor } from "../../UI/DeleteModal";
 import API_ENDPOINTS from "../../config/apiConfig";
 import Modal from "../../layouts/Modal";
-import { Edit, Eye, Search, Trash } from "../icons/icon";
+import { Edit, Eye, Search } from "../icons/icon";
+// import { Trash } from "../icons/icon";
 import LicensorView from "./LicensorView";
 import { authInstance } from "../../hooks/axiosInstances";
 
@@ -39,8 +40,8 @@ interface Music {
 }
 
 function LicensorTable({}: Props) {
-  const [openDelete, setOpenDelete] = useState(false);
-  const [licensorDeleteId, setLicensorDeleteId] = useState<string>("");
+  // const [openDelete, setOpenDelete] = useState(false);
+  // const [licensorDeleteId, setLicensorDeleteId] = useState<string>("");
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [filteredLicensors, setFilteredLicensors] = useState<Licensor[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -83,23 +84,23 @@ function LicensorTable({}: Props) {
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId), {
-        headers: authInstance(),
-      });
-      setLicensors((prevLicensors) =>
-        prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
-      );
-      setFilteredLicensors((prevLicensors) =>
-        prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
-      );
-      setOpenDelete(false);
-    } catch (error) {
-      console.error("Error deleting licensor:", error);
-    }
-    fetchData();
-  };
+  // const handleDelete = async () => {
+  //   try {
+  //     await axios.delete(API_ENDPOINTS.REMOVE_LICENSOR(licensorDeleteId), {
+  //       headers: authInstance(),
+  //     });
+  //     setLicensors((prevLicensors) =>
+  //       prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
+  //     );
+  //     setFilteredLicensors((prevLicensors) =>
+  //       prevLicensors.filter((licensor) => licensor._id !== licensorDeleteId)
+  //     );
+  //     setOpenDelete(false);
+  //   } catch (error) {
+  //     console.error("Error deleting licensor:", error);
+  //   }
+  //   fetchData();
+  // };
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -214,7 +215,7 @@ function LicensorTable({}: Props) {
                       </button>
                     </Link>
 
-                    <button
+                    {/* <button
                       onClick={() => {
                         setOpenDelete(true);
                         setLicensorDeleteId(licensor._id);
@@ -222,7 +223,7 @@ function LicensorTable({}: Props) {
                       className="flex gap-2 bg-red-400 hover:bg-gray-400 text-white hover:text-black  font-medium py-2 px-3 border border-black text-sm items-center rounded-lg"
                     >
                       <Trash />
-                    </button>
+                    </button> */}
                   </div>
                 </td>
               </tr>
@@ -264,7 +265,7 @@ function LicensorTable({}: Props) {
       <Modal open={open} onClose={() => setOpen(false)}>
         <LicensorView licensor={licensor} onClose={() => setOpen(false)} />
       </Modal>
-      <Modal
+      {/* <Modal
         onClose={() => {
           setOpenDelete(false);
         }}
@@ -274,7 +275,7 @@ function LicensorTable({}: Props) {
           onClose={() => setOpenDelete(false)}
           handleDelete={() => handleDelete()}
         />
-      </Modal>
+      </Modal> */}
     </div>
   );
 }
