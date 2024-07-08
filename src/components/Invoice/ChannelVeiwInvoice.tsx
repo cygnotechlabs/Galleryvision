@@ -128,7 +128,7 @@ const ChannelViewInvoice: React.FC<Props> = () => {
           </div>
           <div className="flex border-b-2 pb-6">
             <div className="flex flex-col w-[33%] gap-2">
-              <p className="text-sm">Channel ID</p>
+              <p className="text-xs">Channel ID</p>
               <p className="font-bold text-sm">{invoiceData.channelId}</p>
             </div>
             <div className="flex flex-col w-[33%] gap-2">

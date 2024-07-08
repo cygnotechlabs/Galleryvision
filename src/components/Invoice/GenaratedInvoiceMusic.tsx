@@ -139,7 +139,7 @@ const GenataredMusicInvoice = ({}: Props) => {
                 <th className="px-4 py-2 text-left text-sm">Licensor name</th>
                 <th className="px-4 py-2 text-left text-sm">Music</th>
                 <th className="px-4 py-2 text-left text-sm">Partner revenue</th>
-                <th className="px-4 py-2 text-left text-sm">Commission</th>
+                <th className="px-4 py-2 text-left text-sm">GV Commission</th>
                 <th className="px-4 py-2 text-left text-sm">Status</th>
                 <th className="px-4 py-2 text-left text-sm"></th>
                 <th className="px-4 py-2 text-left text-sm">Actions</th>

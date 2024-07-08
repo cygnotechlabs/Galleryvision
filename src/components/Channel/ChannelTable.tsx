@@ -125,7 +125,7 @@ function ChannelTable({}: Props) {
               <th className="px-4 py-1 text-left text-sm">Logo</th>
               <th className="px-4 py-1 text-left text-sm">Channel Name</th>
               <th className="px-4 py-1 text-left text-sm">Licensor Name</th>
-              <th className="px-4 py-1 text-left text-sm">Commission</th>
+              <th className="px-4 py-1 text-left text-sm">GV Commission</th>
               <th className="px-4 py-1 text-left text-sm">Actions</th>
             </tr>
           </thead>
