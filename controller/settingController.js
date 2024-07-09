@@ -344,3 +344,100 @@ exports.delCurrency = async (req, res) => {
 //     }
 // }; 
 
+
+
+exports.getThreeMonthTax = async (req, res) => {
+    try {
+        const taxData = await tax.find().sort({ date: -1 }).limit(3);
+
+        if (taxData.length === 0) {
+            res.status(404).json("No tax data found");
+        } else {
+            res.status(200).json(taxData);
+        }
+    } catch (error) {
+        console.error("Error retrieving tax data:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.getThreeMonthCurrency = async (req, res) => {
+    try {
+        const currencyData = await currency.find().sort({ date: -1 }).limit(3);
+
+        if (currencyData.length === 0) {
+            res.status(404).json("No tax data found");
+        } else {
+            res.status(200).json(currencyData);
+        }
+    } catch (error) {
+        console.error("Error retrieving tax data:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.getThreeMonthsData = async (req, res) => {
+    try {
+        const taxData = await tax.find().sort({ date: -1 }).limit(3);
+        const currencyData = await currency.find().sort({ date: -1 }).limit(3);
+
+        if (taxData.length === 0 || currencyData.length === 0) {
+            res.status(404).json("No data found");
+            return;
+        }
+
+        // Prepare an array to hold each line of data
+        const response = [];
+
+        // Iterate through the data and construct each line with date, taxPercentage, and INR
+        for (let i = 0; i < Math.max(taxData.length, currencyData.length); i++) {
+            const taxDate = taxData[i] ? taxData[i].date : '';
+            const taxPercentage = taxData[i] ? parseFloat(taxData[i].taxPercentage) : null;
+
+            const currencyDate = currencyData[i] ? currencyData[i].date : '';
+            const INR = currencyData[i] ? parseFloat(currencyData[i].INR) : null;
+
+            response.push({
+                date: taxDate || currencyDate,
+                taxPercentage: taxPercentage !== null ? taxPercentage.toFixed(2) : null,
+                INR: INR !== null ? INR.toFixed(2) : null
+            });
+        }
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error retrieving data:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.getAllTax = async (req, res) => {
+    try {
+        const taxData = await tax.find();
+
+        if (taxData.length === 0) {
+            res.status(404).json("No tax data found");
+        } else {
+            res.status(200).json(taxData);
+        }
+    } catch (error) {
+        console.error("Error retrieving tax data:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+exports.getAllCurrency = async (req, res) => {
+    try {
+        const currencyData = await currency.find();
+
+        if (currencyData.length === 0) {
+            res.status(404).json("No Currency data found");
+        } else {
+            res.status(200).json(currencyData);
+        }
+    } catch (error) {
+        console.error("Error retrieving Currency data:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};

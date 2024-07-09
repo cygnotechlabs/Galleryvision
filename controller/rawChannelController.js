@@ -101,7 +101,6 @@ const fs = require('fs');
 
 const importChannel = async (req, res) => {
     try {
-        console.log("Starting import process...");
 
         await rawchannels.deleteMany({});
         console.log("Existing records deleted.");
@@ -115,6 +114,7 @@ const importChannel = async (req, res) => {
         const formattedDate = `${month} ${year}`; // Format as "Month Year"
 
         console.log("Starting CSV parsing...");
+        res.status(200).json({ message: "Starting CSV parsing..." });
 
         // Create a read stream from the file path
         const fileStream = fs.createReadStream(req.file.path);
@@ -180,7 +180,8 @@ const importChannel = async (req, res) => {
                     res.status(400).send({ success: false, msg: error.message });
                 },
                 async () => {
-                    console.log("CSV processing completed.");
+                    console.log("CSV processing completed");
+                    res.status(200).json({ message: "CSV processing completed" });
 
                     // This is called when the stream ends
                     const userData = Object.values(aggregatedData);
@@ -188,6 +189,7 @@ const importChannel = async (req, res) => {
                     // Insert aggregated data into the database
                     await rawchannels.insertMany(userData);
                     console.log("Data inserted into the database.");
+                    res.status(200).json({ message: "Data inserted into the database" });
 
                     await autoUpdateChannels(); // Call without req and res
                     res.status(200).send({ success: true, msg: 'Channel CSV Extracted Successfully' });
@@ -221,6 +223,7 @@ const autoUpdateChannels = async () => {
                     });
                     await existingChannel.save();
                     console.log(`Channel with ID ${rawChannel.channelId} updated successfully`);
+                    res.status(200).json({ message: `Channel with ID ${channelId} updated successfully` });
                 } else {
                     console.log(`Date ${rawChannel.date} already exists for channel ID ${rawChannel.channelId}, skipping update`);
                 }

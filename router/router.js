@@ -38,8 +38,6 @@ router.post('/add-channel',middleware.verifyToken,channelController.addChannel)
 
 router.post('/assign-channel',middleware.verifyToken,channelController.assignChannel)
 
-// router.get('/autoupdate-assigned-channel',channelController.autoUpdateChannels)
-
 router.get('/get-linked-channel',middleware.verifyToken,channelController.getLinkedChannels)
 
 router.get('/get-unlinked-channel',middleware.verifyToken,channelController.getUnlinkedChannels)
@@ -123,6 +121,12 @@ router.get("/view-channel-Invoice/:id",middleware.verifyToken, channelInvoiceCon
 //TAX
 router.get('/view-tax',middleware.verifyToken,SettingsController.viewTax)
 
+router.get('/view-last-three-tax',SettingsController.getThreeMonthTax)
+
+router.get('/view-all-tax',SettingsController.getAllTax)
+
+router.get('/view-all-currency',SettingsController.getAllCurrency)
+
 router.post('/add-tax',middleware.verifyToken,SettingsController.addTax)
 
 router.put('/update-tax/:id',middleware.verifyToken,SettingsController.updateTax)
@@ -133,6 +137,10 @@ router.delete('/del-tax/:id',middleware.verifyToken,SettingsController.delTax)
 router.get('/view-currency',middleware.verifyToken,SettingsController.viewCurrency)
 
 router.post('/add-currency',middleware.verifyToken,SettingsController.addCurrency)
+
+router.get('/view-last-three-currency',SettingsController.getThreeMonthCurrency)
+
+router.get('/view-last-three-data',SettingsController.getThreeMonthsData)
 
 //router.delete('/del-currency/:id',SettingsController.delCurrency)
 
@@ -145,6 +153,8 @@ router.put('/change-invoice-status/:id',middleware.verifyToken,PaymentController
 //DASHBOARD
 
 router.get('/view-count',middleware.verifyToken,dashboardController.getCount)
+
+router.get('/view-stat',dashboardController.getStat)
 
 // get dashboard
 router.get('/get-dashboard',middleware.verifyToken,dashboardController.getDashboard)

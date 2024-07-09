@@ -23,8 +23,8 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'galleryvision24@gmail.com',
-                pass: 'cles pbrx btua qvbc',
+                user: 'finance@gallery.vision',
+                pass: 'ykns qoze mgol qjyc',
             },
         });
 
@@ -255,9 +255,9 @@ exports.processInvoicesAndSendEmails = async (req, res) => {
     }
 
             const mailOptions = {
-                from: 'galleryvision24@gmail.com',
+                from: 'finance@gallery.vision',
                 to: invoice.licensorEmail,
-                subject: `Gallery Vision Remittance Advice for "${invoice.licensorName}"`,
+                subject: `Gallery Vision Remittance Advice for ${invoice.channelName}`,
                 text: `Dear Partner,\n\nThe Gallery Vision is pleased to inform you that the following distributions have been processed and paid.\n\nStatement Period: ${invoice.date} - ${invoice.date}\nPartner: ${invoice.licensorName}\n${paymentMethodText}\nStatus: Paid\n\nSincerely,\nThe Gallery Vision Accounts Team`,
                 attachments: [
                     {

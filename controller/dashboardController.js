@@ -191,3 +191,46 @@ exports.getDashboard = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+
+exports.getStat = async (req, res) => {
+    try {
+        const dashboardData = await dashboard.find().sort({ date: -1 }).limit(2);
+
+        if (dashboardData.length < 2) {
+            res.status(404).json({ message: "Not enough dashboard data found to calculate percentage changes" });
+            return;
+        }
+
+        const lastData = dashboardData[1];
+        const secondLastData = dashboardData[0];
+
+        const calculatePercentageChange = (current, previous) => {
+            if (previous === 0) {
+                return current === 0 ? 0 : 100; // Handle division by zero
+            }
+            return ((current - previous) / previous) * 100;
+        };
+
+        const result = {
+            percentageChanges: {
+                totalLicensor: calculatePercentageChange(lastData.totalLicensor, secondLastData.totalLicensor).toFixed(2) + '%',
+                totalChannel: calculatePercentageChange(lastData.totalChannel, secondLastData.totalChannel).toFixed(2) + '%',
+                totalMusic: calculatePercentageChange(lastData.totalMusic, secondLastData.totalMusic).toFixed(2) + '%',
+                channelCommission: calculatePercentageChange(lastData.channelCommission, secondLastData.channelCommission).toFixed(2) + '%',
+                channelTaxDeducted: calculatePercentageChange(lastData.channelTaxDeducted, secondLastData.channelTaxDeducted).toFixed(2) + '%',
+                totalCommission: calculatePercentageChange(lastData.totalCommission, secondLastData.totalCommission).toFixed(2) + '%',
+                totalTaxDeducted: calculatePercentageChange(lastData.totalTaxDeducted, secondLastData.totalTaxDeducted).toFixed(2) + '%',
+                musicCommission: calculatePercentageChange(lastData.musicCommission, secondLastData.musicCommission).toFixed(2) + '%',
+            }
+        };
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
