@@ -691,7 +691,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
         {payment.channelName ? payment.channelName : payment.musicName}
       </td>
       <td className="px-4 py-1 text-left text-sm">{payment.payout}</td>
-      <td className="px-4 py-1 text-left text-sm">{payment.commission}</td>
+      <td className="px-4 py-1 text-left text-sm">{payment.commission}%</td>
       <td className="px-4 py-1 text-left text-sm">
         <button
           className={

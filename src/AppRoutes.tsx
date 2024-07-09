@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./Context/AuthContext";
+import PageNotFound from "./components/PageNotFound/PageNotFound";
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Root = lazy(() => import("./pages/Root"));
@@ -92,6 +93,7 @@ const AppRoutes: React.FC = () => {
               <Route path="settings" element={<Settings />} />
             </Route>
           </Route>
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>
     </AuthProvider>

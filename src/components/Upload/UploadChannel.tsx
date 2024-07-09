@@ -7,6 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 const UploadChannelCSV: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -28,6 +29,7 @@ const UploadChannelCSV: React.FC = () => {
 
     try {
       setUploading(true);
+      setShowModal(true);
       // Change the URL to your backend server endpoint
       await axios.post(API_ENDPOINTS.UPLOADCHANNEL, formData, {
         headers: MauthInstance(),
@@ -40,6 +42,7 @@ const UploadChannelCSV: React.FC = () => {
       // You might want to handle this error, e.g., display a message to the user
     } finally {
       setUploading(false);
+      setShowModal(false);
     }
   };
 
@@ -96,6 +99,19 @@ const UploadChannelCSV: React.FC = () => {
           {uploading ? "Uploading..." : "Upload file"}
         </button>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-4 flex flex-col items-center">
+            <p className="mb-4">Uploading Channel...</p>
+            <div className="w-full h-4 bg-gray-200 rounded-full">
+              <div className="loader">
+                <div className="inner_loader"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

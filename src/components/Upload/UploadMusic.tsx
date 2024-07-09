@@ -7,6 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 const UploadMusic: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -28,7 +29,7 @@ const UploadMusic: React.FC = () => {
 
     try {
       setUploading(true);
-      // Change the URL to your backend server endpoint
+      setShowModal(true);
       await axios.post(API_ENDPOINTS.UPLOADMUSIC, formData, {
         headers: MauthInstance(),
       });
@@ -37,9 +38,9 @@ const UploadMusic: React.FC = () => {
     } catch (error) {
       console.error("Error uploading file:", error);
       toast.error("Error uploading file:");
-      // You might want to handle this error, e.g., display a message to the user
     } finally {
       setUploading(false);
+      setShowModal(false);
     }
   };
 
@@ -94,6 +95,19 @@ const UploadMusic: React.FC = () => {
       >
         {uploading ? "Uploading..." : "Upload file"}
       </button>
+
+      {showModal && (
+        <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-4 flex flex-col items-center">
+            <p className="mb-4">Uploading Music...</p>
+            <div className="w-full h-4 bg-gray-200 rounded-full">
+              <div className="loader">
+                <div className="inner_loader"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
