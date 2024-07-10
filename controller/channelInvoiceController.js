@@ -379,6 +379,7 @@ exports.generateChannelInvoice = async (req, res) => {
         const partnerName = licensor.companyName;
         const licensorId = licensor._id;
         const licensorName = licensor.licensorName;
+        const companyName = licensor.companyName;
         const licensorEmail = licensor.licensorEmail;
         const tds = licensor.tds || 0;
         const accNum = licensor.bankAccNum;
@@ -455,6 +456,7 @@ exports.generateChannelInvoice = async (req, res) => {
           partnerName,
           licensorId,
           licensorName,
+          companyName,
           licensorEmail,
           licensorAddress,
           accNum,

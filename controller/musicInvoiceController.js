@@ -76,6 +76,7 @@ exports.generateMusicInvoice = async (req, res) => {
       const partnerName = licensor.companyName;
       const licensorId = licensor._id;
       const licensorName = licensor.licensorName;
+      const companyName = licensor.companyName;
       const licensorEmail = licensor.licensorEmail;
       const accNum = licensor.bankAccNum;
       const tds = licensor.tds || 0;
@@ -148,6 +149,7 @@ exports.generateMusicInvoice = async (req, res) => {
         partnerName,
         licensorId,
         licensorName,
+        companyName,
         licensorEmail,
         licensorAddress,
         accNum,
