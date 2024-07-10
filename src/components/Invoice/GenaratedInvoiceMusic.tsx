@@ -158,7 +158,7 @@ const GenataredMusicInvoice = ({}: Props) => {
                     {invoice.partnerName}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
-                    {invoice.ptRevenue}
+                    $ {invoice.ptRevenue}
                   </td>
                   <td className="px-4 py-1 border-gray-200 text-sm">
                     {invoice.commission}%

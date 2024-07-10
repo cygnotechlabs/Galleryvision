@@ -91,9 +91,8 @@ const AppRoutes: React.FC = () => {
               <Route path="preview/:id" element={<ChannelPreview />} />
               <Route path="preview-muisc/:id" element={<MusicPreview />} />
               <Route path="settings" element={<Settings />} />
-            </Route>
+            </Route><Route path="*" element={<PageNotFound />} />
           </Route>
-          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>
     </AuthProvider>

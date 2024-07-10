@@ -614,7 +614,7 @@ const INRPaymentList: React.FC<Props> = () => {
       <th className="px-4 py-2 text-left text-sm">Invoice ID</th>
       <th className="px-4 py-2 text-left text-sm">Licensor Name</th>
       <th className="px-4 py-2 text-left text-sm">Channel/Music</th>
-      <th className="px-4 py-2 text-left text-sm">Partner Revenue</th>
+      <th className="px-4 py-2 text-left text-sm">Payout</th>
       <th className="px-4 py-2 text-left text-sm">GV Commission</th>
       <th className="px-4 py-2 text-left text-sm">Status</th>
       <th className="px-4 py-2 text-left text-sm">Actions</th>
@@ -690,7 +690,7 @@ export const InvoiceRow: React.FC<InvoiceRowProps> = ({
       <td className="px-4 py-1 text-left text-sm">
         {payment.channelName ? payment.channelName : payment.musicName}
       </td>
-      <td className="px-4 py-1 text-left text-sm">{payment.payout}</td>
+      <td className="px-4 py-1 text-left text-sm">₹ {payment.payout}</td>
       <td className="px-4 py-1 text-left text-sm">{payment.commission}%</td>
       <td className="px-4 py-1 text-left text-sm">
         <button
