@@ -6,8 +6,8 @@ type Props = {};
 
 function Upload({}: Props) {
   return (
-    <div>
-      <div className="flex flex-col lg:flex-row px-4 lg:px-4 py-2 lg:py-4 justify-between items-start lg:items-center">
+    <div className="mx-6 mt-6">
+      <div className="flex flex-col">
         <div className="mb-4 lg:mb-0">
           <p className="text-xl font-bold">Upload</p>
           <h1 className="text-sm font-normal text-gray-400 pt-2">
@@ -16,7 +16,7 @@ function Upload({}: Props) {
           </h1>
         </div>
       </div>
-      <div className="flex w-full">
+      <div className="flex gap-4 w-full">
         <UploadChannelCSV />
         <UploadMusic />
         <UploadPayment />

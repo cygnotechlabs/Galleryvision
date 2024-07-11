@@ -45,7 +45,7 @@ const UploadMusic: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center m-8 rounded-2xl px-7 py-4 bg-white">
+    <div className="flex flex-col items-center my-8 rounded-2xl px-7 py-4 bg-white">
       <Toaster />
       <h2 className="text-sm font-bold mb-4 ">Upload Music XLXS File</h2>
       <div

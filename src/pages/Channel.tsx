@@ -2,17 +2,16 @@ import ChannelTable from "../components/Channel/ChannelTable";
 import { Plus } from "../components/icons/icon";
 import { Link } from "react-router-dom";
 
-
 function Channel() {
- 
-
   return (
     <>
-      <div className="bg-gray-100  pt-[20px]">
-        <div className="flex justify-between items-center pl-8">
+      <div className="bg-gray-100 m-6">
+        <div className="flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold">Channel</h1>
-            <h1 className="pt-2">List of channels created in the system</h1>
+            <h1 className="text-sm font-normal text-gray-400">
+              List of channels created in the system
+            </h1>
           </div>
           <Link
             to="/home/unassigned-channels"

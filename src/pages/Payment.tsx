@@ -13,7 +13,7 @@ const Payment: React.FC = () => {
     <div className="flex flex-col px-8 py-5 bg-gray-100">
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-1">
-          <p className="text-2xl font-bold">Payment</p>
+          <p className="text-xl font-bold">Payment</p>
           <p className="text-sm font-normal text-gray-400">
             List of Invoices generated in the system
           </p>

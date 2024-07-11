@@ -23,7 +23,7 @@ const InvoicePage: React.FC = () => {
       <Toaster />
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-1">
-          <p className="text-2xl font-bold">Invoices</p>
+          <p className="text-xl font-bold">Invoices</p>
           <p className="text-sm font-normal text-gray-400">
             List of Invoices generated in the system
           </p>

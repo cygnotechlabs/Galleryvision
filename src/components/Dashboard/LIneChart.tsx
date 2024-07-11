@@ -1,120 +1,17 @@
-// import axios from "axios";
-// import { useEffect, useState } from "react";
-// import {
-//   CategoryScale,
-//   Chart as ChartJS,
-//   Legend,
-//   LineElement,
-//   LinearScale,
-//   PointElement,
-//   Title,
-//   Tooltip,
-// } from "chart.js";
-// import { Line } from "react-chartjs-2";
-// import API_ENDPOINTS from "../../config/apiConfig";
-
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
-
-// type Count = {
-//   channelCommissionArray: number[];
-//   musicCommissionArray: number[];
-//   dateArray: string[];
-// };
-
-// const LineChart = () => {
-//   const [count, setCount] = useState<Count | null>(null);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT);
-//         setCount(response.data);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   const data = {
-//     labels: count ? count.dateArray : [],
-//     datasets: [
-//       {
-//         label: "Channel",
-//         data: count ? count.channelCommissionArray : [],
-//         fill: false,
-//         borderColor: "rgb(75, 192, 192)",
-//         tension: 0.1,
-//       },
-//       {
-//         label: "Music",
-//         data: count ? count.musicCommissionArray : [],
-//         fill: false,
-//         borderColor: "rgb(705, 192, 192)",
-//         tension: 0.1,
-//       },
-//     ],
-//   };
-
-//   const options = {
-//     scales: {
-//       y: {
-//         beginAtZero: true,
-//       },
-//     },
-//     // Add these options to control the canvas size
-//     responsive: true,
-//     maintainAspectRatio: false,
-//   };
-
-//   return (
-//     <div>
-//       <div>
-//         <div style={{ height: "300px", width: "600px", padding: "10px" }}>
-//           <p className="font-bold text-lg">Channels & Music</p>
-//           <Line data={data} options={options} />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default LineChart;
-
 import axios from "axios";
 import { useEffect, useState } from "react";
 import {
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LineElement,
-  LinearScale,
-  PointElement,
-  Title,
+  LineChart as RechartsLineChart,
+  Line,
+  XAxis,
+  YAxis,
   Tooltip,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+  Legend,
+  ResponsiveContainer,
+  Brush,
+} from "recharts";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 type Count = {
   channelCommissionArray: number[];
@@ -122,13 +19,35 @@ type Count = {
   dateArray: string[];
 };
 
+const customLegend = (props: any) => {
+  const { payload } = props;
+  return (
+    <ul
+      style={{ display: "flex", justifyContent: "center" }}
+      className="recharts-default-legend"
+    >
+      {payload.map((entry: any, index: number) => (
+        <li
+          key={`item-${index}`}
+          style={{ color: entry.color, margin: "0 10px" }}
+        >
+          {entry.dataKey === "channelCommission"
+            ? "Channel Commission"
+            : "Music Commission"}
+        </li>
+      ))}
+    </ul>
+  );
+};
 const LineChart = () => {
   const [count, setCount] = useState<Count | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT,{headers:authInstance()});
+        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT, {
+          headers: authInstance(),
+        });
         setCount(response.data);
       } catch (error) {
         console.error(error);
@@ -138,56 +57,61 @@ const LineChart = () => {
     fetchData();
   }, []);
 
-  const data = {
-    labels: count ? count.dateArray : [],
-    datasets: [
-      {
-        label: "Channel",
-        data: count ? count.channelCommissionArray : [],
-        fill: false,
-        borderColor: "#030D05",
-        tension: 0.1,
-      },
-      {
-        label: "Music",
-        data: count ? count.musicCommissionArray : [],
-        fill: false,
-        borderColor: "#001AFF",
-        tension: 0.1,
-      },
-    ],
-  };
+  if (!count) {
+    return <div>Loading...</div>;
+  }
 
-  const options = {
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-      x: {
-        type: "category" as const,
-        labels: count ? count.dateArray : [],
-        ticks: {
-          autoSkip: false,
-        },
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  };
+  const data = count.dateArray.map((date, index) => ({
+    date,
+    channelCommission: count.channelCommissionArray[index],
+    musicCommission: count.musicCommissionArray[index],
+  }));
 
   return (
-    <div><p className="font-bold text-lg">Channels & Music</p>
-    <div style={{ overflowX: "auto", overflowY: "hidden", whiteSpace: "nowrap" }}>
-      <div style={{ width: "100%", maxWidth: "600px", padding: "10px" }}>
-        
-        <div style={{ width: `${count ? count.dateArray.length * 100 : 600}px`, height: "300px" }}>
-          <Line data={data} options={options} />
-        </div>
-      </div>
-    </div>
+    <div className="p-3">
+      <p className="font-bold text-lg ml-2 mb-3 mt-1">Revenue Over Time</p>
+      <ResponsiveContainer width="100%" height={300}>
+        <RechartsLineChart
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis
+            dataKey="date"
+            textAnchor="end"
+            fontSize={12}
+            strokeWidth={3}
+          />
+          <YAxis strokeWidth={3} />
+          <Tooltip />
+          <Legend
+            content={customLegend}
+            verticalAlign="top"
+            align="center"
+            height={36}
+          />
+          {/* <CartesianGrid strokeDasharray="3 3" /> */}
+          <Line
+            type="monotone"
+            dataKey="channelCommission"
+            stroke="#82ca9d"
+            strokeWidth={5}
+          />
+          <Line
+            type="monotone"
+            dataKey="musicCommission"
+            stroke="#ED1C24"
+            strokeWidth={5}
+          />
+          <Brush dataKey="date" height={30} stroke="#8884d8" />
+        </RechartsLineChart>
+      </ResponsiveContainer>
     </div>
   );
 };
 
 export default LineChart;
-

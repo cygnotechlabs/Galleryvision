@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 function Music() {
   return (
     <>
-      <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
-        <div className="flex justify-between items-center pl-[34px]">
+      <div className="bg-gray-100 m-6 ">
+        <div className="flex justify-between mb-3 items-center">
           <div>
             <h1 className="text-xl font-bold">Music</h1>
-            <h1 className="pt-2">List of musics created in the system</h1>
+            <h1 className="text-sm font-normal text-gray-400">
+              List of musics created in the system
+            </h1>
           </div>
           <Link
             to="/home/unassigned-musics"

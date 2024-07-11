@@ -44,7 +44,7 @@ function Table({}: Props) {
   return (
     <div className="bg-white mt-4 flex gap-3 justify-around p-4">
       <div className="Currency-Table w-1/2">
-        <p>Currency Table</p>
+        <p className="font-bold text-xl">Currency Table</p>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
@@ -62,19 +62,19 @@ function Table({}: Props) {
               .slice(0, 3)
               .map((entry) => (
                 <tr key={entry.date}>
-                  <td className="border border-gray-300 py-2 px-4 text-center">
+                  <td className="border border-gray-300 font-semibold py-2 px-4 text-center">
                     {entry.date}
                   </td>
-                  <td className="border border-gray-300 py-2 px-4 text-left">
-                    {entry.INR}
+                  <td className="border border-gray-300 font-semibold py-2 px-4 text-left">
+                    $1 - ₹ {entry.INR}
                   </td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
-      <div className="Tax-Table w-1/2">
-        <p>Tax Table</p>
+      <div className="Tax-Table font-bold w-1/2">
+        <p className="font-bold text-xl">Tax Table</p>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
@@ -92,11 +92,11 @@ function Table({}: Props) {
               .slice(0, 3)
               .map((entry) => (
                 <tr key={entry.date}>
-                  <td className="border border-gray-300 py-2 px-4 text-center">
+                  <td className="border border-gray-300 font-semibold py-2 px-4 text-center">
                     {entry.date}
                   </td>
-                  <td className="border border-gray-300 py-2 px-4 text-left">
-                    {entry.taxPercentage}
+                  <td className="border border-gray-300 font-semibold py-2 px-4 text-left">
+                    {entry.taxPercentage} %
                   </td>
                 </tr>
               ))}

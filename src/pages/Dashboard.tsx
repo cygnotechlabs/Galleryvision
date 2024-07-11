@@ -1,25 +1,37 @@
+import { useState } from "react";
 import BarChart from "../components/Dashboard/Bar";
 import Cards from "../components/Dashboard/Cards";
 import LineChart from "../components/Dashboard/LIneChart";
+import MonthYearSelector from "../UI/MonthYear";
 
 type Props = {};
 
 const Dashboard = ({}: Props) => {
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toLocaleString("default", { month: "long", year: "numeric" })
+  );
+  const handleDateChange = (newDate: string) => {
+    setSelectedDate(newDate);
+  };
   return (
-    <>
-      <div className="flex flex-col lg:flex-row px-4 lg:px-4 py-2 lg:py-4 justify-between items-start lg:items-center">
-        <div className="mb-4 lg:mb-0">
-          <p className="text-xl font-bold">Dashboard</p>
-        </div>
+    <div className="mx-6 mt-6">
+      <div className="flex justify-between">
+        <p className="text-xl font-bold">Dashboard</p>
+        <MonthYearSelector
+          date={selectedDate}
+          onDateChange={handleDateChange}
+        />
       </div>
-      <div>
-        <Cards />
-        <div className="bg-white py-6 flex gap-1 items-center rounded-xl justify-around mx-8 mt-8">
+      <div className="mt-4">
+        <Cards selectedDate={selectedDate} />
+        <div className="bg-white mt-3 rounded-2xl border">
           <LineChart />
+        </div>
+        <div className="bg-white mt-3 rounded-2xl border p-3">
           <BarChart />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

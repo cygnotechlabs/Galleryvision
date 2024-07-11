@@ -1,126 +1,135 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import loss from "../../../public/Frame 1288 (1).png";
+import profit from "../../../public/Frame 1288.png";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { authInstance } from "../../hooks/axiosInstances";
+import { useEffect, useState } from "react";
 
-type Props = {};
+type Props = { selectedDate: string };
 
-type Count = {
-  channelCount: number;
-  musicCount: number;
-  licensorCount: number;
-  totalCommission: number;
-  totalchannelCommission: number;
-  totalMusicCommission: number;
+type DashboardData = {
+  totalCommission: string;
+  totalTaxDeducted: string;
+  totalChannel: string;
+  totalMusic: string;
+  channelCommission: string;
+  channelTaxDeducted: string;
+  musicCommission: string;
 };
 
-const card = "flex flex-col py-3 gap-3 px-3 w-[150%] rounded-2xl bg-white";
+type percentageChanges = {
+  channelCommission: string;
+  musicCommission: string;
+  totalAsset: string;
+  totalCommission: string;
+};
 
-const Cards: React.FC<Props> = ({}: Props) => {
-  const [count, setCount] = useState<Count>({
-    channelCount: 0,
-    musicCount: 0,
-    licensorCount: 0,
-    totalCommission: 0,
-    totalchannelCommission: 0,
-    totalMusicCommission: 0,
-  });
+function Cards({ selectedDate }: Props) {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [assets, setAssets] = useState<string | null>(null);
+  const [percentage, setpercentage] = useState<percentageChanges | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get<Count>(API_ENDPOINTS.VIEW_COUNT,{headers:authInstance()});
-        const formattedData = formatCountData(response.data);
-        setCount(formattedData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const formatCountData = (data: Count): Count => {
-    return {
-      channelCount: parseFloat(data.channelCount.toFixed(2)),
-      musicCount: parseFloat(data.musicCount.toFixed(2)),
-      licensorCount: parseFloat(data.licensorCount.toFixed(2)),
-      totalCommission: parseFloat(data.totalCommission.toFixed(2)),
-      totalchannelCommission: parseFloat(data.totalchannelCommission.toFixed(2)),
-      totalMusicCommission: parseFloat(data.totalMusicCommission.toFixed(2)),
-    };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        API_ENDPOINTS.GET_ONE_DASHBOARD(selectedDate)
+      );
+      setData(response.data.currentDashboardData);
+      setAssets(response.data.currentAsset);
+      setpercentage(response.data.percentageChanges);
+      console.log(response.data);
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+    }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [selectedDate]);
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="flex gap-4 mx-8">
-      <TotalRevenue totalCommision={count.totalCommission} />
-      <TotalLicensor licensorCount={count.licensorCount} />
-      <TotalChannel
-        channelCount={count.channelCount}
-        totalchannelCommission={count.totalchannelCommission}
-      />
-      <TotalMusic
-        musicCount={count.musicCount}
-        totalMusicCommission={count.totalMusicCommission}
-      />
+    <div className="grid grid-flow-col gap-6">
+      <div className="bg-white px-8 py-6 rounded-2xl border">
+        <p className="font-medium text-sm text-gray-600 pb-1">
+          Total revenue of {selectedDate}
+        </p>
+        <p className="font-bold text-2xl">${data.totalCommission}</p>
+        <div className="flex gap-2 mt-3 items-center m-1">
+          <img
+            src={
+              percentage && parseFloat(percentage.totalCommission) > 1
+                ? profit
+                : loss
+            }
+            alt="arrow"
+            className="w-8 h-8"
+          />
+          <p className="font-medium text-sm text-gray-600">
+            {percentage?.totalCommission} % this month
+          </p>
+        </div>
+      </div>
+      <div className="bg-white px-8 py-6 rounded-2xl border">
+        <p className="font-medium text-sm text-gray-600 pb-1">Total Assets</p>
+        <p className="font-bold text-2xl">{assets}</p>
+        <div className="flex gap-2 mt-3 items-center m-1">
+          <img
+            src={
+              percentage && parseFloat(percentage.totalAsset) > 1
+                ? profit
+                : loss
+            }
+            alt="arrow"
+            className="w-8 h-8"
+          />
+          <p className="font-medium text-sm text-gray-600">
+            {percentage?.totalAsset} % this month
+          </p>
+        </div>
+      </div>
+      <div className="bg-white px-8 py-6 rounded-2xl border">
+        <p className="font-medium text-sm text-gray-600 pb-1">
+          Channel revenue
+        </p>
+        <p className="font-bold text-2xl">$ {data.channelCommission}</p>
+        <div className="flex gap-2 mt-3 items-center m-1">
+          <img
+            src={
+              percentage && parseFloat(percentage.channelCommission) > 1
+                ? profit
+                : loss
+            }
+            alt="arrow"
+            className="w-8 h-8"
+          />
+          <p className="font-medium text-sm text-gray-600">
+            {percentage?.channelCommission} % this month
+          </p>
+        </div>
+      </div>
+      <div className="bg-white px-8 py-6 rounded-2xl border">
+        <p className="font-medium text-sm text-gray-600 pb-1">Music revenue</p>
+        <p className="font-bold text-2xl">$ {data.musicCommission}</p>
+        <div className="flex gap-2 mt-3 items-center m-1">
+          <img
+            src={
+              percentage && parseFloat(percentage.musicCommission) > 1
+                ? profit
+                : loss
+            }
+            alt="arrow"
+            className="w-8 h-8"
+          />
+          <p className="font-medium text-sm text-gray-600">
+            {percentage?.musicCommission} % this month
+          </p>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 export default Cards;
-
-function TotalRevenue({ totalCommision }: { totalCommision: number }) {
-  return (
-    <div className={`${card}`}>
-      <p className="text-sm font-bold  text-gray-600">Total Revenue</p>
-      <p className="text-2xl font-bold">$ {totalCommision.toFixed(2)}</p>
-    </div>
-  );
-}
-
-function TotalLicensor({ licensorCount }: { licensorCount: number }) {
-  return (
-    <div className={`${card}`}>
-      <p className="text-sm font-bold text-gray-600">Total Licensor</p>
-      <p className="text-2xl font-bold">{licensorCount.toFixed()}</p>
-    </div>
-  );
-}
-
-function TotalChannel({
-  channelCount,
-  totalchannelCommission,
-}: {
-  channelCount: number;
-  totalchannelCommission: number;
-}) {
-  return (
-    <div className={`${card}`}>
-      <p className="text-sm font-bold text-gray-600">Total Channel</p>
-      <p className="text-2xl font-bold">{channelCount.toFixed()}</p>
-      <div className="text-sm font-bold flex items-center gap-2">
-        <p className="text-sm font-bold text-gray-600">Total Commission</p>
-        <p className="text-xl font-bold">$ {totalchannelCommission.toFixed(2)}</p>
-      </div>
-    </div>
-  );
-}
-
-function TotalMusic({
-  musicCount,
-  totalMusicCommission,
-}: {
-  musicCount: number;
-  totalMusicCommission: number;
-}) {
-  return (
-    <div className={`${card}`}>
-      <p className="text-sm font-bold text-gray-600">Total Music</p>
-      <p className="text-2xl font-bold">{musicCount.toFixed()}</p>
-      <div className="text-sm font-bold flex items-center gap-2">
-        <p className="text-sm font-bold text-gray-600">Total Commission</p>
-        <p className="text-xl font-bold">$ {totalMusicCommission.toFixed(2)}</p>
-      </div>
-    </div>
-  );
-}

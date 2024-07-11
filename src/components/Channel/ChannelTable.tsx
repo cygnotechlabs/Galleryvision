@@ -100,7 +100,7 @@ function ChannelTable({}: Props) {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl mx-[34px] my-6  pr-9">
+    <div className="bg-white shadow-md rounded-xl  my-6  pr-9">
       <Toaster />
       <div className="relative pb-5 pt-8 px-8 ">
         <div className="flex justify-between text-sm">

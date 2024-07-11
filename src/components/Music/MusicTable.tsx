@@ -9,7 +9,6 @@ import EditMusic from "./EditMusic";
 import toast, { Toaster } from "react-hot-toast";
 import { authInstance } from "../../hooks/axiosInstances";
 
-
 type Props = {};
 
 type Music = {
@@ -49,7 +48,7 @@ function MusicTable({}: Props) {
   const fetchData = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_LINKEDMUSIC, {
-        headers:authInstance()
+        headers: authInstance(),
       });
       setMusics(response.data);
     } catch (error) {
@@ -59,7 +58,9 @@ function MusicTable({}: Props) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId),{headers:authInstance()});
+      await axios.delete(API_ENDPOINTS.DEL_MUSIC(deleteId), {
+        headers: authInstance(),
+      });
       fetchData();
     } catch (error) {
       console.error("Error deleting music:", error);
@@ -92,7 +93,7 @@ function MusicTable({}: Props) {
   };
 
   return (
-    <div className="bg-white py-2 shadow-md rounded-xl mx-8 my-8 ">
+    <div className="bg-white py-2 shadow-md rounded-xl ">
       <div className="relative pl-8 pb-5 pt-8 pr-8 ">
         <Toaster />
         <div className="flex">

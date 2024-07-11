@@ -19,7 +19,7 @@ export default function Sidebar({
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out lg:translate-x-0`}
     >
-      <nav className="h-full w-[200px] flex flex-col bg-white overflow-y-auto">
+      <nav className="h-full w-[200px] flex flex-col bg-white overflow-y-auto px">
         <div className=" flex justify-between items-center">
           <img src={logo} className="" alt="Logo" />
           <button className="lg:hidden text-gray-700" onClick={toggleSidebar}>
@@ -48,7 +48,7 @@ export const Sidebaritem = ({
   onClick,
 }: SidebaritemProps) => (
   <li
-    className={` m-1 font-bold text-sm rounded-3xl hover:bg-gray-200 ${
+    className={` m-1 mx-5 font-bold text-sm rounded-xl hover:bg-gray-200 ${
       active ? "bg-red-600 text-white" : ""
     }`}
     onClick={onClick}

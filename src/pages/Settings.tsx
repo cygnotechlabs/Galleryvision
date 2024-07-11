@@ -12,7 +12,7 @@ const Settings = () => {
 
   return (
     <div className="bg-gray-100 px-[34px] pt-[20px]">
-      <p className="text-2xl font-bold">Settings</p>
+      <p className="text-xl font-bold">Settings</p>
       <div className="flex w-[95%]  bg-white mt-6 rounded-2xl px-8 py-8">
         <div className="flex flex-col w-60 gap-2 border-r border-gray-300 px-2">
           <div
