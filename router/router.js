@@ -22,8 +22,12 @@ const emailController = require('../controller/emailController');
 
 // collection to collection
 
+
+
 //Register
 router.post('/register',userController.register)
+
+
 
 //login
 // router.post('/login',userController.login)
@@ -31,6 +35,8 @@ router.post('/register',userController.register)
 router.post('/login-test',userController.loginTest)
 
 router.post('/verify-otp',userController.verifyOtp)
+
+
 
 
 // channel routes
@@ -50,8 +56,12 @@ router.delete('/remove-channel/:id',middleware.verifyToken,channelController.rem
 
 router.put('/update-channel/:id',middleware.verifyToken,channelController.updateChannel)
 
+
+
 // channel invoicesunder channel
 router.get('/get-channel-invoice-for-channel',middleware.verifyToken,channelController.getInvoiceForChannel)
+
+
 
 
 
@@ -66,7 +76,9 @@ router.delete('/remove-licensor/:id',middleware.verifyToken,licensorController.r
 
 router.put('/update-licensor/:id',middleware.verifyToken,licensorController.updateLicensor)
 
-module.exports = router
+
+
+
 
 
 
@@ -102,13 +114,13 @@ router.get('/view-rawchannel/:id',middleware.verifyToken,channelController.getOn
 
 
 // Music Invoice Route
-router.post("/generate-music-Invoice",middleware.verifyToken, musicInvoiceController.generateMusicInvoice
-    
-);
+router.post("/generate-music-Invoice",middleware.verifyToken, musicInvoiceController.generateMusicInvoice);
 
 router.get("/get-music-Invoice",middleware.verifyToken, musicInvoiceController.getMusicInvoice);
 
 router.get("/view-music-Invoice/:id",middleware.verifyToken, musicInvoiceController.viewMusicInvoice);
+
+
 
 
 // channel invoice
@@ -117,6 +129,10 @@ router.post("/generate-channel-Invoice",middleware.verifyToken, channelInvoiceCo
 router.get("/get-channel-Invoice",middleware.verifyToken, channelInvoiceController.getChannelInvoice);
 
 router.get("/view-channel-Invoice/:id",middleware.verifyToken, channelInvoiceController.viewChannelInvoice);
+
+
+
+
 
 //TAX
 router.get('/view-tax',middleware.verifyToken,SettingsController.viewTax)
@@ -132,6 +148,10 @@ router.post('/add-tax',middleware.verifyToken,SettingsController.addTax)
 router.put('/update-tax/:id',middleware.verifyToken,SettingsController.updateTax)
 
 router.delete('/del-tax/:id',middleware.verifyToken,SettingsController.delTax)
+
+
+
+
 
 //Currency
 router.get('/view-currency',middleware.verifyToken,SettingsController.viewCurrency)
@@ -150,27 +170,46 @@ router.put('/change-invoice-status/:id',middleware.verifyToken,PaymentController
 
 // router.put('/music-invoice-status/:id',middleware.verifyToken,PaymentController.MusicInvoiceStatus)
 
+
+
+
+
 //DASHBOARD
 
-router.get('/view-count',middleware.verifyToken,dashboardController.getCount)
+router.get('/view-count',dashboardController.getCount)
 
 router.get('/view-stat',dashboardController.getStat)
 
-// get dashboard
-router.get('/get-dashboard',middleware.verifyToken,dashboardController.getDashboard)
+router.get('/view-channel-stat',dashboardController.getSortedChannelsByRevenue)
+
+router.get('/view-music-stat',dashboardController.getSortedMusicsByRevenue)
+
+router.get('/get-dashboard',dashboardController.getDashboard)
+
+router.get('/get-one-dashboard/:currentDate',dashboardController.getOneMonthDashboard)
+
+
+
+
 
 // payment
 router.get('/get-payment',middleware.verifyToken,PaymentController.getPayments)
 
 router.get('/view-payment/:id',middleware.verifyToken,PaymentController.viewPayment)
 
-router.get('/get-currency',SettingsController.getCurrency)
+router.get('/get-currency',middleware.verifyToken,SettingsController.getCurrency)
 
-router.get('/get-tax',SettingsController.getTax)
+router.get('/get-tax',middleware.verifyToken,SettingsController.getTax)
+
+
+
+
 
 
 // invoice mailing
 router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)
+
 router.post('/download-invoice',emailController.downloadInvoicePDF)
 
 
+module.exports = router
