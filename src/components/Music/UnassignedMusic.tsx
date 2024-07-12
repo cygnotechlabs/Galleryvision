@@ -6,7 +6,7 @@ import Modal from "../../layouts/Modal";
 import { Back, Edit } from "../icons/icon";
 import AssignMusic from "./AssignMusic";
 import { authInstance } from "../../hooks/axiosInstances";
-
+import toast, { Toaster } from "react-hot-toast";
 
 type Music = {
   _id: string;
@@ -46,12 +46,11 @@ function UnassignedMusic() {
     try {
       // Make the GET request with the token included in the headers
       const response = await axios.get(API_ENDPOINTS.GET_RAWMUSIC, {
-        headers: authInstance(), 
+        headers: authInstance(),
       });
-  
+
       // Set the musics state with the response data
       setMusics(response.data);
-      
     } catch (error) {
       // Handle any errors that occur during the request
       console.error("Error fetching music data:", error);
@@ -75,16 +74,15 @@ function UnassignedMusic() {
 
   return (
     <div className="bg-gray-100 pl-[34px] pt-[20px] h-[90svh]">
+      <Toaster />
       <div className="flex justify-between items-center pl-[34px]">
-        <div>
-          <Link
-            to="/home/music"
-            className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
-          >
-            <Back />
-            Back
-          </Link>
-        </div>
+        <Link
+          to="/home/music"
+          className="flex gap-1 border font-medium border-gray-600 items-center rounded-lg px-3 py-2 text-sm"
+        >
+          <Back />
+          Back
+        </Link>
         <Link
           to="/home/create-music"
           className="flex bg-black text-white rounded-lg w-[197px] h-[48px] justify-center mr-[34px] gap-2 items-center font-bold"
@@ -92,7 +90,7 @@ function UnassignedMusic() {
           Create Music
         </Link>
       </div>
-      <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] h-[75svh] pr-9">
+      <div className="bg-white shadow-md rounded-xl ml-[34px] mt-[24px] mr-[34px] pr-9">
         <div className="relative pl-8 pb-5 pt-8 pr-8 ">
           <div className="flex justify-between text-sm">
             <input
@@ -183,6 +181,10 @@ function UnassignedMusic() {
 
         <Modal open={open} onClose={() => setOpen(false)}>
           <AssignMusic
+            onSave={() => {
+              fetchData();
+              toast.success("Music Assigned Successfully");
+            }}
             music={selectedMusic}
             onClose={() => {
               setOpen(false);

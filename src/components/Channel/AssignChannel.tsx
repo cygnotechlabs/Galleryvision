@@ -3,6 +3,7 @@ import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   channel: Channel;
@@ -60,8 +61,15 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
       setUpdatedData(response.data);
       onClose();
       onSave();
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      // Check if error is an AxiosError
+      if (axios.isAxiosError(error)) {
+        // Error is an AxiosError
+        toast.error(error.response?.data?.message || "An error occurred");
+      } else {
+        // Error is not an AxiosError
+        console.error("An unexpected error occurred");
+      }
     }
   };
 
@@ -128,6 +136,7 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
 
   return (
     <div className="px-8 py-8 w-[823px] h-[612px]">
+      <Toaster />
       <div className="flex justify-between">
         <p className="text-2xl font-bold">Add Channel</p>
         <button onClick={onClose}>
@@ -151,7 +160,6 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
                       name="channelLogo"
                       onChange={handleImageChange}
                       className="hidden"
-                      
                     />
                   </label>
                 </div>

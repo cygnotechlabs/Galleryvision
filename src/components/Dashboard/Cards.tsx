@@ -36,7 +36,6 @@ function Cards({ selectedDate }: Props) {
       setData(response.data.currentDashboardData);
       setAssets(response.data.currentAsset);
       setpercentage(response.data.percentageChanges);
-      console.log(response.data);
     } catch (error: any) {
       console.error("Error fetching data:", error);
     }

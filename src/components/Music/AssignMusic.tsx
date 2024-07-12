@@ -3,10 +3,12 @@ import { Close } from "../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   music: Music;
   onClose: () => void;
+  onSave: () => void;
 };
 
 type Music = {
@@ -25,7 +27,7 @@ type Licensor = {
   licensorName: string;
 };
 
-const AssignMusic = ({ music, onClose }: Props) => {
+const AssignMusic = ({ music, onClose, onSave }: Props) => {
   const [licensors, setLicensors] = useState<Licensor[]>([]);
   const [musicData, setMusicData] = useState<Music>(music);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -61,8 +63,16 @@ const AssignMusic = ({ music, onClose }: Props) => {
       });
       setMusicData(response.data);
       onClose();
+      onSave();
     } catch (error: any) {
       console.error(error.message);
+      if (axios.isAxiosError(error)) {
+        // Error is an AxiosError
+        toast.error(error.response?.data?.message || "An error occurred");
+      } else {
+        // Error is not an AxiosError
+        console.error("An unexpected error occurred");
+      }
     }
   };
 
@@ -103,6 +113,7 @@ const AssignMusic = ({ music, onClose }: Props) => {
 
   return (
     <div className="px-8 py-8 w-[823px] h-[612px]">
+      <Toaster />
       <div className="flex justify-between items-center">
         <p className="text-2xl font-bold">Add Music</p>
         <button onClick={onClose}>

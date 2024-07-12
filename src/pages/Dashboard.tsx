@@ -3,6 +3,7 @@ import BarChart from "../components/Dashboard/Bar";
 import Cards from "../components/Dashboard/Cards";
 import LineChart from "../components/Dashboard/LIneChart";
 import MonthYearSelector from "../UI/MonthYear";
+import PicChart from "../components/Dashboard/PicChart";
 
 type Props = {};
 
@@ -27,8 +28,9 @@ const Dashboard = ({}: Props) => {
         <div className="bg-white mt-3 rounded-2xl border">
           <LineChart />
         </div>
-        <div className="bg-white mt-3 rounded-2xl border p-3">
+        <div className="gap-6 mt-3 rounded-2xl flex items-center justify-around">
           <BarChart />
+          <PicChart />
         </div>
       </div>
     </div>
