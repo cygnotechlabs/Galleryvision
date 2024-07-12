@@ -44,13 +44,21 @@ const PicChart: React.FC = () => {
     totalRevenue: parseFloat(item.totalRevenue),
   }));
 
-  const colors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "red", "pink"];
+  const colors = [
+    "#F6B0B0",
+    "#BBF4E7",
+    "#23DAB2",
+    "#448DFF",
+    "#E7E7ED",
+    "#7DC7FF",
+  ];
+
   const sliceMusicName = (name: string, length: number): string => {
     return name.length > length ? name.slice(0, length) + "..." : name;
   };
   return (
     <div className="bg-white rounded-2xl border p-5 w-[50%]">
-      <p className="font-bold text-lg">Top revenue generated Music partner</p>
+      <p className="font-bold text-lg mb-3">Top revenue generated Music partner</p>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={data}
@@ -84,6 +92,7 @@ const PicChart: React.FC = () => {
             }}
           />
           <Bar
+            radius={8}
             dataKey="totalRevenue"
             fill="#8884d8"
             label={{ position: "top" }}
