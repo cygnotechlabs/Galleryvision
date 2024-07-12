@@ -269,8 +269,65 @@ exports.getOneRawMusic = async (req, res) => {
   };
  
   //Assign Music
+  // exports.assignMusic = async (req, res) => {
+  //   console.log("Assign music",req.body);
+  //   try {
+  //     const {
+  //       musicId,
+  //       musicName,
+  //       commission,
+  //       licensorId,
+  //       licensorName,
+  //       musicLogo,
+  //       date,
+  //       partnerRevenue,
+  //     } = req.body;
+  
+  //     // Check if a document with the same channelId already exists in the channels collection
+  //     const existingmusic = await musics.findOne({ musicId });
+  
+  //     if (existingmusic) {
+  //       return res.status(409).json({ message: 'Music with the same ID already exists' });
+  //     }
+  
+  //     const assets = [
+  //       {
+  //         date,
+  //         partnerRevenue
+  //       },
+  //     ];
+  
+  //     const newMusic = new musics({
+  //       musicId,
+  //       musicName,
+  //       commission,
+  //       licensorName,
+  //       licensorId,
+  //       musicLogo,
+  //       assets,
+  //     });
+  
+  //     await newMusic.save();
+  
+  //     await rawMusic.deleteOne({ musicId });
+      
+  //     await licensors.updateOne(
+  //       { _id: licensorId },
+  //       { $push: { music : { musicId: musicId, musicName: musicName }  } }
+  //     );
+      
+  
+  //     res.status(201).json({
+  //       message: "Music assigned and raw music deleted successfully",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error assigning music:", error);
+  //     res.status(500).json({ message: "Internal server error" });
+  //   }
+  // };
+
   exports.assignMusic = async (req, res) => {
-    console.log("Assign music",req.body);
+    console.log("Assign music", req.body);
     try {
       const {
         musicId,
@@ -283,10 +340,15 @@ exports.getOneRawMusic = async (req, res) => {
         partnerRevenue,
       } = req.body;
   
-      // Check if a document with the same channelId already exists in the channels collection
-      const existingmusic = await musics.findOne({ musicId });
+      // Check if licensorId is an empty string
+      if (!licensorId) {
+        return res.status(400).json({ message: "There is no licensor like this, please select from dropdown " });
+      }
   
-      if (existingmusic) {
+      // Check if a document with the same musicId already exists in the musics collection
+      const existingMusic = await musics.findOne({ musicId });
+  
+      if (existingMusic) {
         return res.status(409).json({ message: 'Music with the same ID already exists' });
       }
   
@@ -301,8 +363,8 @@ exports.getOneRawMusic = async (req, res) => {
         musicId,
         musicName,
         commission,
-        licensorName,
         licensorId,
+        licensorName,
         musicLogo,
         assets,
       });
@@ -310,18 +372,20 @@ exports.getOneRawMusic = async (req, res) => {
       await newMusic.save();
   
       await rawMusic.deleteOne({ musicId });
-      
+  
       await licensors.updateOne(
         { _id: licensorId },
-        { $push: { music : { musicId: musicId, musicName: musicName }  } }
+        { $push: { music: { musicId: musicId, musicName: musicName } } }
       );
-      
   
       res.status(201).json({
         message: "Music assigned and raw music deleted successfully",
       });
+      console.log("Assign music success");
+  
     } catch (error) {
       console.error("Error assigning music:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   };
+  

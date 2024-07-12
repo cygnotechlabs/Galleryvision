@@ -46,8 +46,71 @@ exports.addChannel = async (req, res) => {
 };
 
 // Assign channel
+// exports.assignChannel = async (req, res) => {
+//   console.log("assign channel",req.body);
+//   try {
+//     const {
+//       channelId,
+//       channelName,
+//       commission,
+//       licensorId,
+//       licensorName,
+//       channelLogo,
+//       date,
+//       usRevenue,
+//       partnerRevenue,
+//       country
+//     } = req.body;
+
+//     // Check if a document with the same channelId already exists in the channels collection
+//     const existingChannel = await channels.findOne({ channelId });
+
+//     if (existingChannel) {
+//       return res.status(409).json({ message: 'Channel with the same ID already exists' });
+//     }
+
+//     const assets = [
+//       {
+//         date,
+//         usRevenue,
+//         partnerRevenue
+//       },
+//     ];
+
+//     const newChannel = new channels({
+//       channelId,
+//       channelName,
+//       commission,
+//       licensorId,
+//       licensorName,
+//       channelLogo,
+//       country,
+//       assets,
+//     });
+
+//     await newChannel.save();
+
+//     await rawchannels.deleteOne({ channelId });
+//     await licensors.updateOne(
+//       { _id: licensorId },
+//       { $push: { channel: { channelId: channelId, channelName: channelName } } }
+//     );
+
+
+//     res.status(201).json({
+//       message: "Channel assigned and raw channel deleted successfully",
+//     });
+//     console.log("assign channel success");
+
+//   } catch (error) {
+//     console.error("Error assigning channel:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+
 exports.assignChannel = async (req, res) => {
-  console.log("assign channel",req.body);
+  console.log("assign channel", req.body);
   try {
     const {
       channelId,
@@ -61,6 +124,11 @@ exports.assignChannel = async (req, res) => {
       partnerRevenue,
       country
     } = req.body;
+
+    // Check if licensorId is an empty string
+    if (!licensorId) {
+      return res.status(400).json({ message: "There is no licensor like this, please select from dropdown" });
+    }
 
     // Check if a document with the same channelId already exists in the channels collection
     const existingChannel = await channels.findOne({ channelId });
@@ -95,7 +163,6 @@ exports.assignChannel = async (req, res) => {
       { _id: licensorId },
       { $push: { channel: { channelId: channelId, channelName: channelName } } }
     );
-
 
     res.status(201).json({
       message: "Channel assigned and raw channel deleted successfully",
