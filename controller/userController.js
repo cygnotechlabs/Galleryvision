@@ -285,10 +285,19 @@ const sendOtpEmail = (email, otp) => {
         from: `"Gallery Vision Verification" <${process.env.GALLERYVISION_EMAIL}>`,
         to: email,
         subject: 'Account Software OTP',
-        text: `Your One-Time Password (OTP) code is: ${otp}
+        text: `Hey there,
 
-        This code is valid for only 2 minutes, so use it promptly to ensure secure access.`
+Your One-Time Password (OTP) is: ${otp}
+
+This code is valid for 2 minutes. Please use it promptly to ensure secure access.
+
+Thanks for using our service!
+
+Cheers,
+Gallery Vision Team`
     };
+
+    
 
     return transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
