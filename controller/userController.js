@@ -282,9 +282,9 @@ const transporter = nodemailer.createTransport({
 // Function to send OTP email
 const sendOtpEmail = (email, otp) => {
     const mailOptions = {
-        from: process.env.GALLERYVISION_EMAIL,
+        from: `"Gallery Vision Verification" <${process.env.GALLERYVISION_EMAIL}>`,
         to: email,
-        subject: 'Your OTP Code',
+        subject: 'Account Software OTP',
         text: `Your One-Time Password (OTP) code is: ${otp}
 
         This code is valid for only 2 minutes, so use it promptly to ensure secure access.`
