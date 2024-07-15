@@ -39,18 +39,25 @@ const MyBarChart: React.FC = () => {
     fetchData();
   }, []);
 
-  const data = channelData.slice(0, 6).map((item) => ({
+  const data = channelData.slice(0, 5).map((item) => ({
     channelName: item.channelName.slice(0, 10),
     totalRevenue: parseFloat(item.totalRevenue),
   }));
 
-  const colors = ["#F6B0B0", "#BBF4E7", "#23DAB2", "#448DFF", "#E7E7ED","#7DC7FF"];
+  const colors = [
+    "#F6B0B0",
+    "#BBF4E7",
+    "#23DAB2",
+    "#448DFF",
+    "#E7E7ED",
+    "#7DC7FF",
+  ];
   const sliceMusicName = (name: string, length: number): string => {
     return name.length > length ? name.slice(0, length) + "..." : name;
   };
   return (
     <div className="bg-white rounded-2xl border p-5 w-[50%]">
-      <p className="font-bold text-lg mb-3">Top revenue generated Music</p>
+      <p className="font-bold text-lg mb-3">Top revenue generated Channels</p>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={data}
@@ -81,7 +88,6 @@ const MyBarChart: React.FC = () => {
               return [`$ ${value}`, formattedName];
             }}
           />
-          {/* <Bar dataKey="totalRevenue" fill="#8884d8" /> */}
           <Bar
             width={20}
             dataKey="totalRevenue"

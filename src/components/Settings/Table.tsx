@@ -48,10 +48,10 @@ function Table({}: Props) {
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
-              <th className="border border-gray-300 py-2 px-4 text-center">
+              <th className="border border-gray-300 py-2 px-2 text-center">
                 Date
               </th>
-              <th className="border border-gray-300 py-2 px-4 text-center">
+              <th className="border border-gray-300 py-2 px-2 text-center">
                 Currency Rate
               </th>
             </tr>
@@ -62,11 +62,11 @@ function Table({}: Props) {
               .slice(0, 3)
               .map((entry) => (
                 <tr key={entry.date}>
-                  <td className="border border-gray-300 font-semibold py-2 px-4 text-center">
+                  <td className="border border-gray-300 font-normal py-2 px-4 text-center">
                     {entry.date}
                   </td>
-                  <td className="border border-gray-300 font-semibold py-2 px-4 text-left">
-                    $1 - ₹ {entry.INR}
+                  <td className="border border-gray-300 font-normal py-2 px-4 text-left">
+                    $1 = ₹ {entry.INR}
                   </td>
                 </tr>
               ))}
@@ -78,10 +78,10 @@ function Table({}: Props) {
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
-              <th className="border border-gray-300 py-2 px-4 text-center">
+              <th className="border border-gray-300 py-2 px-2 text-center">
                 Date
               </th>
-              <th className="border border-gray-300 py-2 px-4 text-center">
+              <th className="border border-gray-300 py-2 px-2 text-center">
                 Tax Rate
               </th>
             </tr>
@@ -92,10 +92,10 @@ function Table({}: Props) {
               .slice(0, 3)
               .map((entry) => (
                 <tr key={entry.date}>
-                  <td className="border border-gray-300 font-semibold py-2 px-4 text-center">
+                  <td className="border border-gray-300 font-normal py-2 px-4 text-center">
                     {entry.date}
                   </td>
-                  <td className="border border-gray-300 font-semibold py-2 px-4 text-left">
+                  <td className="border border-gray-300 font-normal py-2 px-4 text-left">
                     {entry.taxPercentage} %
                   </td>
                 </tr>

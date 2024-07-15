@@ -48,7 +48,7 @@ export const Sidebaritem = ({
   onClick,
 }: SidebaritemProps) => (
   <li
-    className={` m-1 mx-5 font-bold text-sm rounded-xl hover:bg-gray-200 ${
+    className={` m-1 mx-5 font-semibold text-gray-500 text-xs rounded-xl hover:bg-gray-200 ${
       active ? "bg-red-600 text-white" : ""
     }`}
     onClick={onClick}

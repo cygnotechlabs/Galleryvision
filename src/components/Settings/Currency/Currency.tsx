@@ -4,6 +4,7 @@ import { Arrow, India, USA } from "../../icons/icon";
 import axios from "axios";
 import API_ENDPOINTS from "../../../config/apiConfig";
 import { authInstance } from "../../../hooks/axiosInstances";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {};
 
@@ -55,13 +56,12 @@ const CurrencyComponent = ({}: Props) => {
         { headers: authInstance() }
       );
       console.log("Response:", response.data);
-      alert("Conversion rate added successfully!");
+      toast.success(response.data.message);
     } catch (error) {
-      console.error("Error adding conversion rate:", error);
+      toast.error("Error adding or updating tax percentage");
       alert("Failed to add conversion rate. Please try again.");
     }
   };
-
   const handleDateChange = async (newDate: string) => {
     setSelectedDate(newDate);
     console.log(newDate);
@@ -75,18 +75,20 @@ const CurrencyComponent = ({}: Props) => {
       console.error(error);
     }
   };
-
   return (
     <div className="pl-11">
       <div className="flex items-center justify-between my-2">
+        <Toaster />
         <div>
           <p className="text-lg font-bold">Conversion rate</p>
           <p className="text-sm">Choose the month for the conversion</p>
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col items-start gap-2">
-          <label htmlFor="">Select Month: {selectedDate}</label>
+        <label htmlFor="">
+          Current Month: <b>{selectedDate}</b>
+        </label>
+        <div className="hidden flex-col items-start gap-2">
           <MonthYearSelector
             date={selectedDate}
             onDateChange={handleDateChange}

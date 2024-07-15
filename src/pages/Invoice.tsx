@@ -19,7 +19,7 @@ const InvoicePage: React.FC = () => {
     toast.success("Mail sented successfully");
   };
   return (
-    <div className="flex flex-col px-8 py-5 bg-gray-100">
+    <div className="flex flex-col m-6 bg-gray-100">
       <Toaster />
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-1">

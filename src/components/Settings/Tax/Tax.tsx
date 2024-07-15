@@ -196,8 +196,10 @@ const CurrencyComponent = ({}: Props) => {
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col items-start gap-2">
-          <label htmlFor="">Select Month: {selectedDate}</label>
+        <label htmlFor="">
+          Current Month: <b>{selectedDate}</b>
+        </label>
+        <div className="hidden flex-col items-start gap-2">
           <MonthYearSelector
             date={selectedDate}
             onDateChange={handleDateChange}

@@ -58,7 +58,7 @@ const PicChart: React.FC = () => {
   };
   return (
     <div className="bg-white rounded-2xl border p-5 w-[50%]">
-      <p className="font-bold text-lg mb-3">Top revenue generated Music partner</p>
+      <p className="font-bold text-lg mb-3">Top revenue generated Music partners</p>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={data}
