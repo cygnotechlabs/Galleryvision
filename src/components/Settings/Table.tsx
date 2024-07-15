@@ -1,8 +1,10 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
 import API_ENDPOINTS from "../../config/apiConfig";
-import { useState, useEffect } from "react";
 
-type Props = {};
+type Props = {
+  onSubmit?: () => void;
+};
 
 type Tax = {
   date: string;
@@ -14,7 +16,7 @@ type INR = {
   INR: string;
 };
 
-function Table({}: Props) {
+const Table = ({ onSubmit }: Props) => {
   const [tax, setTax] = useState<Tax[]>([]);
   const [currency, setCurrency] = useState<INR[]>([]);
 
@@ -39,12 +41,12 @@ function Table({}: Props) {
   useEffect(() => {
     fetchDataTax();
     fetchDataCurrency();
-  }, []);
+  }, [onSubmit]);
 
   return (
-    <div className="bg-white mt-4 flex gap-3 justify-around p-4">
+    <div className="bg-white mt-4 flex gap-8 py-10 border rounded-lg px-10">
       <div className="Currency-Table w-1/2">
-        <p className="font-bold text-xl">Currency Table</p>
+        <p className="font-bold text-xl mb-3">Currency Table</p>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
@@ -65,7 +67,7 @@ function Table({}: Props) {
                   <td className="border border-gray-300 font-normal py-2 px-4 text-center">
                     {entry.date}
                   </td>
-                  <td className="border border-gray-300 font-normal py-2 px-4 text-left">
+                  <td className="border border-gray-300 font-normal py-2 px-4 text-center">
                     $1 = ₹ {entry.INR}
                   </td>
                 </tr>
@@ -74,7 +76,7 @@ function Table({}: Props) {
         </table>
       </div>
       <div className="Tax-Table font-bold w-1/2">
-        <p className="font-bold text-xl">Tax Table</p>
+        <p className="font-bold text-xl mb-3">Tax Table</p>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-gray-200">
@@ -95,7 +97,7 @@ function Table({}: Props) {
                   <td className="border border-gray-300 font-normal py-2 px-4 text-center">
                     {entry.date}
                   </td>
-                  <td className="border border-gray-300 font-normal py-2 px-4 text-left">
+                  <td className="border border-gray-300 font-normal py-2 px-4 text-center">
                     {entry.taxPercentage} %
                   </td>
                 </tr>
@@ -105,6 +107,6 @@ function Table({}: Props) {
       </div>
     </div>
   );
-}
+};
 
 export default Table;

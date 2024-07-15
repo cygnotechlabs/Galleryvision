@@ -45,7 +45,7 @@ const UploadPayment: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center my-8 rounded-2xl px-7 py-4 bg-report-bg bg-cover">
+    <div className="flex flex-col items-center my-8 rounded-2xl px-7 py-4 bg-report-bg bg-cover border-2 shadow-md">
       <Toaster />
       <h2 className="text-sm font-bold mb-4 text-white">
         Upload Payment XLXS File

@@ -57,7 +57,7 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
       await axios.put(API_ENDPOINTS.UPDATE_CHANNEL(formData._id), formData, {
         headers: authInstance(),
       });
-      onClose(); // Close the modal after successful submission
+      onClose();
       onSave();
     } catch (error) {
       console.error("Error updating channel data:", error);
@@ -196,10 +196,12 @@ const EditChannel = ({ onClose, channel, onSave }: Props) => {
             <input
               type="number"
               onChange={handleChange}
-              placeholder={formData.commission}
+              placeholder={formData.commission.toString()}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               name="commission"
               id="commission"
+              min="0"
+              max="100"
             />
           </div>
         </div>

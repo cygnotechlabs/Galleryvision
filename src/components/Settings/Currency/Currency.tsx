@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MonthYearSelector from "../../../UI/MonthYear";
 import { Arrow, India, USA } from "../../icons/icon";
 import axios from "axios";
@@ -6,14 +6,16 @@ import API_ENDPOINTS from "../../../config/apiConfig";
 import { authInstance } from "../../../hooks/axiosInstances";
 import toast, { Toaster } from "react-hot-toast";
 
-type Props = {};
+type Props = {
+  onSubmit: () => void;
+};
 
 interface Currency {
   date: string;
   INR: string;
 }
 
-const CurrencyComponent = ({}: Props) => {
+const CurrencyComponent = ({ onSubmit }: Props) => {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleString("default", { month: "long", year: "numeric" })
   );
@@ -38,6 +40,7 @@ const CurrencyComponent = ({}: Props) => {
       INR: value,
     }));
   };
+
   useEffect(() => {
     handleDateChange(selectedDate);
   }, []);
@@ -51,17 +54,19 @@ const CurrencyComponent = ({}: Props) => {
     try {
       console.log("Sending payload:", data);
       const response = await axios.post(
-        API_ENDPOINTS.CURRENCY_CONVERSION, // Correct endpoint
+        API_ENDPOINTS.CURRENCY_CONVERSION,
         data,
         { headers: authInstance() }
       );
       console.log("Response:", response.data);
       toast.success(response.data.message);
+      onSubmit(); // Call onSubmit to refresh the table
     } catch (error) {
-      toast.error("Error adding or updating tax percentage");
+      toast.error("Error adding or updating conversion rate");
       alert("Failed to add conversion rate. Please try again.");
     }
   };
+
   const handleDateChange = async (newDate: string) => {
     setSelectedDate(newDate);
     console.log(newDate);
@@ -75,6 +80,7 @@ const CurrencyComponent = ({}: Props) => {
       console.error(error);
     }
   };
+
   return (
     <div className="pl-11">
       <div className="flex items-center justify-between my-2">

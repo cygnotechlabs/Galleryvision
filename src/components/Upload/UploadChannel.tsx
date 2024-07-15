@@ -49,7 +49,7 @@ const UploadChannelCSV: React.FC = () => {
   return (
     <div>
       <Toaster />
-      <div className="flex flex-col items-center my-8 rounded-2xl px-7 py-4 bg-white">
+      <div className="flex flex-col items-center my-8 rounded-2xl px-7 py-4 bg-white border-2 shadow-md">
         <h2 className="text-sm font-bold mb-4">Upload Channel CSV File</h2>
         <div
           onClick={handleBrowseClick}

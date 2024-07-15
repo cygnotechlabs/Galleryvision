@@ -243,6 +243,8 @@ const AssignChannel = ({ channel, onClose, onSave }: Props) => {
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 value={updatedData.commission}
                 required
+                min="0"
+                max="100"
               />
             </div>
           </div>

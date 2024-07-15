@@ -121,7 +121,7 @@ export const MailModal = ({ onClose, toast }: Props) => {
       <p className="text-gray-600 mb-4 px-3 py-3 font-semibold">
         By confirming this, the email will be sent to all paid customers.
       </p>
-      <div className="flex gap-2">
+      <div className="hidden gap-2">
         <MonthYearSelector
           date={selectedDate}
           onDateChange={handleDateChange}

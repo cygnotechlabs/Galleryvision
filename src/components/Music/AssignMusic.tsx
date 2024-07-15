@@ -220,6 +220,8 @@ const AssignMusic = ({ music, onClose, onSave }: Props) => {
                 value={musicData.commission}
                 className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
                 required
+                min="0"
+                max="100"
               />
             </div>
           </div>

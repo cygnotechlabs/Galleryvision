@@ -55,7 +55,9 @@ function Cards({ selectedDate }: Props) {
         <p className="font-medium text-sm text-gray-600 pb-1">
           Total revenue of {selectedDate}
         </p>
-        <p className="font-bold text-2xl">${data.totalCommission}</p>
+        <p className="font-bold text-2xl">
+          ${parseFloat(data.totalCommission).toFixed(2)}
+        </p>
         <div className="flex gap-2 mt-3 items-center m-1">
           <img
             src={
@@ -93,7 +95,9 @@ function Cards({ selectedDate }: Props) {
         <p className="font-medium text-sm text-gray-600 pb-1">
           Channel revenue
         </p>
-        <p className="font-bold text-2xl">$ {data.channelCommission}</p>
+        <p className="font-bold text-2xl">
+          ${parseFloat(data.channelCommission).toFixed(2)}
+        </p>
         <div className="flex gap-2 mt-3 items-center m-1">
           <img
             src={
@@ -111,7 +115,9 @@ function Cards({ selectedDate }: Props) {
       </div>
       <div className="bg-white px-8 py-6 rounded-2xl border">
         <p className="font-medium text-sm text-gray-600 pb-1">Music revenue</p>
-        <p className="font-bold text-2xl">$ {data.musicCommission}</p>
+        <p className="font-bold text-2xl">
+          ${parseFloat(data.musicCommission).toFixed(2)}
+        </p>
         <div className="flex gap-2 mt-3 items-center m-1">
           <img
             src={
