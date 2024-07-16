@@ -95,14 +95,14 @@ const autoUpdateMusics = async () => {
                     await existingMusic.save();
                     console.log(`Music with ID ${rawMusic.musicId} updated successfully.`);
                 } else {
-                    console.log(`Date ${rawMusic.date} already exists for music ID ${rawMusic.musicId}, skipping update.`);
+                    // console.log(`Date ${rawMusic.date} already exists for music ID ${rawMusic.musicId}, skipping update.`);
                 }
 
                 // Remove the rawMusic entry as it has been processed successfully
                 await rawmusics.deleteOne({ _id: rawMusic._id });
                 console.log(`Raw music with ID ${rawMusic._id} deleted successfully.`);
             } else {
-                console.log(`No existing music found for music ID ${rawMusic.musicId}, skipping.`);
+                // console.log(`No existing music found for music ID ${rawMusic.musicId}, skipping.`);
             }
         }
 
