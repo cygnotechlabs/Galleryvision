@@ -20,6 +20,7 @@ const UploadChannelCSV: React.FC = () => {
       fileInputRef.current.files.length === 0
     ) {
       console.error("No file selected.");
+      toast.error("No file selected.");
       return;
     }
 
@@ -31,15 +32,17 @@ const UploadChannelCSV: React.FC = () => {
       setUploading(true);
       setShowModal(true);
       // Change the URL to your backend server endpoint
-      await axios.post(API_ENDPOINTS.UPLOADCHANNEL, formData, {
+      const response = await axios.post(API_ENDPOINTS.UPLOADCHANNEL, formData, {
         headers: MauthInstance(),
       });
-      console.log("File uploaded successfully!");
-      toast.success("File uploaded successfully!");
+      console.log(response.data.msg);
+      toast.success(response.data.msg);
     } catch (error) {
-      console.error("Error uploading file:", error);
-      toast.error("Error uploading file:");
-      // You might want to handle this error, e.g., display a message to the user
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "An error occurred");
+      } else {
+        console.error("An unexpected error occurred");
+      }
     } finally {
       setUploading(false);
       setShowModal(false);

@@ -20,6 +20,7 @@ const UploadPayment: React.FC = () => {
       fileInputRef.current.files.length === 0
     ) {
       console.error("No file selected.");
+      toast.error("No file selected.");
       return;
     }
 
@@ -30,14 +31,17 @@ const UploadPayment: React.FC = () => {
     try {
       setUploading(true);
       setShowModal(true);
-      await axios.post(API_ENDPOINTS.UPLOADREPORT, formData, {
+      const response = await axios.post(API_ENDPOINTS.UPLOADREPORT, formData, {
         headers: MauthInstance(),
       });
-      console.log("File uploaded successfully!");
-      toast.success("File uploaded successfully!");
+      console.log(response.data.msg);
+      toast.success(response.data.msg);
     } catch (error) {
-      console.error("Error uploading file:", error);
-      toast.error("Error uploading file:");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "An error occurred");
+      } else {
+        console.error("An unexpected error occurred");
+      }
     } finally {
       setUploading(false);
       setShowModal(false);
