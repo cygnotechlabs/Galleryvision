@@ -8,6 +8,7 @@ const importChannel = async (req, res) => {
     try {
 
         await rawchannels.deleteMany({});
+        console.log("Channel CSV File Uploaded ");
         console.log("Existing records deleted.");
 
         // Initialize an object to store aggregated revenue data
@@ -105,6 +106,7 @@ const importChannel = async (req, res) => {
 const autoUpdateChannels = async () => {
     try {
         const rawChannels = await rawchannels.find();
+        console.log("Channel Auto Updating ....");
 
         for (const rawChannel of rawChannels) {
             const existingChannel = await channels.findOne({
