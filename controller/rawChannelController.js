@@ -103,22 +103,58 @@ const importChannel = async (req, res) => {
 };
 
 
+// const autoUpdateChannels = async () => {
+//     try {
+//         const rawChannels = await rawchannels.find();
+//         console.log("Channel Auto Updating ....");
+
+//         for (const rawChannel of rawChannels) {
+//             const existingChannel = await channels.findOne({
+//                 channelId: rawChannel.channelId,
+//             });
+
+//             if (existingChannel) {
+//                 // Check if the date already exists in the assets
+//                 const dateExists = existingChannel.assets.some(asset => asset.date === rawChannel.date);
+
+//                 if (!dateExists) {
+//                     // Only update if the date does not exist
+//                     existingChannel.assets.push({
+//                         date: rawChannel.date,
+//                         partnerRevenue: rawChannel.partnerRevenue,
+//                         usRevenue: rawChannel.usRevenue || 0, // Ensure usRevenue is initialized or default to 0
+//                     });
+//                     await existingChannel.save();
+//                     console.log(`Channel with ID ${rawChannel.channelId} updated successfully`);
+//                 } else {
+//                     console.log(`Date ${rawChannel.date} already exists for channel ID ${rawChannel.channelId}, skipping update`);
+//                 }
+
+//                 // Remove the rawChannel entry regardless of whether it was updated or not
+//                 await rawchannels.deleteOne({ channelId: rawChannel.channelId });
+//                 console.log(`Raw channel with ID ${rawChannel.channelId} deleted successfully`);
+//             }
+//         }
+
+//         console.log("Channels auto updated successfully");
+//     } catch (error) {
+//         console.error("Error updating channels:", error);
+//     }
+// };
+
+
 const autoUpdateChannels = async () => {
     try {
         const rawChannels = await rawchannels.find();
         console.log("Channel Auto Updating ....");
 
-        for (const rawChannel of rawChannels) {
-            const existingChannel = await channels.findOne({
-                channelId: rawChannel.channelId,
-            });
+        const updatePromises = rawChannels.map(async (rawChannel) => {
+            const existingChannel = await channels.findOne({ channelId: rawChannel.channelId });
 
             if (existingChannel) {
-                // Check if the date already exists in the assets
                 const dateExists = existingChannel.assets.some(asset => asset.date === rawChannel.date);
 
                 if (!dateExists) {
-                    // Only update if the date does not exist
                     existingChannel.assets.push({
                         date: rawChannel.date,
                         partnerRevenue: rawChannel.partnerRevenue,
@@ -130,17 +166,21 @@ const autoUpdateChannels = async () => {
                     console.log(`Date ${rawChannel.date} already exists for channel ID ${rawChannel.channelId}, skipping update`);
                 }
 
-                // Remove the rawChannel entry regardless of whether it was updated or not
                 await rawchannels.deleteOne({ channelId: rawChannel.channelId });
                 console.log(`Raw channel with ID ${rawChannel.channelId} deleted successfully`);
+            } else {
+                console.log(`Channel with ID ${rawChannel.channelId} not found in existing channels`);
             }
-        }
+        });
+
+        await Promise.all(updatePromises);
 
         console.log("Channels auto updated successfully");
     } catch (error) {
         console.error("Error updating channels:", error);
     }
 };
+
 
 module.exports = {
     importChannel
