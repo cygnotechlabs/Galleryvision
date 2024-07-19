@@ -8,7 +8,7 @@ const UploadMusic: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-
+  const [progress, setProgress] = useState<number>(0);
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
   };
@@ -33,6 +33,13 @@ const UploadMusic: React.FC = () => {
       setShowModal(true);
       const response = await axios.post(API_ENDPOINTS.UPLOADMUSIC, formData, {
         headers: MauthInstance(),
+        onUploadProgress: (progressEvent) => {
+          const total = progressEvent.total || 0;
+          const currentProgress = Math.round(
+            (progressEvent.loaded * 100) / total
+          );
+          setProgress(currentProgress);
+        },
       });
       console.log(response.data.msg);
       toast.success(response.data.msg);
@@ -97,17 +104,18 @@ const UploadMusic: React.FC = () => {
         onClick={handleSubmit}
         disabled={uploading}
       >
-        {uploading ? "Uploading..." : "Upload file"}
+        {uploading ? `Uploading... (${progress}%)` : "Upload file"}
       </button>
 
       {showModal && (
-        <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-4 flex flex-col items-center">
-            <p className="mb-4">Uploading Music...</p>
+            <p className="mb-4 font-medium">Uploading Channel... {progress}%</p>
             <div className="w-full h-4 bg-gray-200 rounded-full">
-              <div className="loader">
-                <div className="inner_loader"></div>
-              </div>
+              <div
+                className="bg-red-500 h-4 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
           </div>
         </div>

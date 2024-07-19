@@ -7,7 +7,11 @@ import toast, { Toaster } from "react-hot-toast";
 const UploadChannelCSV: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [uploadTimeout, setUploadTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
@@ -28,13 +32,44 @@ const UploadChannelCSV: React.FC = () => {
     const formData = new FormData();
     formData.append("file", file);
 
+    const timeoutDuration = 5 * 60 * 1000; // 10 minutes in milliseconds
+    const intervalDuration = 100; // Progress update interval in milliseconds
+
+    let elapsedTime = 0; // Track elapsed time for manual progress updates
+
+    const updateProgress = () => {
+      elapsedTime += intervalDuration;
+      const currentProgress = Math.min(
+        100,
+        Math.round((elapsedTime / timeoutDuration) * 100)
+      );
+      setProgress(currentProgress);
+    };
+
     try {
       setUploading(true);
       setShowModal(true);
-      // Change the URL to your backend server endpoint
+
+      const timeout = setTimeout(() => {
+        console.error("Upload timed out.");
+        toast.error("Upload timed out.");
+        setUploading(false);
+        setShowModal(false);
+      }, timeoutDuration);
+
+      setUploadTimeout(timeout);
+
+      const interval = setInterval(() => {
+        updateProgress();
+      }, intervalDuration);
+
       const response = await axios.post(API_ENDPOINTS.UPLOADCHANNEL, formData, {
         headers: MauthInstance(),
       });
+
+      clearTimeout(timeout);
+      clearInterval(interval);
+
       console.log(response.data.msg);
       toast.success(response.data.msg);
     } catch (error) {
@@ -46,6 +81,11 @@ const UploadChannelCSV: React.FC = () => {
     } finally {
       setUploading(false);
       setShowModal(false);
+      setProgress(0);
+      if (uploadTimeout) {
+        clearTimeout(uploadTimeout);
+        setUploadTimeout(null);
+      }
     }
   };
 
@@ -99,18 +139,19 @@ const UploadChannelCSV: React.FC = () => {
           onClick={handleSubmit}
           disabled={uploading}
         >
-          {uploading ? "Uploading..." : "Upload file"}
+          {uploading ? `Uploading... (${progress}%)` : "Upload file"}
         </button>
       </div>
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-4 flex flex-col items-center">
-            <p className="mb-4">Uploading Channel...</p>
+            <p className="mb-4 font-medium">Uploading Channel... {progress}%</p>
             <div className="w-full h-4 bg-gray-200 rounded-full">
-              <div className="loader">
-                <div className="inner_loader"></div>
-              </div>
+              <div
+                className="bg-red-500 h-4 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
           </div>
         </div>
