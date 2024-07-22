@@ -18,13 +18,13 @@ require('./database/connection/connection')
 
 server.use(cors())
 
+server.use(express.json())
+
 server.use('/music',rawMusicRoute)
 
 server.use('/channel',rawChannelRoute)
 
 server.use('/report',reportRoute)
-
-server.use(express.json())
 
 server.use(router)
 
