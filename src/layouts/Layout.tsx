@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar, { Sidebaritem } from "../components/Sidebar/Sidebar";
 import {
   Upload,
@@ -20,8 +20,16 @@ const Layout = ({ children }: Props) => {
   const [activeItem, setActiveItem] = useState<string>("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    const storedActiveItem = localStorage.getItem("activeItem");
+    if (storedActiveItem) {
+      setActiveItem(storedActiveItem);
+    }
+  }, []);
+
   const handleItemClick = (text: string) => {
     setActiveItem(text);
+    localStorage.setItem("activeItem", text);
     setIsSidebarOpen(false); // Close sidebar on item click in mobile view
   };
 
