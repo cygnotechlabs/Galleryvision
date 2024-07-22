@@ -32,7 +32,7 @@ const UploadChannelCSV: React.FC = () => {
     const formData = new FormData();
     formData.append("file", file);
 
-    const timeoutDuration = 5 * 60 * 1000; // 10 minutes in milliseconds
+    const timeoutDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
     const intervalDuration = 100; // Progress update interval in milliseconds
 
     let elapsedTime = 0; // Track elapsed time for manual progress updates

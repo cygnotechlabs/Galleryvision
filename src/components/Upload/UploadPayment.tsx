@@ -8,7 +8,7 @@ const UploadPayment: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-
+  const [progress, setProgress] = useState<number>(0);
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
   };
@@ -33,6 +33,13 @@ const UploadPayment: React.FC = () => {
       setShowModal(true);
       const response = await axios.post(API_ENDPOINTS.UPLOADREPORT, formData, {
         headers: MauthInstance(),
+        onUploadProgress: (progressEvent) => {
+          const total = progressEvent.total || 0;
+          const currentProgress = Math.round(
+            (progressEvent.loaded * 100) / total
+          );
+          setProgress(currentProgress);
+        },
       });
       console.log(response.data.msg);
       toast.success(response.data.msg);
@@ -105,11 +112,12 @@ const UploadPayment: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-4 flex flex-col items-center">
-            <p className="mb-4">Uploading Payment...</p>
+            <p className="mb-4">Uploading Payment...${progress}</p>
             <div className="w-full h-4 bg-gray-200 rounded-full">
-              <div className="loader">
-                <div className="inner_loader"></div>
-              </div>
+              <div
+                className="bg-red-500 h-4 rounded-full"
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
           </div>
         </div>

@@ -110,7 +110,7 @@ const UploadMusic: React.FC = () => {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-4 flex flex-col items-center">
-            <p className="mb-4 font-medium">Uploading Channel... {progress}%</p>
+            <p className="mb-4 font-medium">Uploading Music... {progress}%</p>
             <div className="w-full h-4 bg-gray-200 rounded-full">
               <div
                 className="bg-red-500 h-4 rounded-full"

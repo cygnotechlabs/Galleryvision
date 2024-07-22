@@ -11,7 +11,7 @@ function Upload({}: Props) {
         <div className="mb-4 lg:mb-0">
           <p className="text-xl font-bold">Upload</p>
           <h1 className="text-sm font-normal text-gray-400 pt-2">
-            Upload your Youtube Channel CSV files & Music partner XLXS file &
+            Upload your Youtube Channel CSV file, Music partner XLXS file &
             Payment report
           </h1>
         </div>
