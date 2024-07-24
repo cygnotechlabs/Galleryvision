@@ -36,12 +36,13 @@ const CreateLicensor: React.FC<Props> = () => {
     licensorAddress: "",
     bankAccNum: "",
     ifsc_iban: "",
-    currency: "INR",
+    currency: "",
     panNumber: "",
     tds: "",
   });
   const [bankFormat, setBankFormat] = useState("IFSC Code");
   const [showPan, setShowPan] = useState(false);
+  const [showIBAN, setShowIBAN] = useState(false);
 
   const notify = () => {
     toast.success("Licensor created successfully!", { position: "top-center" });
@@ -102,11 +103,6 @@ const CreateLicensor: React.FC<Props> = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  const togglePan = () => {
-    setShowPan(true);
-  };
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-gray-100">
@@ -282,7 +278,8 @@ const CreateLicensor: React.FC<Props> = () => {
                       value="domestic"
                       onClick={() => {
                         setBankFormat("IFSC Code");
-                        togglePan();
+                        setShowPan(true);
+                        setShowIBAN(false);
                       }}
                     />
                     <label htmlFor="domestic">Domestic</label>
@@ -296,88 +293,142 @@ const CreateLicensor: React.FC<Props> = () => {
                       onClick={() => {
                         setBankFormat("IBAN");
                         setShowPan(false);
+                        setShowIBAN(true);
                       }}
                     />
                     <label htmlFor="international">International</label>
                   </div>
                 </div>
-              </div>{" "}
-              <div className="flex gap-3">
-                <div className="flex flex-col gap-2 w-[30%]">
-                  <label htmlFor="" className="text-sm font-semibold">
-                    Bank Account Number
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter bank account number"
-                    name="bankAccNum"
-                    value={formData.bankAccNum}
-                    onChange={handleChange}
-                    className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                    required
-                  />
-                </div>
-                <div className="flex flex-col gap-2 w-[30%]">
-                  <label htmlFor="" className="text-sm font-semibold">
-                    {bankFormat}
-                  </label>
-                  <input
-                    type="text"
-                    placeholder={`Enter ${bankFormat}`}
-                    name="ifsc_iban"
-                    value={formData.ifsc_iban}
-                    onChange={handleChange}
-                    className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                    required
-                  />
-                </div>
-                <div className="flex flex-col gap-2 w-[30%]">
-                  <label htmlFor="" className="text-sm font-semibold">
-                    Currency
-                  </label>
-                  <select
-                    name="currency"
-                    value={formData.currency}
-                    onChange={handleChange}
-                    className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                    required
-                  >
-                    <option value="INR">INR</option>
-                    <option value="USD">USD</option>
-                  </select>
-                </div>
               </div>
               {showPan && (
-                <div className="flex items-center gap-12">
-                  <div className="flex flex-col gap-2 w-[50svh]">
-                    <label htmlFor="" className="text-sm font-semibold">
-                      PAN CARD
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Pan Number"
-                      name="panNumber"
-                      value={formData.panNumber}
-                      onChange={handleChange}
-                      className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                      required
-                    />
+                <>
+                  <div className="flex gap-3">
+                    <div className="flex flex-col gap-2 w-[46%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        Bank Account Number
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter bank account number"
+                        name="bankAccNum"
+                        value={formData.bankAccNum}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 w-[45%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        {bankFormat}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={`Enter ${bankFormat}`}
+                        name="ifsc_iban"
+                        value={formData.ifsc_iban}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2 w-[50svh]">
-                    <label htmlFor="" className="text-sm font-semibold">
-                      TDS
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="TDS %"
-                      name="tds"
-                      value={formData.tds}
-                      onChange={handleChange}
-                      className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
-                      required
-                    />
+                  <div className="flex items-center gap-3">
+                    <div className="flex flex-col gap-2 w-[30%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        PAN CARD
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Pan Number"
+                        name="panNumber"
+                        value={formData.panNumber}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 w-[30%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        TDS %
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="TDS %"
+                        name="tds"
+                        value={formData.tds}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 w-[30%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        Currency
+                      </label>
+                      <select
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      >
+                        <option value="USD">Select Currency</option>
+                        <option value="INR">INR</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
+                </>
+              )}
+              {showIBAN && (
+                <>
+                  <div className="flex gap-3">
+                    <div className="flex flex-col gap-2 w-[30%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        Bank Account Number
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter bank account number"
+                        name="bankAccNum"
+                        value={formData.bankAccNum}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 w-[30%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        {bankFormat}
+                      </label>
+                      <input
+                        type="text"
+                        placeholder={`Enter ${bankFormat}`}
+                        name="ifsc_iban"
+                        value={formData.ifsc_iban}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 w-[30%]">
+                      <label htmlFor="" className="text-sm font-semibold">
+                        Currency
+                      </label>
+                      <select
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleChange}
+                        className="border-2 border-gray-300 text-sm rounded-md px-5 py-2"
+                        required
+                      >
+                        <option value="USD">Select Currency</option>
+                        <option value="USD">USD</option>
+                        <option value="INR">INR</option>
+                      </select>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>

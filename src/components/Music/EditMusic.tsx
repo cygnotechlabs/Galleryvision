@@ -145,7 +145,7 @@ const EditMusic = ({ onClose, music }: Props) => {
             <input
               type="text"
               name="licensorName"
-              placeholder="Search Licensor"
+              placeholder={music.licensorName}
               onChange={handleSearchLicensors}
               className="px-3 py-3 w-[358px] border border-gray-200 rounded-lg"
               value={searchTerm}
