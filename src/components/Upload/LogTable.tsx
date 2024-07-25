@@ -1,8 +1,4 @@
-// file path: src/components/LogTable.tsx
-
-import axios from "axios";
-import API_ENDPOINTS from "../../config/apiConfig";
-import { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { parse, format } from "date-fns";
 
 type Log = {
@@ -13,25 +9,16 @@ type Log = {
   status: string;
 };
 
-type Props = {};
+type Props = {
+  fetchData: () => void;
+  log: Log[];
+  error: string | null;
+};
 
-const LogTable = ({}: Props) => {
-  const [log, setLog] = useState<Log[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(API_ENDPOINTS.FILE_LOG);
-      setLog(response.data);
-    } catch (error) {
-      setError("Error fetching log data");
-      console.error("Error fetching log data", error);
-    }
-  };
-
+const LogTable: React.FC<Props> = ({ fetchData, log, error }) => {
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return (
     <div className="Currency-Table w-full">

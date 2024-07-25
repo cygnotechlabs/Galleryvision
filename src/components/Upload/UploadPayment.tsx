@@ -4,7 +4,11 @@ import API_ENDPOINTS from "../../config/apiConfig";
 import { MauthInstance } from "../../hooks/axiosInstances";
 import toast, { Toaster } from "react-hot-toast";
 
-const UploadPayment: React.FC = () => {
+type Props = {
+  onSave: () => void;
+};
+
+const UploadPayment: React.FC<Props> = ({ onSave }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -43,6 +47,7 @@ const UploadPayment: React.FC = () => {
       });
       console.log(response.data.msg);
       toast.success(response.data.msg);
+      onSave();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "An error occurred");

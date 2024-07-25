@@ -1,10 +1,16 @@
+// file path: src/components/Upload/UploadChannel.tsx
+
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { MauthInstance } from "../../hooks/axiosInstances";
 import toast, { Toaster } from "react-hot-toast";
 
-const UploadChannelCSV: React.FC = () => {
+type Props = {
+  onSave: () => void;
+};
+
+const UploadChannel: React.FC<Props> = ({ onSave }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
@@ -69,7 +75,7 @@ const UploadChannelCSV: React.FC = () => {
 
       clearTimeout(timeout);
       clearInterval(interval);
-
+      onSave();
       console.log(response.data.msg);
       toast.success(response.data.msg);
     } catch (error) {
@@ -160,4 +166,4 @@ const UploadChannelCSV: React.FC = () => {
   );
 };
 
-export default UploadChannelCSV;
+export default UploadChannel;
