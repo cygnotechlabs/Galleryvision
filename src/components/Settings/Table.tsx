@@ -1,6 +1,8 @@
+//auth
 import axios from "axios";
 import { useEffect, useState } from "react";
 import API_ENDPOINTS from "../../config/apiConfig";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = {
   onSubmit?: () => void;
@@ -22,7 +24,9 @@ const Table = ({ onSubmit }: Props) => {
 
   const fetchDataTax = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.VIEW_TAX);
+      const response = await axios.get(API_ENDPOINTS.VIEW_TAX,{
+        headers: authInstance(),
+      });
       setTax(response.data);
     } catch (error) {
       console.error("Error fetching tax data", error);
@@ -31,7 +35,9 @@ const Table = ({ onSubmit }: Props) => {
 
   const fetchDataCurrency = async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.VIEW_CURRENCY);
+      const response = await axios.get(API_ENDPOINTS.VIEW_CURRENCY,{
+        headers: authInstance(),
+      });
       setCurrency(response.data);
     } catch (error) {
       console.error("Error fetching currency data", error);

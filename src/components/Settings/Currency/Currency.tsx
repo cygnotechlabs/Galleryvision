@@ -1,3 +1,4 @@
+//auth
 import React, { useState, useEffect } from "react";
 import MonthYearSelector from "../../../UI/MonthYear";
 import { Arrow, India, USA } from "../../icons/icon";
@@ -73,6 +74,7 @@ const CurrencyComponent = ({ onSubmit }: Props) => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_CURRENCY, {
         params: { date: newDate },
+        headers: authInstance(),
       });
       setINRValue(response.data.INR);
       console.log("Currency data:", response.data.INR);

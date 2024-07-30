@@ -1,4 +1,4 @@
-const ENV = "production"; // Change this to "development", "production" or "staging" as needed
+const ENV = "staging"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: import.meta.env.VITE_REACT_APP_DEVELOPMENT as string,

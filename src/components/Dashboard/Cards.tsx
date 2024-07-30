@@ -1,8 +1,11 @@
+//auth
+
 import axios from "axios";
 import loss from "../../../public/Frame 1288 (1).png";
 import profit from "../../../public/Frame 1288.png";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { useEffect, useState } from "react";
+import { authInstance } from "../../hooks/axiosInstances";
 
 type Props = { selectedDate: string };
 
@@ -31,7 +34,9 @@ function Cards({ selectedDate }: Props) {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        API_ENDPOINTS.GET_ONE_DASHBOARD(selectedDate)
+        API_ENDPOINTS.GET_ONE_DASHBOARD(selectedDate),{
+          headers: authInstance(),
+        }
       );
       setData(response.data.currentDashboardData);
       setAssets(response.data.currentAsset);

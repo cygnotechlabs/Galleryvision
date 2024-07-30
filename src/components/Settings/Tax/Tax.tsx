@@ -1,3 +1,4 @@
+//auth
 import React, { useState, useEffect } from "react";
 import MonthYearSelector from "../../../UI/MonthYear";
 import { Arrow, USA } from "../../icons/icon";
@@ -68,6 +69,7 @@ const TaxComponent = ({ onSubmit }: Props) => {
     try {
       const response = await axios.get(API_ENDPOINTS.GET_TAX, {
         params: { date: newDate },
+        headers: authInstance()
       });
       setTaxPercentage(response.data.taxPercentage);
       console.log("Currency data:", response.data, taxPercentage);
