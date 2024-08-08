@@ -1,4 +1,4 @@
-const ENV = "staging"; // Change this to "development", "production" or "staging" as needed
+const ENV = "production"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: import.meta.env.VITE_REACT_APP_DEVELOPMENT as string,
@@ -88,7 +88,7 @@ const API_ENDPOINTS = {
   VIEW_TAX: `${BASE_URL}/view-all-tax`,
 
   //File log
-  FILE_LOG:`${BASE_URL}/file-log`,
+  FILE_LOG: `${BASE_URL}/file-log`,
 };
 
 export default API_ENDPOINTS;
