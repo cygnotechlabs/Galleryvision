@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import API_ENDPOINTS from "../../config/apiConfig";
 import { authInstance } from "../../hooks/axiosInstances";
 
-type Props = {};
+type Props = Record<string, never>;
 
 interface FormData {
   companyName: string;

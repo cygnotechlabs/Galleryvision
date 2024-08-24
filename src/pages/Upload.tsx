@@ -1,5 +1,3 @@
-// file path: src/pages/Upload.tsx
-
 import React, { useState, useCallback } from "react";
 import axios from "axios";
 
@@ -8,6 +6,7 @@ import UploadChannelCSV from "../components/Upload/UploadChannel";
 import UploadMusic from "../components/Upload/UploadMusic";
 import UploadPayment from "../components/Upload/UploadPayment";
 import API_ENDPOINTS from "../config/apiConfig";
+import { authInstance } from "../hooks/axiosInstances";
 
 type Log = {
   _id: string;
@@ -17,7 +16,7 @@ type Log = {
   status: string;
 };
 
-type Props = {};
+type Props = Record<string, never>;
 
 const Upload: React.FC<Props> = () => {
   const [log, setLog] = useState<Log[]>([]);
@@ -25,7 +24,9 @@ const Upload: React.FC<Props> = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.FILE_LOG);
+      const response = await axios.get(API_ENDPOINTS.FILE_LOG, {
+        headers: authInstance(),
+      });
       setLog(response.data);
     } catch (error) {
       setError("Error fetching log data");
