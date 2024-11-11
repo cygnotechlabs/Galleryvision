@@ -32,7 +32,7 @@ router.post('/register',userController.register)
 //login
 // router.post('/login',userController.login)
 
-router.post('/login-test',userController.loginTest)
+router.post('/login',userController.login)
 
 router.post('/verify-otp',userController.verifyOtp)
 
@@ -210,6 +210,10 @@ router.get('/get-tax',middleware.verifyToken,SettingsController.getTax)
 router.post('/mail-invoice',middleware.verifyToken,emailController.processInvoicesAndSendEmails)
 
 router.post('/download-invoice',emailController.downloadInvoicePDF)
+
+
+//File Log 
+router.get('/file-log',dashboardController.getLastFileLogs)
 
 
 module.exports = router

@@ -1,8 +1,8 @@
-const users = require('../database/model/userSchema')
-const bcrypt = require('bcrypt')
-const express = require('express')
-const jwt = require('jsonwebtoken')
-const cookieParser = require('cookie-parser')
+const users = require('../database/model/userSchema');
+const bcrypt = require('bcrypt');
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const speakeasy = require('speakeasy');
 const nodemailer = require('nodemailer');
 const NodeCache = require('node-cache');
@@ -10,148 +10,6 @@ const NodeCache = require('node-cache');
 
 
 
-
-
-
-
-
-
-
-//test thaha
-
-
-
-// const channelInvoiceModel = require('../database/model/channelInvoice');
-// const musicInvoiceModel = require('../database/model/musicInvoice');
-// const fs = require('fs');
-// const PDFDocument = require('pdfkit');
-// const nodemailer = require('nodemailer');
-// const { createCanvas, loadImage } = require('canvas');
-// const path = require('path');
-
-// const populateGhostImage = async (invoice, ghostImagePath) => {
-//     const canvas = createCanvas(600, 800); // Adjust the size as needed
-//     const context = canvas.getContext('2d');
-
-//     const image = await loadImage(ghostImagePath);
-//     context.drawImage(image, 0, 0);
-
-//     // Define positions and draw text on the canvas
-//     const positions = {
-//         partnerName: { x: 150, y: 130 },
-//         licensorContact: { x: 450, y: 130 },
-//         youtubeChannelRevenue: { x: 350, y: 170 },
-//         tax: { x: 350, y: 190 },
-//         revenueAfterTax: { x: 350, y: 210 },
-//         commissionPercentage: { x: 350, y: 250 },
-//         commissionAmount: { x: 350, y: 270 },
-//         totalPayoutUSD: { x: 350, y: 310 },
-//         conversionRate: { x: 350, y: 350 },
-//         payoutINR: { x: 350, y: 370 },
-//     };
-
-//     const drawText = (text, x, y) => {
-//         context.font = '12px Arial';
-//         context.fillText(text, x, y);
-//     };
-
-//     drawText(invoice.partnerName, positions.partnerName.x, positions.partnerName.y);
-//     drawText(invoice.licensorName, positions.licensorContact.x, positions.licensorContact.y);
-//     drawText(`$${invoice.ptRevenue}`, positions.youtubeChannelRevenue.x, positions.youtubeChannelRevenue.y);
-//     drawText(`$${invoice.tax}`, positions.tax.x, positions.tax.y);
-//     drawText(`$${invoice.ptAfterTax}`, positions.revenueAfterTax.x, positions.revenueAfterTax.y);
-//     drawText(`${invoice.commissionPercentage}%`, positions.commissionPercentage.x, positions.commissionPercentage.y);
-//     drawText(`$${invoice.commissionAmount}`, positions.commissionAmount.x, positions.commissionAmount.y);
-//     drawText(`$${invoice.totalPayout}`, positions.totalPayoutUSD.x, positions.totalPayoutUSD.y);
-//     drawText(invoice.conversionRate, positions.conversionRate.x, positions.conversionRate.y);
-//     drawText(`INR ${invoice.payout}`, positions.payoutINR.x, positions.payoutINR.y);
-
-//     const outputPath = path.join(__dirname, `populated_ghost_image_${invoice._id}.png`);
-//     const out = fs.createWriteStream(outputPath);
-//     const stream = canvas.createPNGStream();
-//     stream.pipe(out);
-
-//     return new Promise((resolve, reject) => {
-//         out.on('finish', () => resolve(outputPath));
-//         out.on('error', reject);
-//     });
-// };
-
-// const convertImageToPDF = (imagePath, pdfPath) => {
-//     return new Promise((resolve, reject) => {
-//         const doc = new PDFDocument({ size: 'A4', margin: 50 });
-
-//         doc.pipe(fs.createWriteStream(pdfPath));
-//         doc.image(imagePath, {
-//             fit: [500, 400],
-//             align: 'center',
-//             valign: 'center'
-//         });
-//         doc.end();
-
-//         doc.on('finish', () => resolve(pdfPath));
-//         doc.on('error', reject);
-//     });
-// };
-
-// const sendEmailWithAttachment = async (filePath, recipientEmail, subject, body) => {
-//     const transporter = nodemailer.createTransport({
-//         service: 'gmail',
-//         auth: {
-//             user: 'galleryvision24@gmail.com',
-//             pass: 'cles pbrx btua qvbc',
-//         },
-//     });
-
-//     const mailOptions = {
-//         from: 'galleryvision24@gmail.com',
-//         to: recipientEmail,
-//         subject: subject,
-//         text: body,
-//         attachments: [
-//             {
-//                 filename: path.basename(filePath),
-//                 path: filePath,
-//             },
-//         ],
-//     };
-
-//     return transporter.sendMail(mailOptions);
-// };
-
-// exports.processInvoicesAndSendEmails = async (req, res) => {
-//     try {
-//         const paidChannelInvoices = await channelInvoiceModel.find({ status: 'paid' });
-//         const paidMusicInvoices = await musicInvoiceModel.find({ status: 'paid' });
-
-//         const ghostImagePath = path.join(__dirname, 'ghost.png'); 
-
-//         for (const invoice of paidChannelInvoices) {
-//             const populatedImagePath = await populateGhostImage(invoice, ghostImagePath);
-//             const pdfPath = path.join(__dirname, `channel_invoice_${invoice._id}.pdf`);
-//             await convertImageToPDF(populatedImagePath, pdfPath);
-//             await sendEmailWithAttachment(pdfPath, invoice.licensorEmail, 'Paid Channel Invoice', 'Please find the attached paid channel invoice.');
-//         }
-
-//         for (const invoice of paidMusicInvoices) {
-//             const populatedImagePath = await populateGhostImage(invoice, ghostImagePath);
-//             const pdfPath = path.join(__dirname, `music_invoice_${invoice._id}.pdf`);
-//             await convertImageToPDF(populatedImagePath, pdfPath);
-//             await sendEmailWithAttachment(pdfPath, invoice.licensorEmail, 'Paid Music Invoice', 'Please find the attached paid music invoice.');
-//         }
-
-//         console.log('Invoices processed and emails sent successfully.');
-//         res.status(200).json({ success: true, message: 'Invoices processed and emails sent successfully.' });
-//     } catch (error) {
-//         console.error('Error processing invoices and sending emails:', error);
-//         res.status(500).json({ success: false, message: 'Internal Server Error' });
-//     }
-// };
-
-
-
-
-//test thahah
 
 
 
@@ -168,7 +26,7 @@ exports.register = async (req, res) => {
 
          if(!(email && password))
             {
-                res.status(400).send('email and password required')
+                res.status(400).send('Email and password required')
             }
 
          const existingUser = await users.findOne({email})
@@ -188,7 +46,7 @@ exports.register = async (req, res) => {
 
          const token = jwt.sign(
             {id: user._id,password},
-            'abcd', //jwt secret
+            'galleryVision24',
             {
                 expiresIn: "12h"
             }
@@ -206,68 +64,6 @@ exports.register = async (req, res) => {
 }
 
 
-
-exports.login = async (req, res) => {
-    try {
-        // Get all data 
-        console.log(req.body);
-        const { email, password } = req.body;
-
-        // Validate input
-        if (!email || !password) {
-            return res.status(400).send('Send all data');
-        }
-        
-
-        // Find the user
-        const user = await users.findOne({ email });
-
-        // Check if user exists
-        if (!user) {
-            return res.status(401).send('User not found!');   
-        }
-
-        // Match the password
-        if (user && (await bcrypt.compare(password, user.password))) {
-            // Create JWT token
-            // const token = jwt.sign(
-            //     { id: user._id },
-            //     'abcd', // JWT secret
-            //     {
-            //         expiresIn: "12h"
-            //     }
-            // );
-
-            // Set token and remove password from response
-            // user.token = token;
-            user.password = undefined;
-
-            // Cookie options
-            const options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-                httpOnly: true
-            };
-
-            // Send response with cookie
-            res.status(200)
-                // .cookie("token", token, options)
-                .json({
-                    success: true,
-                    // token,
-                    user
-                });
-
-            // Redirect to the home page
-            //redirectURL: '/home'
-            //res.redirect('/'); // Adjust the path as necessary
-        } else {
-            res.status(401).send('Invalid Password!');
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('Internal Server Error');
-    }
-};
 
 
 // Nodemailer transporter setup using environment variables
@@ -311,7 +107,7 @@ Gallery Vision Team`
 };
 
 
-exports.loginTest = async (req, res) => {
+exports.login = async (req, res) => {
   try {
       // Get all data
       const { email, password } = req.body;
@@ -323,6 +119,8 @@ exports.loginTest = async (req, res) => {
 
       // Find the user
       const user = await users.findOne({ email });
+
+      
 
       // Check if user exists
       if (!user) {
@@ -338,7 +136,7 @@ exports.loginTest = async (req, res) => {
           otpCache.set(email, otp);
         
           // Send OTP email
-          await sendOtpEmail(user.email, otp);
+          sendOtpEmail(user.email, otp);
 
           res.status(200).json({
               success: true,
