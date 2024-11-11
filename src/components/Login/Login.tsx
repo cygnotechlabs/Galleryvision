@@ -161,10 +161,15 @@ const Login = () => {
                 type="submit"
                 className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Login
+               Login
               </button>
             </div>
           </form>
+          <div className="flex text-[13px] mt-28 font-normal ml-28">
+            <p className="pr-1" >Developed by Cygnoz </p>
+            <img src="/public/Frame 9.png" alt="" className="w-[14px] h-[18.6px]"  />
+            <p className="pl-1" >_Release Version 1.0 _25th July 2024 </p>
+          </div>
         </div>
       </div>
 
