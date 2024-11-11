@@ -1,4 +1,4 @@
-const ENV = "production"; // Change this to "development", "production" or "staging" as needed
+const ENV = "development"; // Change this to "development", "production" or "staging" as needed
 
 const URLS = {
   development: import.meta.env.VITE_REACT_APP_DEVELOPMENT as string,
@@ -51,7 +51,6 @@ const API_ENDPOINTS = {
 
   // Login Route
   LOGIN: `${BASE_URL}/login`,
-  LOGIN_TEST: `${BASE_URL}/login-test`,
   OPT_CHECKING: `${BASE_URL}/verify-otp`,
 
   // Upload File

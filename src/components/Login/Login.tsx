@@ -46,7 +46,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(API_ENDPOINTS.LOGIN_TEST, {
+      const response = await axios.post(API_ENDPOINTS.LOGIN, {
         email,
         password,
       });
