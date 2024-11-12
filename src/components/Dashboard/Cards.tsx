@@ -16,12 +16,12 @@ type DashboardData = {
   totalMusic: string;
   channelCommission: string;
   channelTaxDeducted: string;
-  musicCommission: string;
+  musicCommission: number;
 };
 
 type percentageChanges = {
   channelCommission: string;
-  musicCommission: string;
+  musicCommission: number;
   totalAsset: string;
   totalCommission: string;
 };
@@ -121,12 +121,12 @@ function Cards({ selectedDate }: Props) {
       <div className="bg-white px-8 py-6 rounded-2xl border">
         <p className="font-medium text-sm text-gray-600 pb-1">Music revenue</p>
         <p className="font-bold text-2xl">
-          ${parseFloat(data.musicCommission).toFixed(2)}
+          ${(data.musicCommission) ??= 0}
         </p>
         <div className="flex gap-2 mt-3 items-center m-1">
           <img
             src={
-              percentage && parseFloat(percentage.musicCommission) > 1
+              percentage && (percentage.musicCommission) > 1
                 ? profit
                 : loss
             }
