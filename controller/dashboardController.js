@@ -89,17 +89,17 @@ exports.getCount = async (req, res) => {
         const dateArray = dateArrayResult.map(doc => doc.date);
 
         res.status(200).json({ 
-            channelCount: channelCount,
-            musicCount: musicCount,
-            licensorCount: licensorCount,
-            totalCommission: totalCommission,
-            totalchannelCommission: totalchannelCommission,
-            totalMusicCommission: totalMusicCommission,
-            channelCommissionArray: channelCommissionArray,
-            musicCommissionArray: musicCommissionArray,
-            totalCommissionArray: totalCommissionArray,
-            toatlAsset:toatlAsset,
-            dateArray: dateArray
+            channelCount: channelCount || 0,
+            musicCount: musicCount || 0,
+            licensorCount: licensorCount || 0,
+            totalCommission: totalCommission || 0,
+            totalchannelCommission: totalchannelCommission || 0,
+            totalMusicCommission: totalMusicCommission || 0,
+            channelCommissionArray: channelCommissionArray || 0,
+            musicCommissionArray: musicCommissionArray || 0,
+            totalCommissionArray: totalCommissionArray || 0,
+            toatlAsset:toatlAsset || 0,
+            dateArray: dateArray || 0
         });
     } catch (error) {
         console.error(error);
