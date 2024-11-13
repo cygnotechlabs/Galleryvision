@@ -206,9 +206,8 @@ const CreateChannel = ({}: Props) => {
         <div className="mt-5">
           <div>
             <p className="text-xl font-bold mb-2">Add channel logo</p>
-            <div className="bg-slate-100 px-4 py-6 w-[723px] h-[184px] rounded-2xl">
+            <div className="bg-slate-100 px-4 py-6 w-[700px] h-[150px] rounded-2xl">
               <div className="flex flex-col gap-3 items-center justify-center bg-white w[100%] h-[100%] border-2 border-green-200 border-dashed rounded-2xl">
-                <div>Logo</div>
                 <div className="text-sm font-medium">
                   Select your logo here,{" "}
                   <label className="cursor-pointer text-blue-500">

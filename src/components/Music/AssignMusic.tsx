@@ -186,7 +186,7 @@ const AssignMusic = ({ music, onClose, onSave }: Props) => {
               )}
             </div>
             <div className="flex flex-col gap-4">
-              <label htmlFor="musicId">Music ID</label>
+              <label htmlFor="musicId">Licensor ID</label>
               <input
                 type="text"
                 name="musicId"

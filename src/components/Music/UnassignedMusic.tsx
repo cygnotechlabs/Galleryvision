@@ -120,7 +120,7 @@ function UnassignedMusic() {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-200">
-                <th className="px-4 py-1 text-left text-sm">Music ID</th>
+                <th className="px-4 py-1 text-left text-sm">Licensor ID</th>
                 <th className="px-4 py-1 text-left text-sm">Music Name</th>
                 <th className="px-4 py-1 text-left text-sm">Actions</th>
               </tr>
