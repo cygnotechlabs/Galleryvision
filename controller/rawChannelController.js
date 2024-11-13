@@ -261,6 +261,7 @@ const clearRawChannels = async () => {
 
 const getCurrentFormattedDate = () => {
     const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() - 1); 
     const month = currentDate.toLocaleString('en-US', { month: 'long' });
     const year = currentDate.getFullYear();
     return `${month} ${year}`;
