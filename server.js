@@ -19,6 +19,9 @@ require('./database/connection/connection')
 server.use(cors())
 
 server.use(express.json())
+// Increase payload size limit
+server.use(express.json({ limit: '1gb' })); // For JSON payload
+server.use(express.urlencoded({ limit: '1gb', extended: true })); // For URL-encoded payload
 
 server.use('/music',rawMusicRoute)
 
